@@ -22,9 +22,9 @@ public class OrePopulator extends BlockPopulator{
                 int yy = random.nextInt(8) + (section * 8) + 1;
                 int zz = random.nextInt(16) + (chunk.getZ() * 16) + 1;
                 if (section <= 11 && section >= 8 && choice==true) oreBlob(xx, yy, zz, world, 2, random, Material.COAL_ORE);
-                else if (section == 7||section == 6) oreVein(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 4, random, Material.IRON_ORE);
+                else if (section == 7||section == 6) oreVein(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 6, random, Material.IRON_ORE);
                 else if (section == 5){
-                    if (choice == true) oreVein(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 2, random, Material.GOLD_ORE);
+                    if (choice == true) oreVein(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 4, random, Material.GOLD_ORE);
                     else;
                 }
                 else if (section == 4);
@@ -61,24 +61,53 @@ public class OrePopulator extends BlockPopulator{
     }
     
     //NOTE: specs of metallic ores are found in the cavern gen code too
-    void oreVein(Vector vec1, Vector vec2, World world, int radius, Random random, Material ore){
-        int centerY = vec1.getBlockY();
-        if (world.getBlockAt(vec1.getBlockX(), centerY, vec1.getBlockZ()).getType()==Material.AIR){
+    void oreVein(Vector start, Vector dir, World world, int radius, Random random, Material ore){
+        int centerY = start.getBlockY();
+        if (world.getBlockAt(start.getBlockX(), centerY, start.getBlockZ()).getType()==Material.AIR){
             int shiftLife = 8;
             centerY += 4;
-            while (world.getBlockAt(vec1.getBlockX(), centerY, vec1.getBlockZ()).getType()==Material.AIR&&shiftLife>0){
+            while (world.getBlockAt(start.getBlockX(), centerY, start.getBlockZ()).getType()==Material.AIR&&shiftLife>0){
                 centerY -= 1;
             }
         }
-        vec1.setY(centerY);
+        start.setY(centerY);
         BlockIterator blit;
-        try{ blit = new BlockIterator(world, vec1, vec2, 0, radius);}
+        try{ blit = new BlockIterator(world, start, dir, 0, radius);}
         catch (Exception e) {return;}
         if (blit==null) return;
         while(blit.hasNext()){
             Block target = blit.next();
             if(target.getType()==Material.STONE) target.setType(ore);
         }
-        
+        Vector end = start.add(dir);
+        Vector mid = new Vector(start.getX()+(dir.getX()/2), start.getY()+(dir.getY()/2.0), start.getZ()+(dir.getZ()/2.0));
+        for(int subVeins = random.nextInt(radius/2) + (radius/2); subVeins > 0; subVeins--){
+            Vector newdir = new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4);
+            int newstart = random.nextInt(3);
+            BlockIterator newblit;
+            switch(newstart){
+                case 0:
+                    try{ newblit = new BlockIterator(world, start, newdir, 0, radius/2);}
+                    catch (Exception e) {return;}
+                    break;
+                case 1:
+                    try{ newblit = new BlockIterator(world, mid, newdir, 0, radius/2);}
+                    catch (Exception e) {return;}
+                    break;
+                case 2:
+                    try{ newblit = new BlockIterator(world, end, newdir, 0, radius/2);}
+                    catch (Exception e) {return;}
+                    break;
+                default:
+                    try{ newblit = new BlockIterator(world, end, newdir, 0, radius/2);}
+                    catch (Exception e) {return;}
+                    break;
+            }
+            if (newblit==null) return;
+            while(newblit.hasNext()){
+                Block target = newblit.next();
+                if(target.getType()==Material.STONE) target.setType(ore);
+            }
+        }
     }
 }
