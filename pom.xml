@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.darkeh.plugins.shipwreckedwgen</groupId>
     <artifactId>ShipwreckedWGen</artifactId>
-    <version>0.5</version>
+    <version>0.6</version>
     <name>ShipwreckedWGen</name>
     <repositories>
         <repository>
