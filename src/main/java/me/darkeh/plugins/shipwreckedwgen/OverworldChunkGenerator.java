@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import me.darkeh.plugins.shipwreckedwgen.biomes.BiomeGen;
 import me.darkeh.plugins.shipwreckedwgen.populators.CavePopulator;
+import me.darkeh.plugins.shipwreckedwgen.populators.DepositPopulator;
 import me.darkeh.plugins.shipwreckedwgen.populators.OrePopulator;
 import me.darkeh.plugins.shipwreckedwgen.populators.RavinePopulator;
 import org.bukkit.Material;
@@ -290,6 +291,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
         pops.add(new RavinePopulator());
         pops.add(new CavePopulator());
         pops.add(new OrePopulator(plugin));
+        pops.add(new DepositPopulator());
         return pops;
     }
 }

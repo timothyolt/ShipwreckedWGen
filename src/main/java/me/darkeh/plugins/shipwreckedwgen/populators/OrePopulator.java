@@ -20,7 +20,7 @@ public class OrePopulator extends BlockPopulator{
     @Override
     public void populate(World world, Random random, Chunk chunk){
         for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) for (int y = 0; y < 8; y++){
-            if (random.nextInt(100)==1){
+            if (random.nextInt(80)==1){
                 int section = random.nextInt(8);
                 boolean choice = random.nextBoolean();
                 int xx = x + (chunk.getX() * 16);
