@@ -13,10 +13,6 @@ import org.bukkit.util.Vector;
 
 public class OrePopulator extends BlockPopulator{
 //TODO: Seed ores. Idea from DarthAndroid@esper.net
-    private ShipwreckedWGen plugin;
-    public OrePopulator(ShipwreckedWGen plugin){
-        this.plugin = plugin;
-    }
     @Override
     public void populate(World world, Random random, Chunk chunk){
         for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) for (int y = 0; y < 8; y++){

@@ -26,7 +26,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
     final Material oceanLow = Material.GRAVEL;
     final Material landTop = Material.GRASS;
     final Material landMid = Material.DIRT;
-        
+
     void setBlock(int x, int y, int z, byte[][] chunk, Material material) {
         if (chunk[y >> 4] == null)
             chunk[y >> 4] = new byte[16 * 16 * 16];
@@ -36,17 +36,17 @@ public class OverworldChunkGenerator extends ChunkGenerator{
             chunk[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (byte) material.getId();
         } catch (Exception e) {}
     }
-    
+
     byte getBlock(int x, int y, int z, byte[][] chunk) {
         //if the Block section the block is in hasn't been used yet, allocate it
         if (chunk[y >> 4] == null) return 0; //block is air as it hasnt been allocated
         if (!(y <= 256 && y >= 0 && x <= 16 && x >= 0 && z <= 16 && z >= 0)) return 0;
-        try { return chunk[y >> 4][((y & 0xF) << 8) | (z << 4) | x];} 
+        try { return chunk[y >> 4][((y & 0xF) << 8) | (z << 4) | x];}
         catch (Exception e) {
             return 0;
         }
     }
-    
+
     @Override
     //Generates block sections. Each block section is 16*16*16 blocks, stacked above each other. //There are world height / 16 sections. section number is world height / 16 (>>4)
     //returns a byte[world height / 16][], formatted [section id][Blocks]. If there are no blocks in a section, it need not be allocated.
@@ -64,12 +64,12 @@ public class OverworldChunkGenerator extends ChunkGenerator{
             new SimplexOctaveGenerator(seed.nextInt(), 2), //Temperature Variation
             new SimplexOctaveGenerator(seed.nextInt(), 8), //Cliff Variation
             new SimplexOctaveGenerator(seed.nextInt(), 4)};//Biome Terrain
-        
+
         OverworldBiomeGenerator terrain = new OverworldBiomeGenerator(noises, rand, ChunkX, ChunkZ);
         int seaLevel = terrain.seaLevel;
         int seaFloor = terrain.seaFloor;
         byte[][] chunk = new byte[16][];
-        
+
         SimplexOctaveGenerator fOver = new SimplexOctaveGenerator(seed.nextInt(), 6);
         fOver.setScale(1 / 64.0);
         SimplexOctaveGenerator fUnder = new SimplexOctaveGenerator(seed.nextInt(), 2);
@@ -79,23 +79,23 @@ public class OverworldChunkGenerator extends ChunkGenerator{
         SimplexOctaveGenerator fHeight = new SimplexOctaveGenerator(seed.nextInt(), 2);
         fHeight.setScale(1 / 256.0);
         SimplexOctaveGenerator spires = new SimplexOctaveGenerator(seed.nextInt(), 2);
-        fHeight.setScale(1 / 8.0);
-        
+        spires.setScale(1 / 2.0);
+
         for (int x = 0; x < 16; x ++){
             for (int z = 0; z < 16; z ++){
                 Biome landBiome = terrain.getBiome        (x + (ChunkX * 16), z + (ChunkZ * 16));
                 int height =      terrain.getSmoothTerrain(x + (ChunkX * 16), z + (ChunkZ * 16));
-                
+
                 //Base Stone
                 for(int y=1; y<seaFloor; y++){
                     setBlock(x, y, z, chunk, base);
                 }
-                
+
                 //Base Terrain
                 for(int y = seaFloor - 1; y < seaFloor + height; y ++){
                     setBlock(x, y, z, chunk, base);
                 }
-                
+
                 //Ocean Topsoil
                 if (height + seaFloor < seaLevel){
                     setBlock(x, height + seaFloor    , z, chunk, oceanTop);
@@ -106,7 +106,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                          biome.setBiome(x, z, Biome.FROZEN_OCEAN);
                     else biome.setBiome(x, z, Biome.OCEAN);
                 }
-                
+
                 //Beach Topsoil
                 else if ((int)height + seaFloor < seaLevel + 3 && (int)height + seaFloor > seaLevel-1){
                     setBlock(x, height + seaFloor    , z, chunk, oceanTop);
@@ -118,7 +118,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         setBlock(x, height + seaFloor + 1, z, chunk, Material.SNOW);
                     biome.setBiome(x, z, Biome.BEACH);
                 }
-                
+
                 //Land Topsoil
                 else{
                     BiomeGen biomeGen = terrain.getBiomeGen(landBiome);
@@ -137,14 +137,14 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                     }
                     biome.setBiome(x, z, landBiome);
                 }
-                
+
                 //Ocean
                 for (int y = 80; y > height + seaFloor && y > seaFloor; y--){
                     setBlock(x, y, z, chunk, Material.WATER);
                     if ((biome.getBiome(x, z) == Biome.FROZEN_OCEAN)&&(y==80))
                         setBlock(x, y, z, chunk, Material.ICE);
                 }
-                
+
                 //Sky Islands
                 if (height < 1){
                     int hCluster = (int)Math.floor(fCluster.noise(x + (ChunkX * 16), z + (ChunkZ * 16), 0.5, 0.5)*(16));
@@ -163,7 +163,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         }
                     }
                 }
-                
+
                 //Caverns
                 int caveLow = -1;
                 int caveTop = -1;
@@ -219,7 +219,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         else setBlock(x, y + 40, z, chunk, Material.STONE);
                     }
                 }
-                
+
                 //Extreme Overhangs
                 if (height > 26 && landBiome==Biome.EXTREME_HILLS){
                     int hOver = (int)Math.floor(fOver.noise(x + (ChunkX * 16), z + (ChunkZ * 16), 0.5, 0.5)*16);
@@ -239,8 +239,8 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         }
                     }
                 }
-                
-                //Extreme Mountains (level 2) 
+
+                //Extreme Mountains (level 2)
                 //Heck, lets put them in any biome. It has to be high to get to 52 anyways.
                 if (height > 52){
                     int oldHeight = height;
@@ -256,7 +256,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         height = newHeight;
                     }
                 }
-                
+
                 fOver.setScale(1 / 64.0);
                 //Extreme Overhangs (level 2)
                 if (height > 40 && landBiome==Biome.EXTREME_HILLS){
@@ -281,15 +281,21 @@ public class OverworldChunkGenerator extends ChunkGenerator{
         }
         return chunk;
     }
-    
+
     @Override
     public List<BlockPopulator> getDefaultPopulators(World world) {
         ArrayList<BlockPopulator> pops = new ArrayList<BlockPopulator>();
+
+        //Underground
         pops.add(new RavinePopulator());
         pops.add(new CavePopulator());
         pops.add(new AirPocketPopulator());
-        pops.add(new OrePopulator(plugin));
+        pops.add(new OrePopulator());
         pops.add(new DepositPopulator());
+
+        //Surface
+        pops.add(new RiverPopulator());
+
         return pops;
     }
 }
