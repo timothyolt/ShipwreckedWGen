@@ -1,7 +1,6 @@
 package me.darkeh.plugins.shipwreckedwgen.populators;
 
 import java.util.Random;
-import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +15,7 @@ public class OrePopulator extends BlockPopulator{
     @Override
     public void populate(World world, Random random, Chunk chunk){
         for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) for (int y = 0; y < 8; y++){
-            if (random.nextInt(80)==1){
+            if (random.nextInt(100)==1){
                 int section = random.nextInt(8);
                 boolean choice = random.nextBoolean();
                 int xx = x + (chunk.getX() * 16);
@@ -46,17 +45,17 @@ public class OrePopulator extends BlockPopulator{
             }
         }
     }
-    
+
     Block getBlockSafely(int x, int y, int z, World world, Chunk chunk){
         if(Math.floor(x/16) == chunk.getX() && Math.floor(z/16) == chunk.getZ()) return world.getBlockAt(x, y, z);
         else return null;
     }
-    
+
     //Depricated
     void setBlockSafely(Block block, Chunk chunk, Material mat){
         if(Math.floor(block.getX()/16) == chunk.getX() && Math.floor(block.getZ()/16) == chunk.getZ()) block.setType(mat);
     }
-    
+
     //Depricated
     void oreBlob(int centerX, int centerY, int centerZ, World world, int radius, Random random, Material ore, Chunk chunk){
         for (int deposits = random.nextInt(radius*2); deposits >= 0; deposits--){
@@ -74,7 +73,7 @@ public class OrePopulator extends BlockPopulator{
             }
         }
     }
-    
+
     //NOTE: specs of metallic ores are found in the cavern gen code too
     void oreVein(Vector start, Vector dir, World world, int radius, Random random, Material ore, Chunk chunk){
         int centerY = start.getBlockY();
@@ -127,7 +126,7 @@ public class OrePopulator extends BlockPopulator{
             }
         }
     }
-    
+
     void orePowder(Vector start, Vector dir, World world, int radius, Random random, Material ore, Chunk chunk){
         int centerY = start.getBlockY();
         Block origin = getBlockSafely(start.getBlockX(), centerY, start.getBlockZ(), world, chunk);
@@ -166,7 +165,7 @@ public class OrePopulator extends BlockPopulator{
             //end = newend;
         }
     }
-    
+
     void oreShard(int xx, int yy, int zz, int field, Random random, World world, Material ore, Chunk chunk){
         oreBlob(xx, yy, zz, world, 1, random, ore, chunk);
         Location center = new Location(world, xx, yy, zz);
