@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
 public class RiverPopulator extends BlockPopulator{
@@ -26,35 +27,18 @@ public class RiverPopulator extends BlockPopulator{
             int size = 16;
             chain: for (int i = 0; i < 16; i++){
                 Location newCursor = getNextPoint(cursor, size);
-                fillRiverSection(cursor, newCursor, 4);
-                for (int y = (int)cursor.getY(); y < 256; y++) world.getBlockAt(cursor.getBlockX(), y, cursor.getBlockZ()).setType(Material.DIAMOND_ORE);
+                fillRiverSection(cursor, newCursor, 4, random);
                 if (cursor == newCursor) {
-                    System.out.println("River waypoint expand");
                     if (size <= 24) size += 8;
-                    else{
-                        System.out.println("River waypoint not found");
-                        break chain;
-                    }
+                    else break chain;
                 }
                 else cursor = newCursor;
-                //for (int y = (int)cursor.getY(); y < 256; y++) world.getBlockAt(cursor.getBlockX(), y, cursor.getBlockZ()).setType(Material.DIAMOND_ORE);
-                if (cursor.getBlock().getBiome() == Biome.OCEAN || cursor.getBlock().getBiome() == Biome.FROZEN_OCEAN){
-                    System.out.println("River waypoint hit ocean");
-                    break chain;
-                }
+                if (cursor.getBlock().getBiome() == Biome.OCEAN || cursor.getBlock().getBiome() == Biome.FROZEN_OCEAN) break chain;
+                System.out.println("River end test at " + Integer.toString(cursor.getBlockX()) + ", " + Integer.toString(cursor.getBlockZ()));
             }
-            //for (int y = loEdge[0] - 4; y < 256; y++){
-            //    world.getBlockAt(8 + (chunk.getX() * 16), y, 8 + (chunk.getZ() * 16)).setType(Material.DIAMOND_ORE);
-            //    world.getBlockAt(loEdge[1] + (chunk.getX() * 16), y, loEdge[2] + (chunk.getZ() * 16)).setType(Material.DIAMOND_ORE);
-            //}
         }
     }
 
-    //Chain reactions could either be from a similarity with the modulus
-    //division for the random chunk selector and the java random code
-    //or it could be ravines extending the generated regions, then rivers
-    //generating and extending it again, and so on
-    //PS check the epic home area and save a schematic
     Location getNextPoint(Location center, int size){
         World world = center.getWorld();
         Location lowEdge = new Location(world, center.getX(), center.getY() + 1, center.getZ());
@@ -97,47 +81,42 @@ public class RiverPopulator extends BlockPopulator{
         return lowEdge;
     }
 
-    void fillRiverSection(Location start, Location end, int size){
+    void fillRiverSection(Location start, Location end, int size, Random rand){
         fillRiverWaypoint(start, size);
-        System.out.println("River waypoint");
         int xdif = end.getBlockX() - start.getBlockX();
         int zdif = end.getBlockZ() - start.getBlockZ();
         if (Math.abs(xdif) > Math.abs(zdif)){
             double zslope = ((double) zdif) / ((double) xdif);
             if (xdif > 0) for (int x = 0; x <= xdif; x++){
-                System.out.println("River segment code 1");
                 Location target = new Location(start.getWorld(), start.getBlockX() + x, 0, start.getBlockZ() + (x * zslope));
                 int height = target.getWorld().getHighestBlockYAt(target);
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
-                fillRiverSegment(target, size, true);
+                fillRiverSegment(target, size, true, rand);
             }
             else for (int x = 0; x >= xdif; x--){
-                System.out.println("River segment code 1");
                 Location target = new Location(start.getWorld(), start.getBlockX() + x, 0, start.getBlockZ() + (x * zslope));
                 int height = target.getWorld().getHighestBlockYAt(target);
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
-                fillRiverSegment(target, size, true);
+                fillRiverSegment(target, size, true, rand);
             }
         }
         else {
             double xslope = ((double) xdif) / ((double) zdif);
             if (zdif > 0) for (int z = 0; z <= zdif; z++){
-                System.out.println("River segment code 2");
                 Location target = new Location(start.getWorld(), start.getBlockX() + (z * xslope), 0, start.getBlockZ() + z);
                 int height = target.getWorld().getHighestBlockYAt(target);
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
-                fillRiverSegment(target, size, false);
+                fillRiverSegment(target, size, false, rand);
             }
             else for (int z = 0; z >= zdif; z--){
-                System.out.println("River segment code 2");
                 Location target = new Location(start.getWorld(), start.getBlockX() + (z * xslope), 0, start.getBlockZ() + z);
                 int height = target.getWorld().getHighestBlockYAt(target);
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
-                fillRiverSegment(target, size, false);
+                fillRiverSegment(target, size, false, rand);
             }
         }
     }
@@ -148,63 +127,61 @@ public class RiverPopulator extends BlockPopulator{
                 Location target = new Location(center.getWorld(), center.getBlockX() + x, center.getBlockY() + y, center.getBlockZ() + z);
                 Block targetBlock = target.getBlock();
                 double dist = center.distance(target);
-                if (dist < size){
-                    boolean frozen = false;
-                    if (target.getY() == center.getY()){
-                        Biome biome = center.getWorld().getBiome(center.getBlockX() + x, center.getBlockZ() + z);
-                        if (biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS || biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS){
-                            targetBlock.setBiome(Biome.FROZEN_RIVER);
-                            frozen = true;
-                        }
-                        else targetBlock.setBiome(Biome.RIVER);
+                Biome biome = targetBlock.getBiome();
+                if (biome != Biome.OCEAN && biome != Biome.FROZEN_OCEAN){
+                    if (biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS || biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS) targetBlock.setBiome(Biome.FROZEN_RIVER);
+                    else targetBlock.setBiome(Biome.RIVER);
+                    if (dist < size){
+                        if (y < 0) targetBlock.setType(Material.WATER);
+                        else targetBlock.setType(Material.AIR);
                     }
-                    if (y < 0){
-                        if (frozen) targetBlock.setType(Material.ICE);
-                        else targetBlock.setType(Material.WATER);
+                    else if (dist <= size + 2 && !targetBlock.isLiquid()){
+                        if (y < -1) targetBlock.setType(Material.DIRT);
+                        else if (y < 0) targetBlock.setType(Material.GRASS);
                     }
-                    else targetBlock.setType(Material.AIR);
-                }
-                else if (dist <= size + 2 && !targetBlock.isLiquid()){
-                    if (y < -1) targetBlock.setType(Material.DIRT);
-                    else if (y < 0) targetBlock.setType(Material.GRASS);
                 }
             }
         }
     }
 
-    void fillRiverSegment(Location center, int size, boolean face){
-        for (int i = (size * -1) - 1; i < size + 2; i++) for (int y = (size * -1) - 5; y < size + 1; y++){
+    void fillRiverSegment(Location center, int size, boolean face, Random rand){
+        for (int i = (size * -1) - 1; i < size + 2; i++) for (int y = (size * -1) - 5; y < size + 5; y++){
             Location target;
             if (face) target = new Location(center.getWorld(), center.getBlockX(), center.getBlockY() + y, center.getBlockZ() + i);
             else target = new Location(center.getWorld(), center.getBlockX() + i, center.getBlockY() + y, center.getBlockZ());
             Block targetBlock = target.getBlock();
             double dist = center.distance(target);
-            if (dist < size){
-                boolean frozen = false;
-                if (target.getY() == center.getY()){
-                    Biome biome;
-                    if (face) biome = center.getWorld().getBiome(center.getBlockX() + i, center.getBlockZ());
-                    else biome = center.getWorld().getBiome(center.getBlockX(), center.getBlockZ() + i);
-                    if (biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS || biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS){
-                        targetBlock.setBiome(Biome.FROZEN_RIVER);
-                        frozen = true;
+            Biome biome = targetBlock.getBiome();
+            if (biome != Biome.OCEAN && biome != Biome.FROZEN_OCEAN){
+                if (biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS || biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS) targetBlock.setBiome(Biome.FROZEN_RIVER);
+                else targetBlock.setBiome(Biome.RIVER);
+                if (dist < size){
+                    if (y < 0) targetBlock.setType(Material.WATER);
+                    else {
+                        if (y == size - 1){
+                            int vineChance;
+                            if (biome == Biome.JUNGLE || biome == Biome.JUNGLE_HILLS) vineChance = rand.nextInt(4);
+                            else vineChance = rand.nextInt(16);
+                            Block vineTarget = target.getWorld().getBlockAt(target.getBlockX(), target.getBlockY(), target.getBlockZ());
+                            if (!vineTarget.getRelative(BlockFace.UP).isEmpty() && vineChance == 1) vineTarget.setTypeIdAndData(106, (byte)1, false);
+                            else targetBlock.setType(Material.AIR);
+                        }
+                        else targetBlock.setType(Material.AIR);
                     }
-                    else targetBlock.setBiome(Biome.RIVER);
                 }
-                if (y < 0){
-                    if (frozen) targetBlock.setType(Material.ICE);
-                    else targetBlock.setType(Material.WATER);
+                else if (!targetBlock.isLiquid()){
+                    if (dist <= size + 2){
+                        if (y < -1) targetBlock.setType(Material.DIRT);
+                        else if (y < 0) targetBlock.setType(Material.GRASS);
+                        else if (y >= 0 && (targetBlock.getType() == Material.DIRT || targetBlock.getType() == Material.GRASS) && targetBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) targetBlock.setType(Material.AIR);
+                        if (y == 0 && rand.nextInt(48) == 1 && !targetBlock.getRelative(BlockFace.DOWN).isEmpty()){
+                            int caneHeight = rand.nextInt(2) + 2;
+                            for (int cy = 0; cy <= caneHeight; cy++) targetBlock.getRelative(0, cy, 0).setType(Material.SUGAR_CANE_BLOCK);
+                        }
+                    }
+                    else if (y < 0 && targetBlock.isEmpty()) targetBlock.setType(Material.STONE);
                 }
-                else targetBlock.setType(Material.AIR);
-            }
-            else if (!targetBlock.isLiquid()){
-                if (dist <= size + 2){
-                    if (y < -1) targetBlock.setType(Material.DIRT);
-                    else if (y < 0) targetBlock.setType(Material.GRASS);
-                }
-                else if (y < 0 && targetBlock.isEmpty()) targetBlock.setType(Material.STONE);
             }
         }
     }
-    //TODO biome setting method that doesnt override oceans
 }

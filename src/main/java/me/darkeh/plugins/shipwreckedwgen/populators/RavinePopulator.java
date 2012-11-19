@@ -41,12 +41,12 @@ public class RavinePopulator extends BlockPopulator{
                         widthA = -1;
                         widthB = -1;
                     }
-                    
-                    if (length > 500){
+
+                    if (length > 400){
                         widthA = -1;
                         widthB = -1;
                     }
-                    
+
                     //Control changing of operations
                     if (steadyA <= 0 && opA != -1){
                         if (widthA < 15) opA = random.nextInt(3);
@@ -72,7 +72,7 @@ public class RavinePopulator extends BlockPopulator{
                         steadyH = random.nextInt(5);
                     }
                     else steadyH--;
-                    
+
                     //Control ledge height change
                     if (ledgeChangeA <= 0){
                         ledgeOffsetA = random.nextInt(5);
@@ -84,7 +84,7 @@ public class RavinePopulator extends BlockPopulator{
                         ledgeChangeB = random.nextInt(16)+5;
                     }
                     else ledgeChangeA--;
-                    
+
                     //Clears Appropriate land
                     clearSegment(direction, xx, yy, zz, (int)(wave.noise(length, 0.5, 0.5, true)*12), widthA + (int)(wave.noise(-length, 0.5, 0.5, true)*6), widthB + 4, ledgeOffsetA, ledgeOffsetB, height, length, world);
                     //Applies operations
@@ -115,7 +115,7 @@ public class RavinePopulator extends BlockPopulator{
                                 break;
                         default: break;
                     }
-                    
+
                     //Terminates operations on width variables if zeroed
                     if (widthA <= 0) opA = -1;
                     if (widthB <= 0) opB = -1;
@@ -123,7 +123,7 @@ public class RavinePopulator extends BlockPopulator{
             }
         }
     }
-    
+
     int getLedge(int y, int offset){
         if (offset == 4){
             if ((y + offset) % 10 == 0) return (((y + offset) / 10) + 1);
@@ -141,7 +141,7 @@ public class RavinePopulator extends BlockPopulator{
             else return (int)Math.floor((double)(y + offset) / 10.0);
         }
     }
-    
+
     void clearSegment(boolean dir, int xx, int yy, int zz, int offset, int widthA, int widthB, int ledgeOffsetA, int ledgeOffsetB, int height, int section, World world){
         if (dir){
             for (int y = -1 * height; y < height; y++) for (int x = (-1 * widthA) - getLedge(y, ledgeOffsetA); x < widthB + getLedge(y, ledgeOffsetB); x++){

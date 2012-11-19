@@ -31,7 +31,7 @@ public class CavePopulator extends BlockPopulator{
                     size -= random.nextInt(3);
                     size += random.nextInt(1);
                     if (size <= 0) size = 1;
-                    
+
                     if (normals <= 0){
                         int oldNormal = normal;
                         normal = random.nextInt(3);
@@ -39,7 +39,7 @@ public class CavePopulator extends BlockPopulator{
                         normals = 3 + random.nextInt(6);
                     }
                     normals--;
-                    
+
                     if (normal == 1){ //Chooses negative x-z normal
                         xx -= (random.nextInt(size)+2);
                         zz -= (random.nextInt(size)+2);
@@ -65,7 +65,7 @@ public class CavePopulator extends BlockPopulator{
                         zz -= (random.nextInt(size)+2);
                         yy += random.nextInt(3);
                     }
-                    
+
                     clearBlob(xx, yy, zz, size, chance, world, random);
                     if (random.nextBoolean()) life++;
                     else life--;
@@ -73,7 +73,7 @@ public class CavePopulator extends BlockPopulator{
             }
         }
     }
-    
+
     void clearBlob(int xx, int yy, int zz, int size, int type, World world, Random random){
         size += 2;
         Location center = new Location(world, xx, yy, zz);
@@ -90,7 +90,7 @@ public class CavePopulator extends BlockPopulator{
                     if (random.nextInt(32) != 1 && !block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE)
                         block.setType(replace);
                 }
-                else if (!block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE)
+                else if (!block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.ICE)
                     block.setType(replace);
             }
         }
