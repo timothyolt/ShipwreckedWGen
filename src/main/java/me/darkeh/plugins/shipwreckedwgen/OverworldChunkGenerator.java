@@ -288,8 +288,8 @@ public class OverworldChunkGenerator extends ChunkGenerator{
 
         //Underground
         pops.add(new RavinePopulator());
-        pops.add(new CavePopulator());
         pops.add(new AirPocketPopulator());
+        pops.add(new CavePopulator());
         pops.add(new OrePopulator());
         pops.add(new DepositPopulator());
 
