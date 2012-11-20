@@ -1,11 +1,14 @@
 package me.darkeh.plugins.shipwreckedwgen.biomes;
 
+import java.util.Random;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class TundraBiome implements BiomeGen{
-    
+
     int smallBlobCount = 32;
     int largeBlobCount = 24;
     int landHeight = 4;
@@ -35,9 +38,12 @@ public class TundraBiome implements BiomeGen{
     public Biome getBiome() {
         return Biome.ICE_PLAINS;
     }
-    
+
     public int addBiomeLand(int x, int z, int height, SimplexOctaveGenerator gen) {
         //TODO: Add custom biome additives
         return height;
+    }
+
+    public void biomePopulate(World world, Random random, Chunk source) {
     }
 }

@@ -295,7 +295,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
 
         //Surface
         pops.add(new RiverPopulator());
-
+        pops.add(new BiomePopulator(plugin));
         return pops;
     }
 }

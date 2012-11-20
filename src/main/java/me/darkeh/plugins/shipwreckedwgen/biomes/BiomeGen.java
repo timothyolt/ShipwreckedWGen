@@ -19,5 +19,5 @@ public interface BiomeGen {
     Material[] getTopsoil();
     int addBiomeLand(int x, int z, int height, SimplexOctaveGenerator gen);
 
-    void biomePopulate(World world, Random random, Chunk source);
+    void biomePopulate(World w, Random r, Chunk c);
 }

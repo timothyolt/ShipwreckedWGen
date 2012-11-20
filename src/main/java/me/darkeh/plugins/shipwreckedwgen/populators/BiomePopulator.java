@@ -15,6 +15,7 @@ public class BiomePopulator extends BlockPopulator{
 
     @Override
     public void populate(World w, Random r, Chunk c) {
-        plugin.biomeHandler.getBiomeGen(w.getBiome(c.getX() * 16, c.getZ() * 16)).biomePopulate(w, r, c);
+        try{plugin.biomeHandler.getBiomeGen(w.getBiome(c.getX() * 16, c.getZ() * 16)).biomePopulate(w, r, c);}
+        catch (Exception e) {};
     }
 }

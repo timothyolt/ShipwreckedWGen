@@ -1,11 +1,14 @@
 package me.darkeh.plugins.shipwreckedwgen.biomes;
 
+import java.util.Random;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class ExtremeBiome implements BiomeGen{
-    
+
     int smallBlobCount = 32;
     int largeBlobCount = 24;
     int landHeight = 4;
@@ -44,5 +47,8 @@ public class ExtremeBiome implements BiomeGen{
             if (threedee.noise(x, y, z, 0.5, 0.5, true) > 0.2) additive += 1;
         }
         return height + additive;
+    }
+
+    public void biomePopulate(World world, Random random, Chunk source) {
     }
 }

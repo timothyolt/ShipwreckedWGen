@@ -1,11 +1,14 @@
 package me.darkeh.plugins.shipwreckedwgen.biomes;
 
+import java.util.Random;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class DesertHillsBiome implements BiomeGen{
-    
+
     int smallBlobCount = 32;
     int largeBlobCount = 24;
     int landHeight = 6;
@@ -41,7 +44,7 @@ public class DesertHillsBiome implements BiomeGen{
     public Biome getBiome() {
         return Biome.DESERT_HILLS;
     }
-    
+
     public int addBiomeLand(int x, int z, int height, SimplexOctaveGenerator gen) {
         SimplexOctaveGenerator threedee = gen;
         threedee.setScale(1/48.0);
@@ -50,5 +53,8 @@ public class DesertHillsBiome implements BiomeGen{
             if (threedee.noise(x, y, z, 0.5, 0.5, true) > 0.3) additive += 1;
         }
         return height + additive;
+    }
+
+    public void biomePopulate(World world, Random random, Chunk source) {
     }
 }

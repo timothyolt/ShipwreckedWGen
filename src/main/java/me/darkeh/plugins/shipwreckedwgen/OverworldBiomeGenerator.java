@@ -1,12 +1,9 @@
 package me.darkeh.plugins.shipwreckedwgen;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Random;
-import me.darkeh.plugins.shipwreckedwgen.biomes.*;
+import me.darkeh.plugins.shipwreckedwgen.biomes.BiomeGen;
 import org.bukkit.block.Biome;
-import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class OverworldBiomeGenerator {
