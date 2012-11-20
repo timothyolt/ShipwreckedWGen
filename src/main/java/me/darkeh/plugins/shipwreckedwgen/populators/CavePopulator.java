@@ -87,10 +87,10 @@ public class CavePopulator extends BlockPopulator{
                 else if (type == 2 && y < -2 && yy + y < 80 && !block.isEmpty()) replace = Material.WATER;
                 else replace = Material.AIR;
                 if (distance > size - 1) {
-                    if (random.nextInt(32) != 1 && !block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE)
+                    if (random.nextInt(32) != 1 && !block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE && block.getType()!=Material.ICE)
                         block.setType(replace);
                 }
-                else if (!block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.ICE)
+                else if (!block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE && block.getType()!=Material.ICE)
                     block.setType(replace);
             }
         }

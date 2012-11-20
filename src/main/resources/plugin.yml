@@ -5,4 +5,4 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen
 name: ShipGen
 startup: startup
-version: '0.6'
+version: '0.61'
