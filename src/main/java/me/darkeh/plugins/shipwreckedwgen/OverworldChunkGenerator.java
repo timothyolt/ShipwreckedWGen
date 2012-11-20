@@ -65,7 +65,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
             new SimplexOctaveGenerator(seed.nextInt(), 8), //Cliff Variation
             new SimplexOctaveGenerator(seed.nextInt(), 4)};//Biome Terrain
 
-        OverworldBiomeGenerator terrain = new OverworldBiomeGenerator(noises, rand, ChunkX, ChunkZ);
+        OverworldBiomeGenerator terrain = new OverworldBiomeGenerator(noises, rand, ChunkX, ChunkZ, plugin);
         int seaLevel = terrain.seaLevel;
         int seaFloor = terrain.seaFloor;
         byte[][] chunk = new byte[16][];
@@ -121,7 +121,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
 
                 //Land Topsoil
                 else{
-                    BiomeGen biomeGen = terrain.getBiomeGen(landBiome);
+                    BiomeGen biomeGen = plugin.biomeHandler.getBiomeGen(landBiome);
                     if (biomeGen != null){
                     Material[] topsoil = biomeGen.getTopsoil();
                         if (topsoil == null){
@@ -244,7 +244,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                 //Heck, lets put them in any biome. It has to be high to get to 52 anyways.
                 if (height > 52){
                     int oldHeight = height;
-                    int newHeight = terrain.getBiomeGen(landBiome).addBiomeLand(z + (ChunkZ * 16), x + (ChunkX * 16), height, fOver);
+                    int newHeight = plugin.biomeHandler.getBiomeGen(landBiome).addBiomeLand(z + (ChunkZ * 16), x + (ChunkX * 16), height, fOver);
                     for (int y = oldHeight; y <= newHeight; y++){
                         if (y == newHeight){
                             setBlock(x, y + seaFloor, z, chunk, Material.GRASS);

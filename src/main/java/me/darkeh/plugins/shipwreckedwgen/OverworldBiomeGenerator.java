@@ -10,7 +10,7 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class OverworldBiomeGenerator {
-    
+
     //CONFIG
     public final int seaFloor = 64;
     public final int seaLevel = 80;
@@ -26,7 +26,7 @@ public class OverworldBiomeGenerator {
     public       int extraDetail; //its about double this value for land
     public final int boostFactor = 8;
     public final int biomeScale = 1024;
-    
+
     private SimplexOctaveGenerator ocean1;
     private SimplexOctaveGenerator ocean2;
     private SimplexOctaveGenerator humid;
@@ -38,16 +38,16 @@ public class OverworldBiomeGenerator {
     private SimplexOctaveGenerator cliffs;
     private SimplexOctaveGenerator biometerr;
     private Random rand;
-    
+
     int chunkX;
     int chunkZ;
     private EnumMap<Biome, BiomeGen> biomes = new EnumMap<Biome, BiomeGen>(Biome.class);
     private int[][] heightMap;
     private Biome[][] biomeMap;
-    
+
         //0.00      Humidity       1.00         Flat/Hills   : 53/47
         //                                      Rain/Snow/Dry: 54/28/27
-        //17 17 17 02 02 01 06 21 22 14  1.00    
+        //17 17 17 02 02 01 06 21 22 14  1.00
         //17 17 17 02 02 01 06 21 22 22         01   : Plains           12      12
         //02 02 02 02 02 01 06 21 21 21         02/17: Desert           09/06   17
         //01 01 01 01 01 01 06 06 06 06  T         03: Extreme Hills       08   08
@@ -57,8 +57,8 @@ public class OverworldBiomeGenerator {
         //12 12 12 05 05 19 03 03 03 03         12/13: Ice Plains       07/02   09
         //12 12 12 05 05 19 03 03 03 03            14: Mushroom Island     01   01
         //13 13 12 05 05 19 19 19 19 19  0.00   21/22: Jungle           05/03   08
-        
-    public OverworldBiomeGenerator(SimplexOctaveGenerator[] noises, Random rand, int chunkX, int chunkZ){
+
+    public OverworldBiomeGenerator(SimplexOctaveGenerator[] noises, Random rand, int chunkX, int chunkZ, ShipwreckedWGen plugin){
         ocean1 = noises[0];
         ocean2 = noises[1];
         variation = noises[2];
@@ -71,7 +71,7 @@ public class OverworldBiomeGenerator {
         cliffs.setXScale(1 / (double) (cliffScale*2));
         cliffs.setYScale(1 / (double) (cliffScale*2));
         cliffs.setZScale(1 / (double) cliffScale);
-        
+
         humid = noises[4];
         temp = noises[5];
         tempvar = noises[6];
@@ -80,16 +80,16 @@ public class OverworldBiomeGenerator {
         humid.setScale(1 / (double)biomeScale);
         tempvar.setScale(1/((double)biomeScale / 16.0));
         humidvar.setScale(1/((double)biomeScale / 16.0));
-        
-        
+
+
         biometerr = noises[9];
         this.rand = rand;
-        
+
         chunkX *= 16;
         chunkZ *= 16;
         this.chunkX = chunkX;//coordinates of the origin of the chunk
         this.chunkZ = chunkZ;   //not the coordinates on the chunk grid
-        
+
         //<editor-fold defaultstate="collapsed" desc="Pregenerate Terrain">
         heightMap = new int[16][16];
         biomeMap = new Biome[16][16];
@@ -113,7 +113,7 @@ public class OverworldBiomeGenerator {
                          ((dTemp >  6/10.0 && dTemp <=  7/10.0)&&(dHumid >  0/10.0 && dHumid <=  5/10.0))||
                          ((dTemp >  5/10.0 && dTemp <=  6/10.0)&&(dHumid >  0/10.0 && dHumid <=  3/10.0))){
                          biomeMap[x][z] = Biome.PLAINS;
-                } 
+                }
                 else if (((dTemp >  7/10.0 && dTemp <= 10/10.0)&&(dHumid >  0/10.0 && dHumid <=  5/10.0))){
                      if (((dTemp >  8/10.0 && dTemp <= 10/10.0)&&(dHumid >  0/10.0 && dHumid <=  3/10.0)))
                           biomeMap[x][z] = Biome.DESERT_HILLS;
@@ -238,7 +238,7 @@ public class OverworldBiomeGenerator {
             for (int z = 0; z < 16; z++){
                 int realz = z + chunkZ;
                 Biome biome = biomeMap[x][z];
-                BiomeGen biomeGen = getBiomeGen(biome);
+                BiomeGen biomeGen = plugin.biomeHandler.getBiomeGen(biome);
                 if (biomeGen == null){
                     smallBlobCount = 32;
                     largeBlobCount = 24;
@@ -251,24 +251,24 @@ public class OverworldBiomeGenerator {
                     landHeight = biomeGen.getLandHeight();
                     extraDetail = biomeGen.getExtraDetail();
                 }
-                
+
                 double oceanNoise1 = Math.max(Math.max(
                         ocean1.noise(realx, realz, 0.5, 0.5) * smallBlobCount,
                         ocean1.noise(realx + (smallBlobSpread), realz, 0.5, 0.5) * smallBlobCount), Math.max(
                         ocean1.noise(realx + (smallBlobSpread/2), realz + (smallBlobSpread/2), 0.5, 0.5) * smallBlobCount,
                         ocean1.noise(realx + (smallBlobSpread/2), realz - (smallBlobSpread/2), 0.5, 0.5) * smallBlobCount));
-                
+
                 double underHeight = Math.max(oceanNoise1, ocean2.noise(realx , realz, 1, 0.5) * largeBlobCount);
                 double midHeight = ocean1.noise(realx, realz, 0.5, 0.5) * 4;
                 double overHeight = (variation.noise(realx, realz, 0.5, 0.5) * landHeight) + underHeight/2;
-                
+
                 double landMod = (finalvar.noise(realx, realz, 0.2, 0.2) + 1) * extraDetail/2 + (finalvar.noise(realx, realz, 0.1, 0.1)+1) * extraDetail/2;
                 double allMod = (finalvar.noise(realx, realz, 0.5, 0.5)-1) * extraDetail;
-                
+
                 for (int y = 0; y < 5; y++){
-                    if (cliffs.noise(realz, realx, y, 0.5, 0.5) > 0.3) landMod += 1; 
+                    if (cliffs.noise(realz, realx, y, 0.5, 0.5) > 0.3) landMod += 1;
                 }
-                
+
                 double height;
                 underHeight += boostFactor; //Terrain Boost
                 overHeight += boostFactor; //Terrain Boost
@@ -288,7 +288,7 @@ public class OverworldBiomeGenerator {
         //</editor-fold>
         //</editor-fold>
     }
-    
+
     public Biome getBiome(int x, int z){
         int dx = x-chunkX;
         int dz = z-chunkZ;
@@ -298,19 +298,11 @@ public class OverworldBiomeGenerator {
         if (dz>15) dz = 15;
         return biomeMap[dx][dz];
     }
-    
-    public Biome[][] getBiomeMap(){
-        return biomeMap;
-    }
-    
+
     public int getTerrain(int x, int z){
         return heightMap[x-chunkX][z-chunkZ];
     }
-    
-    public int[][] getTerrainMap(){
-        return heightMap;
-    }
-    
+
     public int getSmoothTerrain(int x, int z){
         Biome thisBlock = getBiome(x, z);
         if (getBiome(x + 1, z) != thisBlock){
@@ -327,32 +319,7 @@ public class OverworldBiomeGenerator {
         }
         else return getTerrain(x, z);
     }
-    
-    public List<BlockPopulator> getBiomePopulators(Biome biome) {
-        ArrayList<BlockPopulator> pops = new ArrayList<BlockPopulator>();
-        return pops;
-    }
-    
-    public final BiomeGen getBiomeGen(Biome biome){
-        if (biomes.containsKey(biome)) return biomes.get(biome);
-        else {
-            if (biome == Biome.FOREST) return new ForestBiome();
-            if (biome == Biome.FOREST_HILLS) return new ForestHillsBiome();
-            if (biome == Biome.PLAINS) return new PlainsBiome();
-            if (biome == Biome.BEACH) return new PlainsBiome();
-            if (biome == Biome.JUNGLE) return new JungleBiome();
-            if (biome == Biome.JUNGLE_HILLS) return new JungleHillsBiome();
-            if (biome == Biome.DESERT) return new DesertBiome();
-            if (biome == Biome.DESERT_HILLS) return new DesertHillsBiome();
-            if (biome == Biome.EXTREME_HILLS) return new ExtremeBiome();
-            if (biome == Biome.TAIGA) return new TaigaBiome();
-            if (biome == Biome.TAIGA_HILLS) return new TaigaHillsBiome();
-            if (biome == Biome.ICE_PLAINS) return new TundraBiome();
-            if (biome == Biome.ICE_MOUNTAINS) return new TundraHillsBiome();
-            else return null;
-        }
-    }
-    
+
     private double medianSmooth(double pri, double sec){
         return (pri + ((pri + sec) / 2.0)) / 2.0;
     }
