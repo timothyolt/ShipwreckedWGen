@@ -62,7 +62,7 @@ public class DesertBiome implements BiomeGen{
         sDensity.setScale(1 / 64D);
         double sCount = ((sDensity.noise(c.getX(), c.getZ(), 0.5, 0.5, true) + 1) / 2.0) * 100;
         //Oasis
-        if (sCount < 37){
+        if (sCount < 40){
             //Lake
             System.out.println("Oasis at: " + Integer.toString(c.getX() << 4) + ", "+ Integer.toString(c.getZ() << 4));
             int blobX = (c.getX() << 4) + r.nextInt(6) - 3;
@@ -93,7 +93,7 @@ public class DesertBiome implements BiomeGen{
                 else replace = Material.AIR;
                 if (!block.isLiquid()) block.setType(replace);
             }
-            else if (distance < size + 1){
+            else if (distance < size + 2){
                 if (y == -1) replace = Material.GRASS;
                 else if (y < 0) replace = Material.DIRT;
                 if (replace != null && !block.isLiquid() && !block.getRelative(BlockFace.DOWN).isEmpty()) block.setType(replace);
@@ -105,9 +105,15 @@ public class DesertBiome implements BiomeGen{
             else if (distance < size + 3){
                 if (y == -1) replace = Material.GRASS;
                 else if (y < 0) replace = Material.DIRT;
-                int height = w.getHighestBlockYAt(x, z);
-                Block nBlock = w.getBlockAt(x, (int)((yy + ((yy + height) / 2.0)) / 2.0) + y, z);
-                System.out.println(Integer.toString(nBlock.getY()));
+                int height = w.getHighestBlockYAt(xx + x, zz + z);
+                Block nBlock = w.getBlockAt(xx + x, (int)((yy + ((yy + height) / 2.0)) / 2.0) + y, zz + z);
+                if (replace != null && !block.isLiquid()) nBlock.setType(replace);
+            }
+            else if (distance < size + 4){
+                if (y == -1) replace = Material.GRASS;
+                else if (y < 0) replace = Material.DIRT;
+                int height = w.getHighestBlockYAt(xx + x, zz + z);
+                Block nBlock = w.getBlockAt(xx + x, (int)((height + ((height + yy) / 2.0)) / 2.0) + y, zz + z);
                 if (replace != null && !block.isLiquid()) nBlock.setType(replace);
             }
         }
