@@ -21,7 +21,7 @@ public class RiverPopulator extends BlockPopulator{
         int chance;
         if (cursorBiome == Biome.EXTREME_HILLS) chance = random.nextInt(24);
         else chance = random.nextInt(48);
-        if (cursorHeight >= 100 && chance == 1 && cursorBiome != Biome.OCEAN && cursorBiome != Biome.FROZEN_OCEAN&& cursorBiome != Biome.RIVER&& cursorBiome != Biome.FROZEN_RIVER){
+        if (cursorHeight >= 100 && chance == 1 && cursorBiome != Biome.OCEAN && cursorBiome != Biome.FROZEN_OCEAN && cursorBiome != Biome.RIVER && cursorBiome != Biome.FROZEN_RIVER){
             cursor.setY(world.getHighestBlockYAt(cursor));
             int size = 16;
             chain: for (int i = 0; i < 16; i++){

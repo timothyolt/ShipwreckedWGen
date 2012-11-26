@@ -1,5 +1,7 @@
 package me.darkeh.plugins.shipwreckedwgen;
 
+import java.util.Random;
+import me.darkeh.plugins.shipwreckedwgen.biomes.trees.DesertTree;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,14 +13,11 @@ public class TestListener implements Listener {
     TestListener(ShipwreckedWGen plugin){
         this.plugin = plugin;
     }
-    
+
     @EventHandler
     void testStuff(PlayerToggleSneakEvent event){
         Player tester = event.getPlayer();
-        tester.sendMessage(Long.toString(System.nanoTime()));
-        tester.sendMessage(Long.toString(System.nanoTime()));
-        for(int i = 0;i < 100; i++) tester.getWorld().loadChunk(100, 100, false);
-        tester.sendMessage(Long.toString(System.nanoTime()));
-        tester.sendMessage(Long.toString(System.nanoTime()));
+        DesertTree tree = new DesertTree(new Random(), tester.getLocation());
+        tree.generate();
     }
 }
