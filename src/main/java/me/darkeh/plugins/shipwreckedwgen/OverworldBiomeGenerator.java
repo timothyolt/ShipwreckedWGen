@@ -235,7 +235,7 @@ public class OverworldBiomeGenerator {
             for (int z = 0; z < 16; z++){
                 int realz = z + chunkZ;
                 Biome biome = biomeMap[x][z];
-                BiomeGen biomeGen = plugin.biomeHandler.getBiomeGen(biome);
+                BiomeGen biomeGen = plugin.getBiomeHandler().getBiomeGen(biome);
                 if (biomeGen == null){
                     smallBlobCount = 32;
                     largeBlobCount = 24;

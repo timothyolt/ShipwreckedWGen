@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-public class DesertTree {
+public class DesertTree implements BiomeTree{
     private Random rand;
     private Location center;
     private int height;
@@ -23,7 +23,7 @@ public class DesertTree {
         this.branches = rand.nextInt(2) + 1;
     }
 
-    private void branch(int ySection, int height){
+    public void branch(int ySection, int height){
         int face = rand.nextInt(4);
         int width = rand.nextInt(3) + 1;
         int length = rand.nextInt(2) + 1;
@@ -59,11 +59,11 @@ public class DesertTree {
         }
         //tree generation
         if (!term){
-            int branches = this.branches;
+            int thisBranch = this.branches;
             for (int ySection = 0; ySection <= height && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
                 target.setType(Material.LOG);
-                if (height - ySection < height / 4 && branches > 0 && rand.nextInt(4) == 1) branch(ySection, this.branches - branches + 1);
+                if (height - ySection < height / 4 && thisBranch > 0 && rand.nextInt(4) == 1) branch(ySection, this.branches - thisBranch + 1);
                 if (ySection == height) branch(ySection, rand.nextInt(2) + 1);
             }
         }
