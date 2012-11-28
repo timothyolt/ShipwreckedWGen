@@ -68,16 +68,17 @@ public class DesertBiome implements BiomeGen{
         sDensity.setScale(1 / 16D);
         double sCount = ((sDensity.noise(c.getX(), c.getZ(), 0.5, 0.5, true) + 1) / 2.0) * 100;
         //Oasis
-        if (sCount < 15 && sCount > 14){ //(sCount < 18 && sCount > 17)
+        if (sCount < 16 && sCount > 15){ //(sCount < 18 && sCount > 17)
+            System.out.println("Oasis at:" + Integer.toString(c.getX() << 4) + ", " + Integer.toString(c.getZ() << 4));
             int blobX = (c.getX() << 4) + r.nextInt(6) - 3;
             int blobZ = (c.getZ() << 4) + r.nextInt(6) - 3;
-            lakeBlob(blobX, w.getHighestBlockYAt(blobX, blobZ), blobZ, 5, w, r);
+            lakeBlob(blobX, w.getHighestBlockYAt(blobX, blobZ), blobZ, 5, w, r, false);
             blobX = (c.getX() << 4) + r.nextInt(6) - 3;
             blobZ = (c.getZ() << 4) + r.nextInt(6) - 3;
-            lakeBlob(blobX, w.getHighestBlockYAt(blobX, blobZ), blobZ, 5, w, r);
+            lakeBlob(blobX, w.getHighestBlockYAt(blobX, blobZ), blobZ, 5, w, r, false);
             blobX = (c.getX() << 4) + r.nextInt(6) - 3;
             blobZ = (c.getZ() << 4) + r.nextInt(6) - 3;
-            lakeBlob(blobX, w.getHighestBlockYAt(blobX, blobZ), blobZ, 5, w, r);
+            lakeBlob(blobX, w.getHighestBlockYAt(blobX, blobZ), blobZ, 5, w, r, true);
         }
         //Cacti
         else if (sCount > 60){
@@ -109,10 +110,12 @@ public class DesertBiome implements BiomeGen{
         }
     }
 
-    void lakeBlob(int xx, int yy, int zz, int size, World w, Random r){
+    void lakeBlob(int xx, int yy, int zz, int size, World w, Random r, boolean trees){
         Location center = new Location(w, xx, yy, zz);
         for (int x = (size * -1) - 4; x < size + 4; x++) for (int z = (size * -1) - 4; z < size + 4; z++){
             int height = w.getHighestBlockYAt(xx + x, zz + z);
+            Block testBlock = w.getHighestBlockAt(xx + x, zz + z);
+            if (testBlock.getType() == Material.LONG_GRASS || testBlock.getType() == Material.RED_ROSE || testBlock.getType() == Material.YELLOW_FLOWER) height -= 1;
             for (int y = (size * -1) - 4; y < size; y++){
                 Block block = w.getBlockAt(xx + x, yy + y, zz + z);
                 double distance = center.distance(block.getLocation());
@@ -126,18 +129,32 @@ public class DesertBiome implements BiomeGen{
                 else if (hDistance < size + 2){
                     if (y == -1) replace = Material.GRASS;
                     else if (y < 0) replace = Material.DIRT;
-                    else if (y > -1 && !block.isEmpty() && !block.isLiquid() && block.getType() != Material.SUGAR_CANE_BLOCK){
-                        if (block.getRelative(BlockFace.UP).isEmpty()) replace = Material.GRASS;
+                    else if (y > -1 && !block.isEmpty() &&
+                            block.getType() != Material.LONG_GRASS &&
+                            block.getType() != Material.RED_ROSE &&
+                            block.getType() != Material.YELLOW_FLOWER &&
+                            block.getType() != Material.SUGAR_CANE_BLOCK &&
+                            block.getType() != Material.LOG &&
+                            block.getType() != Material.LEAVES &&
+                            !block.isLiquid()){
+                        Block ublock = block.getRelative(BlockFace.UP);
+                        if (ublock.isEmpty() ||
+                            ublock.getType() == Material.LONG_GRASS ||
+                            ublock.getType() == Material.RED_ROSE ||
+                            ublock.getType() == Material.YELLOW_FLOWER ||
+                            ublock.getType() == Material.SUGAR_CANE_BLOCK ||
+                            ublock.getType() == Material.LOG ||
+                            ublock.getType() == Material.LEAVES) replace = Material.GRASS;
                         else replace = Material.DIRT;
                     }
                     if (replace != null && !block.isLiquid() && !block.getRelative(BlockFace.DOWN).isEmpty()) {
                         block.setType(replace);
                         if (replace == Material.GRASS){
                             int life = r.nextInt(64);
-                            if (life <= 8) block.getRelative(BlockFace.UP).setType(Material.LONG_GRASS);
+                            if (life <= 4) block.getRelative(BlockFace.UP).setTypeIdAndData(Material.LONG_GRASS.getId(), (byte)1, true);
                             else if (life == 10 || life == 11) block.getRelative(BlockFace.UP).setType(Material.RED_ROSE);
                             else if (life == 20 || life == 21) block.getRelative(BlockFace.UP).setType(Material.YELLOW_FLOWER);
-                            else if (life == 30) plugin.getTreeGenerator().gen(r, block.getRelative(BlockFace.UP).getLocation());
+                            else if (life == 30 && trees) plugin.getTreeGenerator().gen(r, block.getRelative(BlockFace.UP).getLocation());
                             else if (life == 31 && distance < size + 1 && y == 0){
                                 int caneHeight = r.nextInt(2) + 2;
                                 for (int cy = 0; cy <= caneHeight; cy++) block.getRelative(0, cy, 0).setType(Material.SUGAR_CANE_BLOCK);
