@@ -1,6 +1,7 @@
 package me.darkeh.plugins.shipwreckedwgen.biomes;
 
 import java.util.Random;
+import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class DesertBiome implements BiomeGen{
+
+    private ShipwreckedWGen plugin;
+    public DesertBiome(ShipwreckedWGen plugin){
+        this.plugin = plugin;
+    }
 
     int smallBlobCount = 32;
     int largeBlobCount = 24;
@@ -84,7 +90,7 @@ public class DesertBiome implements BiomeGen{
                 for (int y = 0; y < height; y++){
                     Block target = w.getBlockAt(xx, yy + y, zz);
                     if (target.getType() == Material.AIR){
-                        target.setType(Material.CACTUS);
+                        target.setTypeId(Material.CACTUS.getId(), false);
                     }
                 }
             }
@@ -124,10 +130,19 @@ public class DesertBiome implements BiomeGen{
                         if (block.getRelative(BlockFace.UP).isEmpty()) replace = Material.GRASS;
                         else replace = Material.DIRT;
                     }
-                    if (replace != null && !block.isLiquid() && !block.getRelative(BlockFace.DOWN).isEmpty()) block.setType(replace);
-                    if (distance < size + 1 && y == 0 && r.nextInt(32) == 1 && !block.getRelative(BlockFace.DOWN).isEmpty()&& block.isEmpty()){
-                        int caneHeight = r.nextInt(2) + 2;
-                        for (int cy = 0; cy <= caneHeight; cy++) block.getRelative(0, cy, 0).setType(Material.SUGAR_CANE_BLOCK);
+                    if (replace != null && !block.isLiquid() && !block.getRelative(BlockFace.DOWN).isEmpty()) {
+                        block.setType(replace);
+                        if (replace == Material.GRASS){
+                            int life = r.nextInt(64);
+                            if (life <= 8) block.getRelative(BlockFace.UP).setType(Material.LONG_GRASS);
+                            else if (life == 10 || life == 11) block.getRelative(BlockFace.UP).setType(Material.RED_ROSE);
+                            else if (life == 20 || life == 21) block.getRelative(BlockFace.UP).setType(Material.YELLOW_FLOWER);
+                            else if (life == 30) plugin.getTreeGenerator().gen(r, block.getRelative(BlockFace.UP).getLocation());
+                            else if (life == 31 && distance < size + 1 && y == 0){
+                                int caneHeight = r.nextInt(2) + 2;
+                                for (int cy = 0; cy <= caneHeight; cy++) block.getRelative(0, cy, 0).setType(Material.SUGAR_CANE_BLOCK);
+                            }
+                        }
                     }
                 }
                 else if (hDistance < size + 3){

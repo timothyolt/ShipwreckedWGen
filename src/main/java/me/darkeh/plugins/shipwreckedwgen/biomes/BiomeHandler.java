@@ -1,9 +1,15 @@
 package me.darkeh.plugins.shipwreckedwgen.biomes;
 
 import java.util.EnumMap;
+import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.block.Biome;
 
 public class BiomeHandler {
+    private ShipwreckedWGen plugin;
+    public BiomeHandler(ShipwreckedWGen plugin){
+        this.plugin = plugin;
+    }
+
     private EnumMap<Biome, BiomeGen> biomes = new EnumMap<Biome, BiomeGen>(Biome.class);
     public final BiomeGen getBiomeGen(Biome biome){
         if (biomes.containsKey(biome)) return biomes.get(biome);
@@ -14,7 +20,7 @@ public class BiomeHandler {
             if (biome == Biome.BEACH) return new PlainsBiome();
             if (biome == Biome.JUNGLE) return new JungleBiome();
             if (biome == Biome.JUNGLE_HILLS) return new JungleHillsBiome();
-            if (biome == Biome.DESERT) return new DesertBiome();
+            if (biome == Biome.DESERT) return new DesertBiome(plugin);
             if (biome == Biome.DESERT_HILLS) return new DesertHillsBiome();
             if (biome == Biome.EXTREME_HILLS) return new ExtremeBiome();
             if (biome == Biome.TAIGA) return new TaigaBiome();
