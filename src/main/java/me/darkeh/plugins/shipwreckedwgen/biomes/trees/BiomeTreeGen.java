@@ -12,6 +12,9 @@ public class BiomeTreeGen {
             case DESERT:
                 tree = new DesertTree(rand, center);
                 break;
+            case DESERT_HILLS:
+                tree = new DesertTree(rand, center);
+                break;
             default:
                 tree = null;
         }

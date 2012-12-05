@@ -5,6 +5,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class DesertHillsBiome implements BiomeGen{
@@ -55,6 +57,37 @@ public class DesertHillsBiome implements BiomeGen{
         return height + additive;
     }
 
-    public void biomePopulate(World world, Random random, Chunk source) {
+    public void biomePopulate(World w, Random r, Chunk c) {
+        SimplexOctaveGenerator sDensity = new SimplexOctaveGenerator(w.getSeed(), 2);
+        sDensity.setScale(1 / 16D);
+        double sCount = ((sDensity.noise(c.getX(), c.getZ(), 0.5, 0.5, true) + 1) / 2.0) * 100;
+        //Cacti
+        if (sCount > 60){
+            int cactiDensity = (int)Math.floor(sCount - 60) / 5;
+            for (int cacti = 0; cacti < cactiDensity; cacti++){
+                int height = r.nextInt(3) + 2;
+                int xx = r.nextInt(16) + (c.getX() << 4);
+                int zz = r.nextInt(16) + (c.getZ() << 4);
+                int yy = w.getHighestBlockYAt(xx, zz);
+                for (int y = 0; y < height; y++){
+                    Block target = w.getBlockAt(xx, yy + y, zz);
+                    if (target.getType() == Material.AIR){
+                        target.setTypeId(Material.CACTUS.getId(), false);
+                    }
+                }
+            }
+        }
+        //Dead Shrubs
+        if (sCount > 40 && sCount < 80){
+            int shrubDensity = (int)Math.floor(sCount - 40) / 20;
+            for (int shrubs = 0; shrubs < shrubDensity; shrubs++){
+                int height = r.nextInt(3) + 2;
+                int xx = r.nextInt(16) + (c.getX() << 4);
+                int zz = r.nextInt(16) + (c.getZ() << 4);
+                int yy = w.getHighestBlockYAt(xx, zz);
+                Block target = w.getBlockAt(xx, yy, zz);
+                if (target.getRelative(BlockFace.DOWN).getType() == Material.SAND) target.setType(Material.DEAD_BUSH);
+            }
+        }
     }
 }
