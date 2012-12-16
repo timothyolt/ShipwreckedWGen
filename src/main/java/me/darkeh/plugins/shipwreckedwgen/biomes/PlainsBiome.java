@@ -55,6 +55,13 @@ public class PlainsBiome implements BiomeGen{
         SimplexOctaveGenerator sDensity = new SimplexOctaveGenerator(w.getSeed(), 2);
         sDensity.setScale(1 / 8D);
         double sCount = ((sDensity.noise(c.getX(), c.getZ(), 0.5, 0.5, true) + 1) / 2.0) * 100;
+        //Trees
+        if (sCount < 25 && sCount > 20){
+           int xx = r.nextInt(16) + (c.getX() << 4);
+           int zz = r.nextInt(16) + (c.getZ() << 4);
+           int yy = w.getHighestBlockYAt(xx, zz);
+           if (r.nextBoolean()) plugin.getTreeGenerator().gen(r, new Location(w, xx, yy, zz));
+        }
         //Yellow Flowers
         if (sCount < 44 && sCount > 40){
             int flowerDensity = (int)Math.floor(sCount - 30);
@@ -84,14 +91,7 @@ public class PlainsBiome implements BiomeGen{
             int zz = r.nextInt(16) + (c.getZ() << 4);
             int yy = w.getHighestBlockYAt(xx, zz);
             Block target = w.getBlockAt(xx, yy , zz);
-            if (target.getRelative(0, -1, 0).getType() != Material.SAND && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
-        }
-        //Trees
-        if (sCount < 25 && sCount > 20){
-           int xx = r.nextInt(16) + (c.getX() << 4);
-           int zz = r.nextInt(16) + (c.getZ() << 4);
-           int yy = w.getHighestBlockYAt(xx, zz);
-           if (r.nextBoolean()) plugin.getTreeGenerator().gen(r, new Location(w, xx, yy, zz));
+            if (target.getRelative(0, -1, 0).getType() != Material.LEAVES && target.getRelative(0, -1, 0).getType() != Material.SAND && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
         }
     }
 }
