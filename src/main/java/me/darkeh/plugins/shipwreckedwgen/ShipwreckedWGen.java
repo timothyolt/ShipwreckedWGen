@@ -14,7 +14,7 @@ public class ShipwreckedWGen extends JavaPlugin{
         chunkGenerator = new OverworldChunkGenerator(this);
         biomeHandler = new BiomeHandler(this);
         treeGenerator = new BiomeTreeGen();
-        //getServer().getPluginManager().registerEvents(new TestListener(this), this);
+        getServer().getPluginManager().registerEvents(new TestListener(this), this);
     }
 
     @Override

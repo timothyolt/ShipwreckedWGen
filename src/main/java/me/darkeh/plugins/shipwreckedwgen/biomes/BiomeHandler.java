@@ -16,8 +16,8 @@ public class BiomeHandler {
         else {
             if (biome == Biome.FOREST) return new ForestBiome();
             if (biome == Biome.FOREST_HILLS) return new ForestHillsBiome();
-            if (biome == Biome.PLAINS) return new PlainsBiome();
-            if (biome == Biome.BEACH) return new PlainsBiome();
+            if (biome == Biome.PLAINS) return new PlainsBiome(plugin);
+            if (biome == Biome.BEACH) return new PlainsBiome(plugin);
             if (biome == Biome.JUNGLE) return new JungleBiome();
             if (biome == Biome.JUNGLE_HILLS) return new JungleHillsBiome();
             if (biome == Biome.DESERT) return new DesertBiome(plugin);

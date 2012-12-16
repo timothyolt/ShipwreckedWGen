@@ -49,6 +49,7 @@ public class OrePopulator extends BlockPopulator{
     Block getBlockSafely(int x, int y, int z, World world, Chunk chunk){
         if(Math.floor(x/16) == chunk.getX() && Math.floor(z/16) == chunk.getZ()) return world.getBlockAt(x, y, z);
         else return null;
+        //Could use bitwise operators
     }
 
     //Depricated

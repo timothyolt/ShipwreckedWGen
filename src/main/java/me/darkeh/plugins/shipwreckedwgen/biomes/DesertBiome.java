@@ -12,7 +12,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class DesertBiome implements BiomeGen{
-
     private ShipwreckedWGen plugin;
     public DesertBiome(ShipwreckedWGen plugin){
         this.plugin = plugin;
@@ -69,7 +68,6 @@ public class DesertBiome implements BiomeGen{
         double sCount = ((sDensity.noise(c.getX(), c.getZ(), 0.5, 0.5, true) + 1) / 2.0) * 100;
         //Oasis
         if (sCount < 16 && sCount > 15){ //(sCount < 18 && sCount > 17)
-            System.out.println("Oasis at:" + Integer.toString(c.getX() << 4) + ", " + Integer.toString(c.getZ() << 4));
             int blobX = (c.getX() << 4) + r.nextInt(6) - 3;
             int blobZ = (c.getZ() << 4) + r.nextInt(6) - 3;
             lakeBlob(blobX, w.getHighestBlockYAt(blobX, blobZ), blobZ, 5, w, r, false);
