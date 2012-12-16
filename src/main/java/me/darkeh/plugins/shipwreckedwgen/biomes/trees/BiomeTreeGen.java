@@ -16,13 +16,13 @@ public class BiomeTreeGen {
             case TREE:
             default: switch (biome){
                 case DESERT:
-                    tree = new DesertTree(rand, center);
+                    tree = new DesertOakTree(rand, center);
                     break;
                 case DESERT_HILLS:
-                    tree = new DesertTree(rand, center);
+                    tree = new DesertOakTree(rand, center);
                     break;
                 case PLAINS:
-                    tree = new PlainsTree(rand, center);
+                    tree = new PlainsOakTree(rand, center);
                     break;
                 default:
                     tree = null;

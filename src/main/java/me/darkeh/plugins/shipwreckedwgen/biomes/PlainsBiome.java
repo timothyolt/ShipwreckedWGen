@@ -85,13 +85,17 @@ public class PlainsBiome implements BiomeGen{
             }
         }
         //Long Grass
-        int grassDensity = (int)Math.floor(sCount * (12/25D)) + 16; //12/25 + 16 makes the number range from 16-64
-        for (int cacti = 0; cacti < grassDensity; cacti++){
-            int xx = r.nextInt(16) + (c.getX() << 4);
-            int zz = r.nextInt(16) + (c.getZ() << 4);
+        int grassDensity = (int)Math.floor(64 / ((sCount * (12/25D)) + 16)) + 1; //Number between 5 and 2
+        if (grassDensity == 0) {
+            System.out.println("oops");
+            grassDensity = 1;
+        }
+        for (int x = 0; x < 16; x++) for (int z = 0; z <  16; z++){
+            int xx = x + (c.getX() << 4);
+            int zz = z + (c.getZ() << 4);
             int yy = w.getHighestBlockYAt(xx, zz);
             Block target = w.getBlockAt(xx, yy , zz);
-            if (target.getRelative(0, -1, 0).getType() != Material.LEAVES && target.getRelative(0, -1, 0).getType() != Material.SAND && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
+            if (r.nextInt(grassDensity) == 0 && target.getRelative(0, -1, 0).getType() != Material.LEAVES && target.getRelative(0, -1, 0).getType() != Material.SAND && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
         }
     }
 }
