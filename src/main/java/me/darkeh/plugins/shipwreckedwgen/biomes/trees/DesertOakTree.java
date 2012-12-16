@@ -5,18 +5,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-public class DesertTree implements BiomeTree{
+public class DesertOakTree implements BiomeTree{
     private Random rand;
     private Location center;
     private int height;
     private int branches;
-    public DesertTree(Random rand, Location center, int height, int branches){
+    public DesertOakTree(Random rand, Location center, int height, int branches){
         this.rand = rand;
         this.center = center;
         this.height = height;
         this.branches = branches;
     }
-    public DesertTree(Random rand, Location center){
+    public DesertOakTree(Random rand, Location center){
         this.rand = rand;
         this.center = center;
         this.height = rand.nextInt(3) + 4;

@@ -7,18 +7,18 @@ import org.bukkit.block.Block;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-public class PlainsTree implements BiomeTree{
+public class PlainsOakTree implements BiomeTree{
     private Random rand;
     private Location center;
     private int height;
     private int branches;
-    public PlainsTree(Random rand, Location center, int height, int branches){
+    public PlainsOakTree(Random rand, Location center, int height, int branches){
         this.rand = rand;
         this.center = center;
         this.height = height;
         this.branches = branches;
     }
-    public PlainsTree(Random rand, Location center){
+    public PlainsOakTree(Random rand, Location center){
         this.rand = rand;
         this.center = center;
         this.height = rand.nextInt(3) + 6;
