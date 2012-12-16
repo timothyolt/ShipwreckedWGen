@@ -86,10 +86,7 @@ public class PlainsBiome implements BiomeGen{
         }
         //Long Grass
         int grassDensity = (int)Math.floor(64 / ((sCount * (12/25D)) + 16)) + 1; //Number between 5 and 2
-        if (grassDensity == 0) {
-            System.out.println("oops");
-            grassDensity = 1;
-        }
+        if (grassDensity == 0) grassDensity = 1;
         for (int x = 0; x < 16; x++) for (int z = 0; z <  16; z++){
             int xx = x + (c.getX() << 4);
             int zz = z + (c.getZ() << 4);
