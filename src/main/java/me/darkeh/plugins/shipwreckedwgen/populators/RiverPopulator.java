@@ -16,15 +16,13 @@ public class RiverPopulator extends BlockPopulator{
     @Override
     public void populate(World world, Random random, Chunk chunk) {
         Location cursor = new Location(world, chunk.getX() * 16, 0, chunk.getZ() * 16);
-        int cursorHeight;
-        if (cursor.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) cursorHeight = world.getHighestBlockYAt(cursor) - 15;
-        else cursorHeight = world.getHighestBlockYAt(cursor);
+        int cursorHeight = getHighestSolidBlockY(world, cursor.getBlockX(), cursor.getBlockZ());
         Biome cursorBiome = cursor.getBlock().getBiome();
         int chance;
         if (cursorBiome == Biome.EXTREME_HILLS) chance = random.nextInt(24);
         else chance = random.nextInt(48);
         if (cursorHeight >= 100 && chance == 1 && cursorBiome != Biome.OCEAN && cursorBiome != Biome.FROZEN_OCEAN && cursorBiome != Biome.RIVER && cursorBiome != Biome.FROZEN_RIVER){
-            cursor.setY(world.getHighestBlockYAt(cursor));
+            cursor.setY(getHighestSolidBlockY(world, cursor.getBlockX(), cursor.getBlockZ()));
             int size = 16;
             chain: for (int i = 0; i < 16; i++){
                 Location newCursor = getNextPoint(cursor, size);
@@ -45,14 +43,14 @@ public class RiverPopulator extends BlockPopulator{
         for(int x = (size * -1); x < size; x++){
             int height;
             Biome biome;
-            height = world.getHighestBlockYAt(center.getBlockX() + x, center.getBlockZ() - size);
+            height = getHighestSolidBlockY(world, center.getBlockX() + x, center.getBlockZ() - size);
             biome = world.getBiome(center.getBlockX() + x, center.getBlockZ() - size);
             if (height < lowEdge.getY() || biome == Biome.OCEAN || biome == Biome.FROZEN_OCEAN){
                 lowEdge.setX(center.getBlockX() + x);
                 lowEdge.setZ(center.getBlockZ() - size);
                 lowEdge.setY(height);
             }
-            height = world.getHighestBlockYAt(center.getBlockX() + x, center.getBlockZ() + size);
+            height = getHighestSolidBlockY(world, center.getBlockX() + x, center.getBlockZ() + size);
             biome = world.getBiome(center.getBlockX() + x, center.getBlockZ() + size);
             if (height < lowEdge.getY() || biome == Biome.OCEAN || biome == Biome.FROZEN_OCEAN){
                 lowEdge.setX(center.getBlockX() + x);
@@ -63,14 +61,14 @@ public class RiverPopulator extends BlockPopulator{
         for(int z = (size * -1); z < size; z++){
             int height;
             Biome biome;
-            height = world.getHighestBlockYAt(center.getBlockX() - size, center.getBlockZ() + z);
+            height = getHighestSolidBlockY(world, center.getBlockX() - size, center.getBlockZ() + z);
             biome = world.getBiome(center.getBlockX() - size, center.getBlockZ() + z);
             if (height < lowEdge.getY() || biome == Biome.OCEAN || biome == Biome.FROZEN_OCEAN){
                 lowEdge.setX(center.getBlockX() - size);
                 lowEdge.setZ(center.getBlockZ() + z);
                 lowEdge.setY(height);
             }
-            height = world.getHighestBlockYAt(center.getBlockX() + size, center.getBlockZ() + z);
+            height = getHighestSolidBlockY(world, center.getBlockX() + size, center.getBlockZ() + z);
             biome = world.getBiome(center.getBlockX() + size, center.getBlockZ() + z);
             if (height < lowEdge.getY() || biome == Biome.OCEAN || biome == Biome.FROZEN_OCEAN){
                 lowEdge.setX(center.getBlockX() + size);
@@ -89,14 +87,14 @@ public class RiverPopulator extends BlockPopulator{
             double zslope = ((double) zdif) / ((double) xdif);
             if (xdif > 0) for (int x = 0; x <= xdif; x++){
                 Location target = new Location(start.getWorld(), start.getBlockX() + x, 0, start.getBlockZ() + (x * zslope));
-                int height = target.getWorld().getHighestBlockYAt(target);
+                int height = getHighestSolidBlockY(target.getWorld(), target.getBlockX(), target.getBlockZ());
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
                 fillRiverSegment(target, size, true, rand);
             }
             else for (int x = 0; x >= xdif; x--){
                 Location target = new Location(start.getWorld(), start.getBlockX() + x, 0, start.getBlockZ() + (x * zslope));
-                int height = target.getWorld().getHighestBlockYAt(target);
+                int height = getHighestSolidBlockY(target.getWorld(), target.getBlockX(), target.getBlockZ());
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
                 fillRiverSegment(target, size, true, rand);
@@ -106,14 +104,14 @@ public class RiverPopulator extends BlockPopulator{
             double xslope = ((double) xdif) / ((double) zdif);
             if (zdif > 0) for (int z = 0; z <= zdif; z++){
                 Location target = new Location(start.getWorld(), start.getBlockX() + (z * xslope), 0, start.getBlockZ() + z);
-                int height = target.getWorld().getHighestBlockYAt(target);
+                int height = getHighestSolidBlockY(target.getWorld(), target.getBlockX(), target.getBlockZ());
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
                 fillRiverSegment(target, size, false, rand);
             }
             else for (int z = 0; z >= zdif; z--){
                 Location target = new Location(start.getWorld(), start.getBlockX() + (z * xslope), 0, start.getBlockZ() + z);
-                int height = target.getWorld().getHighestBlockYAt(target);
+                int height = getHighestSolidBlockY(target.getWorld(), target.getBlockX(), target.getBlockZ());
                 if (height > start.getBlockY()) target.setY(start.getBlockY());
                 else target.setY(height);
                 fillRiverSegment(target, size, false, rand);
@@ -183,5 +181,18 @@ public class RiverPopulator extends BlockPopulator{
                 }
             }
         }
+    }
+
+    private int getHighestSolidBlockY(World world, int x, int z){
+        Location highest = new Location(world, x, world.getHighestBlockYAt(x, z), z);
+        int highestY = highest.getBlockY();
+        Material topMat = highest.getBlock().getRelative(0, -1, 0).getType();
+        if (topMat == Material.LEAVES) {
+            for (int y = 0; y > -25; y--){
+                Material mat = highest.getBlock().getRelative(0, y - 1, 0).getType();
+                if (mat == Material.GRASS) highestY = highest.getBlockY() + y;
+            }
+        }
+        return highestY;
     }
 }
