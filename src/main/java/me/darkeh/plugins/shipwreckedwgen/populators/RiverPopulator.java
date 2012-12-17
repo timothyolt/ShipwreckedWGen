@@ -16,7 +16,9 @@ public class RiverPopulator extends BlockPopulator{
     @Override
     public void populate(World world, Random random, Chunk chunk) {
         Location cursor = new Location(world, chunk.getX() * 16, 0, chunk.getZ() * 16);
-        int cursorHeight = world.getHighestBlockYAt(cursor);
+        int cursorHeight;
+        if (cursor.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) cursorHeight = world.getHighestBlockYAt(cursor) - 15;
+        else cursorHeight = world.getHighestBlockYAt(cursor);
         Biome cursorBiome = cursor.getBlock().getBiome();
         int chance;
         if (cursorBiome == Biome.EXTREME_HILLS) chance = random.nextInt(24);
