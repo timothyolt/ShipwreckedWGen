@@ -24,6 +24,9 @@ public class BiomeTreeGen {
                 case PLAINS:
                     tree = new PlainsOakTree(rand, center);
                     break;
+                case FOREST:
+                    tree = new ForestOakTree(rand, center);
+                    break;
                 default:
                     tree = null;
             } break;
