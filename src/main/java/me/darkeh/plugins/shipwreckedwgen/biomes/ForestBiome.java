@@ -60,7 +60,11 @@ public class ForestBiome implements BiomeGen{
            int xx = r.nextInt(16) + (c.getX() << 4);
            int zz = r.nextInt(16) + (c.getZ() << 4);
            int yy = w.getHighestBlockYAt(xx, zz);
-           plugin.getTreeGenerator().gen(r, new Location(w, xx, yy, zz));
+           Location root = new Location(w, xx, yy, zz);
+           if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
+               if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+           }
+           plugin.getTreeGenerator().gen(r, root);
         }
         //Yellow Flowers
         if (sCount < 44 && sCount > 40){
@@ -70,7 +74,7 @@ public class ForestBiome implements BiomeGen{
                 int zz = r.nextInt(16) + (c.getZ() << 4);
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy , zz);
-                if (!target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.YELLOW_FLOWER.getId(), (byte) 0, false);
+                if (!target.getRelative(0, -1, 0).isLiquid() && target.getRelative(0, -1, 0).getType() != Material.LEAVES && target.isEmpty()) target.setTypeIdAndData(Material.YELLOW_FLOWER.getId(), (byte) 0, false);
             }
         }
         //Red Roses
