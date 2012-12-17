@@ -62,7 +62,7 @@ public class PlainsOakTree implements BiomeTree{
         BlockIterator branch = new BlockIterator(center.getWorld(), start, mod, 0, 4);
         if (branch != null) while (branch.hasNext()){
             Block target = branch.next();
-            if (target.isEmpty()) target.setTypeIdAndData(Material.LOG.getId(), type, false);
+            if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), type, false);
             else{
                 foiliage(target.getLocation(), 4);
                 break;
