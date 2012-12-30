@@ -14,6 +14,7 @@ import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class OverworldChunkGenerator extends ChunkGenerator{
     private ShipwreckedWGen plugin;
+    
     public OverworldChunkGenerator(ShipwreckedWGen plugin){
         this.plugin = plugin;
     }

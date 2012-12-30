@@ -9,6 +9,7 @@ public class ShipwreckedWGen extends JavaPlugin{
     private ChunkGenerator chunkGenerator;
     private BiomeHandler biomeHandler;
     private BiomeTreeGen treeGenerator;
+
     @Override
     public void onEnable(){
         chunkGenerator = new OverworldChunkGenerator(this);

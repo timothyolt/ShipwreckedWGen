@@ -13,6 +13,13 @@ public class BiomeTreeGen {
         Biome biome = center.getBlock().getBiome();
         BiomeTree tree;
         switch (type){
+            case BIRCH: switch (biome){
+                case FOREST:
+                    tree = new ForestBirchTree(rand, center);
+                    break;
+                default:
+                    tree = null;
+            } break;
             case TREE:
             default: switch (biome){
                 case DESERT:
