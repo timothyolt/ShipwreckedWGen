@@ -104,7 +104,7 @@ public class ForestBirchTree implements BiomeTree{
         }
         //tree generation
         if (!term){
-            for (int ySection = 1; ySection <= height + 2 && !term; ySection++){
+            for (int ySection = 0; ySection <= height + 2 && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
                 target.setTypeIdAndData(Material.LOG.getId(), (byte)2, false);
                 if (ySection % 3 == 0) branch(ySection);
