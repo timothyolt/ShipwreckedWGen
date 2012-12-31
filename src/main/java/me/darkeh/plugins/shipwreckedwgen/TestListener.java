@@ -1,8 +1,6 @@
 package me.darkeh.plugins.shipwreckedwgen;
 
 import java.util.HashMap;
-import java.util.Random;
-import me.darkeh.plugins.shipwreckedwgen.biomes.trees.ForestSpruceTree;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,8 +16,8 @@ public class TestListener implements Listener {
     void testStuff(PlayerToggleSneakEvent event){
         Player tester = event.getPlayer();
         if (tester.getName().equalsIgnoreCase("DarkSpear57")){
-            ForestSpruceTree tree = new ForestSpruceTree(new Random(), tester.getLocation());
-            tree.generate();
+            //ForestSpruceTree tree = new ForestSpruceTree(new Random(), tester.getLocation());
+            //tree.generate();
         }
     }
 

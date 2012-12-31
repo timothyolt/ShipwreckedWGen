@@ -15,7 +15,7 @@ public class BiomeHandler {
         if (biomes.containsKey(biome)) return biomes.get(biome);
         else {
             if (biome == Biome.FOREST) return new ForestBiome(plugin);
-            if (biome == Biome.FOREST_HILLS) return new ForestHillsBiome();
+            if (biome == Biome.FOREST_HILLS) return new ForestHillsBiome(plugin);
             if (biome == Biome.PLAINS) return new PlainsBiome(plugin);
             if (biome == Biome.BEACH) return new PlainsBiome(plugin);
             if (biome == Biome.JUNGLE) return new JungleBiome();

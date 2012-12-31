@@ -15,7 +15,7 @@ public class BiomeTreeGen {
         switch (type){
             case REDWOOD: switch (biome){
                 case FOREST:
-                    tree = new ForestBirchTree(rand, center);
+                    tree = new ForestSpruceTree(rand, center);
                     break;
                 default:
                     tree = null;
