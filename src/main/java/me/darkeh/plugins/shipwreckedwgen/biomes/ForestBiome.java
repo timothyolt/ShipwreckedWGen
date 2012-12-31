@@ -5,6 +5,7 @@ import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -55,7 +56,7 @@ public class ForestBiome implements BiomeGen{
         SimplexOctaveGenerator sDensity = new SimplexOctaveGenerator(w.getSeed(), 2);
         sDensity.setScale(1 / 8D);
         double sCount = ((sDensity.noise(c.getX(), c.getZ(), 0.5, 0.5, true) + 1) / 2.0) * 100;
-        //Trees
+        //Oak Trees
         if (sCount < 80 && sCount > 20){
            int xx = r.nextInt(16) + (c.getX() << 4);
            int zz = r.nextInt(16) + (c.getZ() << 4);
@@ -65,6 +66,17 @@ public class ForestBiome implements BiomeGen{
                if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
            }
            plugin.getTreeGenerator().gen(r, root);
+        }
+        //Birch Trees
+        if (sCount < 40 && sCount > 30){
+           int xx = r.nextInt(16) + (c.getX() << 4);
+           int zz = r.nextInt(16) + (c.getZ() << 4);
+           int yy = w.getHighestBlockYAt(xx, zz);
+           Location root = new Location(w, xx, yy, zz);
+           if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
+               if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+           }
+           plugin.getTreeGenerator().gen(r, root, TreeType.BIRCH);
         }
         //Yellow Flowers
         if (sCount < 44 && sCount > 40){

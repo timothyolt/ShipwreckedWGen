@@ -42,8 +42,11 @@ public class BiomeTreeGen {
     }
 
     public boolean gen(Random rand, Location center){
+        return gen(rand, center, TreeType.TREE);
+    }
+    public boolean gen(Random rand, Location center, TreeType type){
         boolean interrupted;
-        BiomeTree tree = getTree(rand, center);
+        BiomeTree tree = getTree(rand, center, type);
         if (tree != null) interrupted = tree.generate();
         else interrupted = true;
         return interrupted;
