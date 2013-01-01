@@ -7,31 +7,31 @@ import org.bukkit.block.Block;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-public class ForestBirchTree implements BiomeTree{
+public class TaigaPineTree implements BiomeTree{
     private Random rand;
     private Location center;
     private int height;
     private int branches;
-    public ForestBirchTree(Random rand, Location center, int height, int branches){
+    public TaigaPineTree(Random rand, Location center, int height, int branches){
         this.rand = rand;
         this.center = center;
         this.height = height;
-        this.branches = (int)Math.floor(height / 3.0);
+        this.branches = (int)Math.floor(height / 3D);
     }
-    public ForestBirchTree(Random rand, Location center){
+    public TaigaPineTree(Random rand, Location center){
         this.rand = rand;
         this.center = center;
         this.height = rand.nextInt(3) * 3 + 6;
         this.branches = (int)Math.floor(height / 3D);
     }
 
-    public void branch(int ySection, int length) { //Here because of what the interface requires
+    public void branch(int ySection, int height) {
         branch(ySection);
     }
 
     public void branch(int ySection) {
         if (ySection > 2){
-            double cone = ((double)(height - Math.floor(ySection / 2D)) / 2D) + 2;
+            double cone = branches + 4;
             Vector start = center.toVector();
             start = start.setY(start.getY() + ySection);
             Vector branch1 = new Vector(-4, 0, rand.nextInt(6) - 3); //West
@@ -42,57 +42,57 @@ public class ForestBirchTree implements BiomeTree{
             branch = new BlockIterator(center.getWorld(), start, branch1, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)6, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)5, false);
             }
             branch = new BlockIterator(center.getWorld(), start, branch2, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)10, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)9, false);
             }
             branch = new BlockIterator(center.getWorld(), start, branch3, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)6, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)5, false);
             }
             branch = new BlockIterator(center.getWorld(), start, branch4, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)10, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)9, false);
             }
             for (int x = ((int)Math.ceil(cone) * -1); x <= (int)Math.ceil(cone); x++) for (int z = ((int)Math.ceil(cone) * -1); z <= (int)Math.ceil(cone); z++){
                 Location target = new Location(center.getWorld(), center.getX() + x, center.getY(), center.getZ() + z);
                 double dist = center.distance(target);
                 if (dist <= cone){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)2, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
                 }
             }
+            branches -= 1;
         }
     }
 
     private void foiliage(int ySection){
         if (ySection > height + 2){
             double cone;
-            if (ySection == height + 3) cone = 3;
-            else if (ySection == height + 4) cone = 2;
+            if (ySection == height + 3) cone = 2;
             else cone = 1;
             for (int x = ((int)Math.ceil(cone) * -1); x <= (int)Math.ceil(cone); x++) for (int z = ((int)Math.ceil(cone) * -1); z <= (int)Math.ceil(cone); z++){
                 Location target = new Location(center.getWorld(), center.getX() + x, center.getY(), center.getZ() + z);
                 double dist = center.distance(target);
                 if (dist <= cone && dist >= cone - 3){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)2, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
                 }
            }
         }
         else if (ySection > 3){
-            double cone = ((double)(height + 2 - Math.floor(ySection / 2D)) / 2D) + 1;
+            double cone = branches - (ySection % 3) + 5;
             for (int x = ((int)Math.ceil(cone) * -1); x <= (int)Math.ceil(cone); x++) for (int z = ((int)Math.ceil(cone) * -1); z <= (int)Math.ceil(cone); z++){
                 Location target = new Location(center.getWorld(), center.getX() + x, center.getY(), center.getZ() + z);
                 double dist = center.distance(target);
                 if (dist <= cone && dist >= cone - 3){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)2, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
                 }
             }
         }
@@ -108,7 +108,7 @@ public class ForestBirchTree implements BiomeTree{
         if (!term){
             for (int ySection = 0; ySection <= height + 2 && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
-                target.setTypeIdAndData(Material.LOG.getId(), (byte)2, false);
+                target.setTypeIdAndData(Material.LOG.getId(), (byte)1, false);
                 if (ySection % 3 == 0) branch(ySection);
                 else foiliage(ySection);
                 if (ySection == height + 2){
@@ -119,5 +119,4 @@ public class ForestBirchTree implements BiomeTree{
         }
         return term; //If interrupted, it returns true.
     }
-
 }
