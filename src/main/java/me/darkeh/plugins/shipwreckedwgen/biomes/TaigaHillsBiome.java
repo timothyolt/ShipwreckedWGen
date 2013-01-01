@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class TaigaHillsBiome implements BiomeGen{
@@ -71,6 +72,11 @@ public class TaigaHillsBiome implements BiomeGen{
                if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
            }
            plugin.getTreeGenerator().gen(r, root, TreeType.REDWOOD);
+        }
+        //Snow
+        for (int x = -8; x < 24; x++) for (int z = -8; z < 24; z++){
+            Block target = w.getHighestBlockAt((c.getX() << 4) + x, (c.getZ() << 4) + z);
+            if (target.isEmpty() && target.getBiome() == Biome.TAIGA_HILLS) target.setType(Material.SNOW);
         }
     }
 }
