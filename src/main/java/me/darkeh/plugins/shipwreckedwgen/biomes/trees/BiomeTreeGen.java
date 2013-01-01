@@ -17,7 +17,13 @@ public class BiomeTreeGen {
                 case FOREST:
                     tree = new ForestSpruceTree(rand, center);
                     break;
+                case FOREST_HILLS:
+                    tree = new ForestSpruceTree(rand, center);
+                    break;
                 case TAIGA:
+                    tree = new TaigaPineTree(rand, center);
+                    break;
+                case TAIGA_HILLS:
                     tree = new TaigaPineTree(rand, center);
                     break;
                 default:
@@ -42,6 +48,9 @@ public class BiomeTreeGen {
                     tree = new PlainsOakTree(rand, center);
                     break;
                 case FOREST:
+                    tree = new ForestOakTree(rand, center);
+                    break;
+                case FOREST_HILLS:
                     tree = new ForestOakTree(rand, center);
                     break;
                 default:
