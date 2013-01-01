@@ -21,7 +21,7 @@ public class TaigaPineTree implements BiomeTree{
     public TaigaPineTree(Random rand, Location center){
         this.rand = rand;
         this.center = center;
-        this.height = rand.nextInt(3) * 3 + 6;
+        this.height = rand.nextInt(3) * 3 + 9;
         this.branches = (int)Math.floor(height / 3D);
     }
 

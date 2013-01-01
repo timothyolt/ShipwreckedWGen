@@ -1,8 +1,6 @@
 package me.darkeh.plugins.shipwreckedwgen;
 
 import java.util.HashMap;
-import java.util.Random;
-import me.darkeh.plugins.shipwreckedwgen.biomes.trees.TaigaPineTree;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,8 +16,8 @@ public class TestListener implements Listener {
     void testStuff(PlayerToggleSneakEvent event){
         Player tester = event.getPlayer();
         if (tester.getName().equalsIgnoreCase("DarkSpear57")){
-            TaigaPineTree tree = new TaigaPineTree(new Random(), tester.getLocation());
-            tree.generate();
+            //TaigaPineTree tree = new TaigaPineTree(new Random(), tester.getLocation());
+            //tree.generate();
         }
     }
 

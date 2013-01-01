@@ -23,8 +23,8 @@ public class BiomeHandler {
             if (biome == Biome.DESERT) return new DesertBiome(plugin);
             if (biome == Biome.DESERT_HILLS) return new DesertHillsBiome();
             if (biome == Biome.EXTREME_HILLS) return new ExtremeBiome();
-            if (biome == Biome.TAIGA) return new TaigaBiome();
-            if (biome == Biome.TAIGA_HILLS) return new TaigaHillsBiome();
+            if (biome == Biome.TAIGA) return new TaigaBiome(plugin);
+            if (biome == Biome.TAIGA_HILLS) return new TaigaHillsBiome(plugin);
             if (biome == Biome.ICE_PLAINS) return new TundraBiome();
             if (biome == Biome.ICE_MOUNTAINS) return new TundraHillsBiome();
             else return null;

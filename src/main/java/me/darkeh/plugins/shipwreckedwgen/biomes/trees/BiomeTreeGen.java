@@ -17,6 +17,9 @@ public class BiomeTreeGen {
                 case FOREST:
                     tree = new ForestSpruceTree(rand, center);
                     break;
+                case TAIGA:
+                    tree = new TaigaPineTree(rand, center);
+                    break;
                 default:
                     tree = null;
             } break;
