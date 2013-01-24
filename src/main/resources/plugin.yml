@@ -4,5 +4,6 @@ description: Completely new generators for the Overworld, the Nether, and Skylan
 generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen
 name: ShipGen
-startup: startup
+load: STARTUP
 version: '0.72'
+depends: 'org.bukkit.bukkit-1.4.5-R1.0'
