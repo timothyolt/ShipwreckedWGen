@@ -34,7 +34,7 @@ public class DepositPopulator extends BlockPopulator{
 
             if (dCluster.noise(realX, y, realZ, 0.5, 0.5) > 0.6 && deposit.noise(realX, y, realZ, 0.5, 0.5) > 0.8){
                 Block target = plugin.getChunkHandler().getBlockSafely(world, realX, y, realZ);
-                if (target.getType() == Material.STONE) target.setType(dep);
+                if (target != null && target.getType() == Material.STONE) target.setType(dep);
             }
         }
     }

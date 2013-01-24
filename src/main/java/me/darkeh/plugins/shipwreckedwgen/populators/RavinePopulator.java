@@ -148,20 +148,24 @@ public class RavinePopulator extends BlockPopulator{
         if (dir){
             for (int y = -1 * height; y < height; y++) for (int x = (-1 * widthA) - getLedge(y, ledgeOffsetA); x < widthB + getLedge(y, ledgeOffsetB); x++){
                 Block block = plugin.getChunkHandler().getBlockSafely(world, xx + x + offset, yy + y, zz + section);
-                Material replace;
-                if (yy + y < 12) replace = Material.LAVA;
-                else replace = Material.AIR;
-                if (!block.isLiquid() && block.getType()!=Material.BEDROCK) block.setType(replace);
+                if (block != null){
+                    Material replace;
+                    if (yy + y < 12) replace = Material.LAVA;
+                    else replace = Material.AIR;
+                    if (!block.isLiquid() && block.getType()!=Material.BEDROCK) block.setType(replace);
+                }
             }
             //System.out.println("Direction: 1, WidthA:" + Integer.toString(widthA) + ", WidthB:" + Integer.toString(widthB) + ", Height:" + Integer.toString(height));
         }
         else{
             for (int y = -1 * height; y < height; y++) for (int z = (-1 * widthA) - getLedge(y, ledgeOffsetA); z < widthB + getLedge(y, ledgeOffsetB); z++){
                 Block block = plugin.getChunkHandler().getBlockSafely(world, xx + section, yy + y, zz + z + offset);
-                Material replace;
-                if (yy + y < 10) replace = Material.LAVA;
-                else replace = Material.AIR;
-                if (!block.isLiquid() && block.getType()!=Material.BEDROCK) block.setType(replace);
+                if (block != null){
+                    Material replace;
+                    if (yy + y < 10) replace = Material.LAVA;
+                    else replace = Material.AIR;
+                    if (!block.isLiquid() && block.getType()!=Material.BEDROCK) block.setType(replace);
+                }
             }
             //System.out.println("Direction: 2, WidthA:" + Integer.toString(widthA) + ", WidthB:" + Integer.toString(widthB) + ", Height:" + Integer.toString(height));
         }
