@@ -1,6 +1,7 @@
 package me.darkeh.plugins.shipwreckedwgen.populators;
 
 import java.util.Random;
+import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,7 +10,10 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class RavinePopulator extends BlockPopulator{
-    //average of occurrance in a chunk = (256 [xmax * zmax] / 100 [chance]) = 2.56 times
+    private ShipwreckedWGen plugin;
+    public RavinePopulator(ShipwreckedWGen plugin){
+        this.plugin = plugin;
+    }
 
     @Override
     public void populate(World world, Random random, Chunk chunk){
@@ -143,7 +147,7 @@ public class RavinePopulator extends BlockPopulator{
     void clearSegment(boolean dir, int xx, int yy, int zz, int offset, int widthA, int widthB, int ledgeOffsetA, int ledgeOffsetB, int height, int section, World world){
         if (dir){
             for (int y = -1 * height; y < height; y++) for (int x = (-1 * widthA) - getLedge(y, ledgeOffsetA); x < widthB + getLedge(y, ledgeOffsetB); x++){
-                Block block = world.getBlockAt(xx + x + offset, yy + y, zz + section);
+                Block block = plugin.getChunkHandler().getBlockSafely(world, xx + x + offset, yy + y, zz + section);
                 Material replace;
                 if (yy + y < 12) replace = Material.LAVA;
                 else replace = Material.AIR;
@@ -153,7 +157,7 @@ public class RavinePopulator extends BlockPopulator{
         }
         else{
             for (int y = -1 * height; y < height; y++) for (int z = (-1 * widthA) - getLedge(y, ledgeOffsetA); z < widthB + getLedge(y, ledgeOffsetB); z++){
-                Block block = world.getBlockAt(xx + section, yy + y, zz + z + offset);
+                Block block = plugin.getChunkHandler().getBlockSafely(world, xx + section, yy + y, zz + z + offset);
                 Material replace;
                 if (yy + y < 10) replace = Material.LAVA;
                 else replace = Material.AIR;

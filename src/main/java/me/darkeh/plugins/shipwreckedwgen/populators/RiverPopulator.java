@@ -3,6 +3,7 @@ package me.darkeh.plugins.shipwreckedwgen.populators;
 //im trying to generate rivers based on two (two dimensional) points. im going to get a line between those points, and then use a noise function to give it curves. how would I go about tracing said line with a sphere?
 
 import java.util.Random;
+import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,6 +14,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
 public class RiverPopulator extends BlockPopulator{
+    private ShipwreckedWGen plugin;
+    public RiverPopulator(ShipwreckedWGen plugin){
+        this.plugin = plugin;
+    }
+
     @Override
     public void populate(World world, Random random, Chunk chunk) {
         Location cursor = new Location(world, chunk.getX() * 16, 0, chunk.getZ() * 16);

@@ -14,7 +14,7 @@ import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class OverworldChunkGenerator extends ChunkGenerator{
     private ShipwreckedWGen plugin;
-    
+
     public OverworldChunkGenerator(ShipwreckedWGen plugin){
         this.plugin = plugin;
     }
@@ -288,15 +288,16 @@ public class OverworldChunkGenerator extends ChunkGenerator{
         ArrayList<BlockPopulator> pops = new ArrayList<BlockPopulator>();
 
         //Underground
-        pops.add(new RavinePopulator());
-        pops.add(new AirPocketPopulator());
-        pops.add(new CavePopulator());
-        pops.add(new OrePopulator());
-        pops.add(new DepositPopulator());
+        pops.add(new DepositPopulator(plugin));
+        pops.add(new OrePopulator(plugin));
+        pops.add(new RavinePopulator(plugin));
+        pops.add(new AirPocketPopulator(plugin));
+        pops.add(new CavePopulator(plugin));
 
         //Surface
-        pops.add(new RiverPopulator());
+        pops.add(new RiverPopulator(plugin));
         pops.add(new BiomePopulator(plugin));
+
         return pops;
     }
 }

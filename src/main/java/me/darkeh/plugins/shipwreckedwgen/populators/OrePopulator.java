@@ -1,6 +1,7 @@
 package me.darkeh.plugins.shipwreckedwgen.populators;
 
 import java.util.Random;
+import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,7 +12,11 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 public class OrePopulator extends BlockPopulator{
-//TODO: Seed ores. Idea from DarthAndroid@esper.net
+    private ShipwreckedWGen plugin;
+    public OrePopulator(ShipwreckedWGen plugin){
+        this.plugin = plugin;
+    }
+
     @Override
     public void populate(World world, Random random, Chunk chunk){
         for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) for (int y = 0; y < 8; y++){
@@ -46,17 +51,6 @@ public class OrePopulator extends BlockPopulator{
         }
     }
 
-    Block getBlockSafely(int x, int y, int z, World world, Chunk chunk){
-        if(Math.floor(x/16) == chunk.getX() && Math.floor(z/16) == chunk.getZ()) return world.getBlockAt(x, y, z);
-        else return null;
-        //Could use bitwise operators
-    }
-
-    //Depricated
-    void setBlockSafely(Block block, Chunk chunk, Material mat){
-        if(Math.floor(block.getX()/16) == chunk.getX() && Math.floor(block.getZ()/16) == chunk.getZ()) block.setType(mat);
-    }
-
     //Depricated
     void oreBlob(int centerX, int centerY, int centerZ, World world, int radius, Random random, Material ore, Chunk chunk){
         for (int deposits = random.nextInt(radius*2); deposits >= 0; deposits--){
@@ -65,11 +59,11 @@ public class OrePopulator extends BlockPopulator{
             int zz = random.nextInt(radius*2) - radius + centerZ;
             Location center = new Location(world, xx, yy, zz);
             for (int x = (radius * -1); x < radius; x++) for (int z = (radius * -1); z < radius; z++) for (int y = (radius * -1); y < radius; y++){
-                Block block = getBlockSafely(xx + x, yy + y, zz + z, world, chunk);
+                Block block = plugin.getChunkHandler().getBlockSafely(world, xx + x, yy + y, zz + z);
                 if (block != null){
                     double distance = center.distance(block.getLocation());
-                    if (distance < radius && random.nextInt(50) == 1 && block.getType() == Material.STONE) setBlockSafely(block, chunk, ore);
-                    else if (distance < radius + 1 && block.getType() == Material.STONE) setBlockSafely(block, chunk, ore);
+                    if (distance < radius && random.nextInt(50) == 1 && block.getType() == Material.STONE) block.setType(ore);
+                    else if (distance < radius + 1 && block.getType() == Material.STONE) block.setType(ore);
                 }
             }
         }
@@ -78,12 +72,12 @@ public class OrePopulator extends BlockPopulator{
     //NOTE: specs of metallic ores are found in the cavern gen code too
     void oreVein(Vector start, Vector dir, World world, int radius, Random random, Material ore, Chunk chunk){
         int centerY = start.getBlockY();
-        Block origin = getBlockSafely(start.getBlockX(), centerY, start.getBlockZ(), world, chunk);
+        Block origin = plugin.getChunkHandler().getBlockSafely(world, start.getBlockX(), centerY, start.getBlockZ());
         if (origin == null) return;
         if (origin.getType()==Material.AIR){
             int shiftLife = 8;
             centerY += 4;
-            while (getBlockSafely(start.getBlockX(), centerY, start.getBlockZ(), world, chunk).getType()==Material.AIR&&shiftLife>0){
+            while (plugin.getChunkHandler().getBlockSafely(world, start.getBlockX(), centerY, start.getBlockZ()).getType()==Material.AIR&&shiftLife>0){
                 centerY -= 1;
             }
         }
@@ -94,7 +88,7 @@ public class OrePopulator extends BlockPopulator{
         if (blit==null) return;
         while(blit.hasNext()){
             Block target = blit.next();
-            if(target.getType()==Material.STONE) target.setType(ore);
+            if(target.getType() == Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
         }
         Vector end = start.add(dir);
         Vector mid = new Vector(start.getX()+(dir.getX()/2), start.getY()+(dir.getY()/2.0), start.getZ()+(dir.getZ()/2.0));
@@ -123,19 +117,19 @@ public class OrePopulator extends BlockPopulator{
             if (newblit==null) return;
             while(newblit.hasNext()){
                 Block target = newblit.next();
-                if(target.getType()==Material.STONE) target.setType(ore);
+                if(target.getType()==Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
             }
         }
     }
 
     void orePowder(Vector start, Vector dir, World world, int radius, Random random, Material ore, Chunk chunk){
         int centerY = start.getBlockY();
-        Block origin = getBlockSafely(start.getBlockX(), centerY, start.getBlockZ(), world, chunk);
+        Block origin = plugin.getChunkHandler().getBlockSafely(world, start.getBlockX(), centerY, start.getBlockZ());
         if (origin==null) return;
         if (origin.getType()==Material.AIR){
             int shiftLife = 8;
             centerY += 4;
-            while (getBlockSafely(start.getBlockX(), centerY, start.getBlockZ(), world, chunk).getType()==Material.AIR&&shiftLife>0){
+            while (plugin.getChunkHandler().getBlockSafely(world, start.getBlockX(), centerY, start.getBlockZ()).getType()==Material.AIR&&shiftLife>0){
                 centerY -= 1;
             }
         }
@@ -146,7 +140,7 @@ public class OrePopulator extends BlockPopulator{
         if (blit==null) return;
         while(blit.hasNext()){
             Block target = blit.next();
-            if(target.getType()==Material.STONE) target.setType(ore);
+            if(target.getType()==Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
         }
         Vector end = start.add(dir);
         Vector newdir = dir.multiply(2);
@@ -159,9 +153,8 @@ public class OrePopulator extends BlockPopulator{
             //Vector newend = null;
             while(newblit.hasNext()){
                 Block target = newblit.next();
-                //Block safetarget = getBlockSafely(target.getX(), target.getY(), target.getZ(), world, chunk);
                 end = new Vector(target.getX(), target.getY(), target.getZ());
-                if(target.getType() == Material.STONE) target.setType(ore);
+                if(target.getType() == Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
             }
             //end = newend;
         }
@@ -172,7 +165,7 @@ public class OrePopulator extends BlockPopulator{
         Location center = new Location(world, xx, yy, zz);
         for (int x = (field * -1); x < field; x++) for (int z = (field * -1); z < field; z++) for (int y = (field * -1); y < field; y++){
             if(random.nextInt(128)==1){
-                Block block = getBlockSafely(xx + x, yy + y, zz + z, world, chunk);
+                Block block = plugin.getChunkHandler().getBlockSafely(world, xx + x, yy + y, zz + z);
                 if(block != null){
                     double distance = center.distance(block.getLocation());
                     if (distance < field && block.getType() == Material.STONE) block.setType(ore);
