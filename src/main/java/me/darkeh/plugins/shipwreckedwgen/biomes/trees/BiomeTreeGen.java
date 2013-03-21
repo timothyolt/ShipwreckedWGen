@@ -27,14 +27,17 @@ public class BiomeTreeGen {
                     tree = new TaigaPineTree(rand, center);
                     break;
                 default:
-                    tree = null;
+                    tree = new ForestSpruceTree(rand, center);
             } break;
             case BIRCH: switch (biome){
                 case FOREST:
                     tree = new ForestBirchTree(rand, center);
                     break;
+                case FOREST_HILLS:
+                    tree = new ForestBirchTree(rand, center);
+                    break;
                 default:
-                    tree = null;
+                    tree = new ForestBirchTree(rand, center);
             } break;
             case TREE:
             default: switch (biome){
@@ -54,7 +57,7 @@ public class BiomeTreeGen {
                     tree = new ForestOakTree(rand, center);
                     break;
                 default:
-                    tree = null;
+                    tree = new ForestOakTree(rand, center);
             } break;
         }
         return tree;
