@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 public class OrePopulator extends BlockPopulator{
@@ -69,7 +68,7 @@ public class OrePopulator extends BlockPopulator{
         }
     }
 
-    //NOTE: specs of metallic ores are found in the cavern gen code too
+    //NOTE: specks of metallic ores are found in the cavern gen code too
     void oreVein(Vector start, Vector dir, World world, int radius, Random random, Material ore, Chunk chunk){
         int centerY = start.getBlockY();
         Block origin = plugin.getChunkHandler().getBlockSafely(world, start.getBlockX(), centerY, start.getBlockZ());
@@ -82,42 +81,25 @@ public class OrePopulator extends BlockPopulator{
             }
         }
         start.setY(centerY);
-        BlockIterator blit;
-        try{ blit = new BlockIterator(world, start, dir, 0, radius);}
-        catch (Exception e) {return;}
-        if (blit==null) return;
-        while(blit.hasNext()){
-            Block target = blit.next();
-            if(target.getType() == Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
-        }
+        oreRaycast(world, start, dir, radius, ore);
         Vector end = start.add(dir);
         Vector mid = new Vector(start.getX()+(dir.getX()/2), start.getY()+(dir.getY()/2.0), start.getZ()+(dir.getZ()/2.0));
         for(int subVeins = random.nextInt(radius/2) + (radius/2); subVeins > 0; subVeins--){
             Vector newdir = new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4);
             int newstart = random.nextInt(3);
-            BlockIterator newblit;
             switch(newstart){
                 case 0:
-                    try{ newblit = new BlockIterator(world, start, newdir, 0, radius/2);}
-                    catch (Exception e) {return;}
+                    oreRaycast(world, start, newdir, radius/2, ore);
                     break;
                 case 1:
-                    try{ newblit = new BlockIterator(world, mid, newdir, 0, radius/2);}
-                    catch (Exception e) {return;}
+                    oreRaycast(world, mid, newdir, radius/2, ore);
                     break;
                 case 2:
-                    try{ newblit = new BlockIterator(world, end, newdir, 0, radius/2);}
-                    catch (Exception e) {return;}
+                    oreRaycast(world, end, newdir, radius/2, ore);
                     break;
                 default:
-                    try{ newblit = new BlockIterator(world, end, newdir, 0, radius/2);}
-                    catch (Exception e) {return;}
+                    oreRaycast(world, mid, newdir, radius/2, ore);
                     break;
-            }
-            if (newblit==null) return;
-            while(newblit.hasNext()){
-                Block target = newblit.next();
-                if(target.getType()==Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
             }
         }
     }
@@ -125,8 +107,8 @@ public class OrePopulator extends BlockPopulator{
     void orePowder(Vector start, Vector dir, World world, int radius, Random random, Material ore, Chunk chunk){
         int centerY = start.getBlockY();
         Block origin = plugin.getChunkHandler().getBlockSafely(world, start.getBlockX(), centerY, start.getBlockZ());
-        if (origin==null) return;
-        if (origin.getType()==Material.AIR){
+        if (origin == null) return;
+        if (origin.getType() == Material.AIR){
             int shiftLife = 8;
             centerY += 4;
             while (plugin.getChunkHandler().getBlockSafely(world, start.getBlockX(), centerY, start.getBlockZ()).getType()==Material.AIR&&shiftLife>0){
@@ -134,29 +116,12 @@ public class OrePopulator extends BlockPopulator{
             }
         }
         start.setY(centerY);
-        BlockIterator blit;
-        try{ blit = new BlockIterator(world, start, dir, 0, radius);}
-        catch (Exception e) {return;}
-        if (blit==null) return;
-        while(blit.hasNext()){
-            Block target = blit.next();
-            if(target.getType()==Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
-        }
+        oreRaycast(world, start, dir, radius, ore);
         Vector end = start.add(dir);
         Vector newdir = dir.multiply(2);
         for(int subVeins = random.nextInt(radius/2) + (radius/2); subVeins > 0; subVeins--){
-            BlockIterator newblit;
-            try{ newblit = new BlockIterator(world, end, newdir, 0, radius/2);}
-            catch (Exception e) {return;}
-            if (newblit==null) return;
             dir = dir.multiply(dir);
-            //Vector newend = null;
-            while(newblit.hasNext()){
-                Block target = newblit.next();
-                end = new Vector(target.getX(), target.getY(), target.getZ());
-                if(target.getType() == Material.STONE) plugin.getChunkHandler().setBlockSafely(target.getWorld(), target.getX(), target.getY(), target.getZ(),ore);
-            }
-            //end = newend;
+            oreRaycast(world, end, newdir, radius/2, ore);
         }
     }
 
@@ -171,6 +136,20 @@ public class OrePopulator extends BlockPopulator{
                     if (distance < field && block.getType() == Material.STONE) block.setType(ore);
                 }
             }
+        }
+    }
+
+    void oreRaycast(World w, Vector s, Vector d, int length, Material mat){
+        double max = Math.max(Math.max(d.getX(), d.getY()), d.getZ());
+        double xInc = d.getX()/max;
+        double yInc = d.getY()/max;
+        double zInc = d.getZ()/max;
+        for(int i = 0; i <= length; i++){
+            Block target = plugin.getChunkHandler().getBlockSafely(w,
+                    (int) Math.round(s.getX() + xInc),
+                    (int) Math.round(s.getY() + yInc),
+                    (int) Math.round(s.getZ() + zInc));
+            if (target != null) target.setType(mat);
         }
     }
 }

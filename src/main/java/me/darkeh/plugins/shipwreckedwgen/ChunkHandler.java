@@ -17,7 +17,6 @@ public class ChunkHandler {
     ArrayList<Long> populateChunk = new ArrayList<Long>();
 
     private long intToLong(int x, int z){
-        //return (((long)x) << 32) | ((long)z);
         return (((long)x) << 32) + (long)z;
     }
 
@@ -32,7 +31,6 @@ public class ChunkHandler {
             player.setX(player.getBlockX() >> 4);
             player.setZ(player.getBlockZ() >> 4);
             double dist = chunk.distance(player);
-            System.out.println(Double.toString(dist));
             if (dist <= max) return true;
         }
         return false;
@@ -41,10 +39,8 @@ public class ChunkHandler {
     public void add(Chunk c, boolean bypass){
         long addition = intToLong(c.getX(), c.getZ());
         if (bypass || closePlayer(c)){
-            System.out.println("Add    " + Long.toString(addition));
             populateChunk.add(addition);
         }
-        else System.out.println("Failed " + Long.toString(addition));
     }
 
     public boolean get(Chunk c){
@@ -76,7 +72,6 @@ public class ChunkHandler {
 
     public void remove(Chunk c){
         long removal = intToLong(c.getX(), c.getZ());
-        System.out.println("Remove " + Long.toString(removal));
         populateChunk.remove(removal);
     }
 }
