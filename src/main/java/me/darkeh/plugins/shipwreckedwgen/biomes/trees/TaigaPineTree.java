@@ -42,22 +42,22 @@ public class TaigaPineTree implements BiomeTree{
             branch = new BlockIterator(center.getWorld(), start, branch1, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)5, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES || target.getType() == Material.SNOW) target.setTypeIdAndData(Material.LOG.getId(), (byte)5, false);
             }
             branch = new BlockIterator(center.getWorld(), start, branch2, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)9, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES || target.getType() == Material.SNOW) target.setTypeIdAndData(Material.LOG.getId(), (byte)9, false);
             }
             branch = new BlockIterator(center.getWorld(), start, branch3, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)5, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES || target.getType() == Material.SNOW) target.setTypeIdAndData(Material.LOG.getId(), (byte)5, false);
             }
             branch = new BlockIterator(center.getWorld(), start, branch4, 0, (int)Math.floor(cone) - 2);
             if (branch != null) while (branch.hasNext()){
                 Block target = branch.next();
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)9, false);
+                if (target.isEmpty() || target.getType() == Material.LEAVES || target.getType() == Material.SNOW) target.setTypeIdAndData(Material.LOG.getId(), (byte)9, false);
             }
             for (int x = ((int)Math.ceil(cone) * -1); x <= (int)Math.ceil(cone); x++) for (int z = ((int)Math.ceil(cone) * -1); z <= (int)Math.ceil(cone); z++){
                 Location target = new Location(center.getWorld(), center.getX() + x, center.getY(), center.getZ() + z);
@@ -81,7 +81,7 @@ public class TaigaPineTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone && dist >= cone - 3){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
+                    if (block.isEmpty() || block.getType() == Material.SNOW) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
                 }
            }
         }
@@ -92,7 +92,7 @@ public class TaigaPineTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone && dist >= cone - 3){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
+                    if (block.isEmpty() || block.getType() == Material.SNOW) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
                 }
             }
         }
