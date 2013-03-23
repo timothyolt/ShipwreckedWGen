@@ -27,11 +27,13 @@ public class ChunkHandler {
         ArrayList<Player> valid = new ArrayList<Player>();
         for (int i = 0; i < players.length; i++){
             Location player = players[i].getPlayer().getLocation();
-            player.setY(0);
-            player.setX(player.getBlockX() >> 4);
-            player.setZ(player.getBlockZ() >> 4);
-            double dist = chunk.distance(player);
-            if (dist <= max) return true;
+            if (player.getWorld() == chunk.getWorld()){
+                player.setY(0);
+                player.setX(player.getBlockX() >> 4);
+                player.setZ(player.getBlockZ() >> 4);
+                double dist = chunk.distance(player);
+                if (dist <= max) return true;
+            }
         }
         return false;
     }
