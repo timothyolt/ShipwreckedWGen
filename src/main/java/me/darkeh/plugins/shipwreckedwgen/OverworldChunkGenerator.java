@@ -277,7 +277,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         }
                     }
                 }
-                setBlock(x, 1, z, chunk, Material.BEDROCK);
+                setBlock(x, 0, z, chunk, Material.BEDROCK);
             }
         }
         return chunk;
