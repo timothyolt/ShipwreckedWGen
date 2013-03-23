@@ -193,7 +193,7 @@ public class RiverPopulator extends BlockPopulator{
         Location highest = new Location(world, x, world.getHighestBlockYAt(x, z), z);
         int highestY = highest.getBlockY();
         Material topMat = highest.getBlock().getRelative(0, -1, 0).getType();
-        if (topMat == Material.LEAVES) {
+        if (topMat == Material.LEAVES || topMat == Material.LOG) {
             for (int y = 0; y > -25; y--){
                 Material mat = highest.getBlock().getRelative(0, y - 1, 0).getType();
                 if (mat == Material.GRASS) highestY = highest.getBlockY() + y;

@@ -98,7 +98,8 @@ public class ForestBiome implements BiomeGen{
                 int zz = r.nextInt(16) + (c.getZ() << 4);
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy , zz);
-                if (!target.getRelative(0, -1, 0).isLiquid() && target.getRelative(0, -1, 0).getType() != Material.LEAVES && target.isEmpty()) target.setTypeIdAndData(Material.YELLOW_FLOWER.getId(), (byte) 0, false);
+                Material baseType = target.getRelative(0, -1, 0).getType();
+                if (baseType != Material.WATER && baseType != Material.ICE && baseType != Material.LEAVES && target.isEmpty()) target.setTypeIdAndData(Material.YELLOW_FLOWER.getId(), (byte) 0, false);
             }
         }
         //Red Roses
@@ -109,7 +110,8 @@ public class ForestBiome implements BiomeGen{
                 int zz = r.nextInt(16) + (c.getZ() << 4);
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy , zz);
-                if (!target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.RED_ROSE.getId(), (byte) 0, false);
+                Material baseType = target.getRelative(0, -1, 0).getType();
+                if (baseType != Material.WATER && baseType != Material.ICE && target.isEmpty()) target.setTypeIdAndData(Material.RED_ROSE.getId(), (byte) 0, false);
             }
         }
         //Long Grass
@@ -120,7 +122,8 @@ public class ForestBiome implements BiomeGen{
             int zz = z + (c.getZ() << 4);
             int yy = w.getHighestBlockYAt(xx, zz);
             Block target = w.getBlockAt(xx, yy , zz);
-            if (r.nextInt(grassDensity) == 0 && target.getRelative(0, -1, 0).getType() != Material.LEAVES && target.getRelative(0, -1, 0).getType() != Material.SAND && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
+            Material baseType = target.getRelative(0, -1, 0).getType();
+            if (r.nextInt(grassDensity) == 0 && baseType != Material.WATER && baseType != Material.ICE && baseType != Material.LEAVES && baseType != Material.SAND && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
         }
     }
 }

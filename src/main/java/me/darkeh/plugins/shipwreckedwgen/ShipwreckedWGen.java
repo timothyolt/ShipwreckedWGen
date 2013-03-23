@@ -39,3 +39,6 @@ public class ShipwreckedWGen extends JavaPlugin{
     }
 }
 
+//TODO: Shaddows are under trees
+//TODO: Snow layers not in ice biome minority chunks
+//TODO: Floating obsidian

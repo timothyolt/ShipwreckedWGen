@@ -57,6 +57,8 @@ public class DesertOakTree implements BiomeTree{
         for (int ySection = 0; ySection <= height && !term; ySection++){
             if (!center.getBlock().getRelative(0, ySection, 0).isEmpty()) term = true;
         }
+        Material seedType = center.getBlock().getRelative(0, -1, 0).getType();
+        if (seedType != Material.GRASS && seedType != Material.DIRT && seedType != Material.SAND) term = true;
         //tree generation
         if (!term){
             int thisBranch = this.branches;
