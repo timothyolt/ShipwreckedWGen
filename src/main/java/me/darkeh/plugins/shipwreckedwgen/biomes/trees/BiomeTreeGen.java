@@ -36,6 +36,12 @@ public class BiomeTreeGen {
                 case FOREST_HILLS:
                     tree = new ForestBirchTree(rand, center);
                     break;
+                case JUNGLE:
+                    tree = new JungleBush(rand, center);
+                    break;
+                case JUNGLE_HILLS:
+                    tree = new JungleBush(rand, center);
+                    break;
                 default:
                     tree = new ForestBirchTree(rand, center);
             } break;
@@ -55,6 +61,12 @@ public class BiomeTreeGen {
                     break;
                 case FOREST_HILLS:
                     tree = new ForestOakTree(rand, center);
+                    break;
+                case JUNGLE:
+                    tree = new JungleTree(rand, center);
+                    break;
+                case JUNGLE_HILLS:
+                    tree = new JungleTree(rand, center);
                     break;
                 default:
                     tree = new ForestOakTree(rand, center);

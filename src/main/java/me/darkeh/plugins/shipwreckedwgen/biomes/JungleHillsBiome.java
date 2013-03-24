@@ -5,6 +5,7 @@ import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -78,7 +79,7 @@ public class JungleHillsBiome implements BiomeGen{
         if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
             if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
         }
-        plugin.getTreeGenerator().gen(r, root);
+        plugin.getTreeGenerator().gen(r, root, TreeType.BIRCH);
 
 
         //Vines
