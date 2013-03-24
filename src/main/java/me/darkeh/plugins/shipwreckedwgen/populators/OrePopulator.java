@@ -149,7 +149,7 @@ public class OrePopulator extends BlockPopulator{
                     (int) Math.round(s.getX() + xInc),
                     (int) Math.round(s.getY() + yInc),
                     (int) Math.round(s.getZ() + zInc));
-            if (target != null) target.setType(mat);
+            if (target != null && s.getY() < 240) target.setType(mat);
         }
     }
 }
