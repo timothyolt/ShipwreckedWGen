@@ -15,10 +15,11 @@ public class TestListener implements Listener {
     @EventHandler
     void testStuff(PlayerToggleSneakEvent event){
         Player tester = event.getPlayer();
-        if (tester.getName().equalsIgnoreCase("DarkSpear57")){
-            //TaigaPineTree tree = new TaigaPineTree(new Random(), tester.getLocation());
-            //tree.generate();
-        }
+//        if (tester.getName().equalsIgnoreCase("DarkSpear57") && event.isSneaking()){
+//            //JungleBush tree = new JungleBush(new Random(), tester.getLocation());
+//            //tree.generate();
+//            //tester.sendMessage(Byte.tester.getLocation().getBlock().getRelative(0, -1, 0).getData());
+//        }
     }
 
     HashMap<String, Integer> particleLimit = new HashMap<String, Integer>();

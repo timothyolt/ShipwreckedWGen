@@ -46,12 +46,10 @@ public class JungleBush implements BiomeTree{
         //bound check
         boolean term = false;
         if (!center.getBlock().isEmpty() || center.getBlock().getType() == Material.LEAVES) term = true;
-        Material seedType = center.getBlock().getRelative(0, -1, 0).getType();
         //tree generation
         if (!term){
-            int thisBranch = this.branches;
             center.getBlock().setTypeIdAndData(Material.LOG.getId(), (byte)3, false);
-            foiliage(center, rand.nextInt(3) + 3);
+            foiliage(center, rand.nextInt(4) + 4);
         }
         return term; //If interrupted, it returns true.
     }
