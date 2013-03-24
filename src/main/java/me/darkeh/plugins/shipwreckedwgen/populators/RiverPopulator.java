@@ -25,7 +25,7 @@ public class RiverPopulator extends BlockPopulator{
         int cursorHeight = getHighestSolidBlockY(world, cursor.getBlockX(), cursor.getBlockZ());
         Biome cursorBiome = cursor.getBlock().getBiome();
         int chance;
-        if (cursorBiome == Biome.EXTREME_HILLS) chance = random.nextInt(24);
+        if (cursorBiome == Biome.EXTREME_HILLS || cursorBiome == Biome.JUNGLE || cursorBiome == Biome.JUNGLE_HILLS) chance = random.nextInt(24);
         else chance = random.nextInt(48);
         if (cursorHeight >= 100 && chance == 1 && cursorBiome != Biome.OCEAN && cursorBiome != Biome.FROZEN_OCEAN && cursorBiome != Biome.RIVER && cursorBiome != Biome.FROZEN_RIVER){
             cursor.setY(getHighestSolidBlockY(world, cursor.getBlockX(), cursor.getBlockZ()));
@@ -194,7 +194,7 @@ public class RiverPopulator extends BlockPopulator{
         int highestY = highest.getBlockY();
         Material topMat = highest.getBlock().getRelative(0, -1, 0).getType();
         if (topMat == Material.LEAVES || topMat == Material.LOG) {
-            for (int y = 0; y > -25; y--){
+            for (int y = 0; y > -128; y--){
                 Material mat = highest.getBlock().getRelative(0, y - 1, 0).getType();
                 if (mat == Material.GRASS) highestY = highest.getBlockY() + y;
             }
