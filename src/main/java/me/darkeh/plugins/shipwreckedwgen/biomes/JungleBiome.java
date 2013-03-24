@@ -94,16 +94,16 @@ public class JungleBiome implements BiomeGen{
             yy = w.getHighestBlockYAt(xx, zz) - 1;
             Block target = w.getBlockAt(xx, yy , zz);
             for (int i = 0; target.getRelative(1, i, 0).isEmpty(); i--){
-                target.getRelative(1, i, 0).setTypeIdAndData(Material.VINE.getId(), (byte)8, false);
-            }
-            for (int i = 0; target.getRelative(0, i, 1).isEmpty(); i--){
-                target.getRelative(1, i, 0).setTypeIdAndData(Material.VINE.getId(), (byte)1, false);
-            }
-            for (int i = 0; target.getRelative(-1, i, 0).isEmpty(); i--){
                 target.getRelative(1, i, 0).setTypeIdAndData(Material.VINE.getId(), (byte)2, false);
             }
+            for (int i = 0; target.getRelative(0, i, 1).isEmpty(); i--){
+                target.getRelative(0, i, 1).setTypeIdAndData(Material.VINE.getId(), (byte)4, false);
+            }
+            for (int i = 0; target.getRelative(-1, i, 0).isEmpty(); i--){
+                target.getRelative(-1, i, 0).setTypeIdAndData(Material.VINE.getId(), (byte)8, false);
+            }
             for (int i = 0; target.getRelative(0, i, -1).isEmpty(); i--){
-                target.getRelative(1, i, 0).setTypeIdAndData(Material.VINE.getId(), (byte)4, false);
+                target.getRelative(0, i, -1).setTypeIdAndData(Material.VINE.getId(), (byte)1, false);
             }
         }
     }
