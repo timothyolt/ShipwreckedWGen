@@ -56,6 +56,9 @@ public class BiomeTreeGen {
                 case PLAINS:
                     tree = new PlainsOakTree(rand, center);
                     break;
+                case EXTREME_HILLS:
+                    tree = new PlainsOakTree(rand, center);
+                    break;
                 case FOREST:
                     tree = new ForestOakTree(rand, center);
                     break;
