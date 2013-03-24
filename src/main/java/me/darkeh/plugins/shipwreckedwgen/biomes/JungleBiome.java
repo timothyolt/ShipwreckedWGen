@@ -71,14 +71,22 @@ public class JungleBiome implements BiomeGen{
         zz = r.nextInt(16) + (c.getZ() << 4);
         yy = w.getHighestBlockYAt(xx, zz);
         root = new Location(w, xx, yy, zz);
-        if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
+        for (int y = 0; y > -128; y--){
+            if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+        }
+        plugin.getTreeGenerator().gen(r, root, TreeType.BIRCH);
+        xx = r.nextInt(16) + (c.getX() << 4);
+        zz = r.nextInt(16) + (c.getZ() << 4);
+        yy = w.getHighestBlockYAt(xx, zz);
+        root = new Location(w, xx, yy, zz);
+        for (int y = 0; y > -128; y--){
             if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
         }
         plugin.getTreeGenerator().gen(r, root, TreeType.BIRCH);
 
 
         //Vines
-        int grassDensity = (int)Math.floor(64 / ((sCount * (12/25D)) + 16)) + 4; //Number between 10 and 5
+        int grassDensity = (int)Math.floor(64 / ((sCount * (12/25D)) + 16)) - 8;
         if (grassDensity == 0) grassDensity = 1;
         for (int x = 0; x < 16; x++) for (int z = 0; z <  16; z++){
             xx = x + (c.getX() << 4);

@@ -59,7 +59,7 @@ public class JungleTree implements BiomeTree{
         }
     }
 
-    private void foiliage(int value, int ySection){
+    private void foiliage(int value, int ySection){ //Add 4 to leaves data to set it to no-decay
         if (ySection == height + 1) {
             double cone = ((double)(height + 2 - Math.floor(value / 2D)) / 2D) - 1;
             for (int x = ((int)Math.ceil(cone) * -1); x <= (int)Math.ceil(cone); x++) for (int z = ((int)Math.ceil(cone) * -1); z <= (int)Math.ceil(cone); z++){
@@ -67,7 +67,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)3, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
                 }
             }
         }
@@ -78,7 +78,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)3, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
                 }
             }
         }
@@ -89,7 +89,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)3, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
                 }
             }
         }
@@ -100,7 +100,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone && dist >= cone - 3){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)3, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
                 }
             }
         }
