@@ -1,6 +1,7 @@
 package me.darkeh.plugins.shipwreckedwgen.biomes;
 
 import java.util.Random;
+import me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -10,6 +11,10 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 public class DesertHillsBiome implements BiomeGen{
+    private ShipwreckedWGen plugin;
+    public DesertHillsBiome(ShipwreckedWGen plugin){
+        this.plugin = plugin;
+    }
 
     int smallBlobCount = 32;
     int largeBlobCount = 24;
