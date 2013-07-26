@@ -13,6 +13,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
+import static org.bukkit.Material.*;
+
 public class RiverPopulator extends BlockPopulator{
     private ShipwreckedWGen plugin;
     public RiverPopulator(ShipwreckedWGen plugin){
@@ -136,12 +138,12 @@ public class RiverPopulator extends BlockPopulator{
                     if (biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS || biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS) targetBlock.setBiome(Biome.FROZEN_RIVER);
                     else targetBlock.setBiome(Biome.RIVER);
                     if (dist < size){
-                        if (y < 0) targetBlock.setType(Material.WATER);
-                        else targetBlock.setType(Material.AIR);
+                        if (y < 0) targetBlock.setType(WATER);
+                        else targetBlock.setType(AIR);
                     }
                     else if (dist <= size + 2 && !targetBlock.isLiquid()){
-                        if (y < -1) targetBlock.setType(Material.DIRT);
-                        else if (y < 0) targetBlock.setType(Material.GRASS);
+                        if (y < -1) targetBlock.setType(DIRT);
+                        else if (y < 0) targetBlock.setType(GRASS);
                     }
                 }
             }
@@ -160,7 +162,7 @@ public class RiverPopulator extends BlockPopulator{
                 if (biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS || biome == Biome.ICE_PLAINS || biome == Biome.ICE_MOUNTAINS) targetBlock.setBiome(Biome.FROZEN_RIVER);
                 else targetBlock.setBiome(Biome.RIVER);
                 if (dist < size){
-                    if (y < 0) targetBlock.setType(Material.WATER);
+                    if (y < 0) targetBlock.setType(WATER);
                     else {
                         if (y == size - 1){
                             int vineChance;
@@ -168,22 +170,22 @@ public class RiverPopulator extends BlockPopulator{
                             else vineChance = rand.nextInt(16);
                             Block vineTarget = target.getWorld().getBlockAt(target.getBlockX(), target.getBlockY(), target.getBlockZ());
                             if (!vineTarget.getRelative(BlockFace.UP).isEmpty() && vineChance == 1) vineTarget.setTypeIdAndData(106, (byte)1, false);
-                            else targetBlock.setType(Material.AIR);
+                            else targetBlock.setType(AIR);
                         }
-                        else targetBlock.setType(Material.AIR);
+                        else targetBlock.setType(AIR);
                     }
                 }
                 else if (!targetBlock.isLiquid()){
                     if (dist <= size + 2){
-                        if (y < -1) targetBlock.setType(Material.DIRT);
-                        else if (y < 0) targetBlock.setType(Material.GRASS);
-                        else if (y >= 0 && (targetBlock.getType() == Material.DIRT || targetBlock.getType() == Material.GRASS) && targetBlock.getRelative(BlockFace.DOWN).getType() == Material.AIR) targetBlock.setType(Material.AIR);
+                        if (y < -1) targetBlock.setType(DIRT);
+                        else if (y < 0) targetBlock.setType(GRASS);
+                        else if (y >= 0 && (targetBlock.getType() == DIRT || targetBlock.getType() == GRASS) && targetBlock.getRelative(BlockFace.DOWN).getType() == AIR) targetBlock.setType(AIR);
                         if (y == 0 && rand.nextInt(48) == 1 && !targetBlock.getRelative(BlockFace.DOWN).isEmpty()){
                             int caneHeight = rand.nextInt(2) + 2;
-                            for (int cy = 0; cy <= caneHeight; cy++) targetBlock.getRelative(0, cy, 0).setType(Material.SUGAR_CANE_BLOCK);
+                            for (int cy = 0; cy <= caneHeight; cy++) targetBlock.getRelative(0, cy, 0).setType(SUGAR_CANE_BLOCK);
                         }
                     }
-                    else if (y < 0 && targetBlock.isEmpty()) targetBlock.setType(Material.STONE);
+                    else if (y < 0 && targetBlock.isEmpty()) targetBlock.setType(STONE);
                 }
             }
         }
@@ -193,10 +195,10 @@ public class RiverPopulator extends BlockPopulator{
         Location highest = new Location(world, x, world.getHighestBlockYAt(x, z), z);
         int highestY = highest.getBlockY();
         Material topMat = highest.getBlock().getRelative(0, -1, 0).getType();
-        if (topMat == Material.LEAVES || topMat == Material.LOG || topMat == Material.VINE) {
+        if (topMat == LEAVES || topMat == LOG || topMat == VINE) {
             for (int y = 0; y > -128; y--){
                 Material mat = highest.getBlock().getRelative(0, y - 1, 0).getType();
-                if (mat == Material.GRASS) highestY = highest.getBlockY() + y;
+                if (mat == GRASS) highestY = highest.getBlockY() + y;
             }
         }
         return highestY;

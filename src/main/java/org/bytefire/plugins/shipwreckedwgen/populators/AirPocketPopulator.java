@@ -9,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 
+import static org.bukkit.Material.*;
+
 public class AirPocketPopulator extends BlockPopulator{
     private ShipwreckedWGen plugin;
     public AirPocketPopulator(ShipwreckedWGen plugin){
@@ -90,15 +92,15 @@ public class AirPocketPopulator extends BlockPopulator{
                 double distance = center.distance(block.getLocation());
                 if (distance < size){
                     Material replace;
-                    if (yy + y < 12) replace = Material.LAVA;
-                    else if (type == 1 && y < -2 && yy + y < 35 && !block.isEmpty()) replace = Material.LAVA;
-                    else if (type == 2 && y < -2 && yy + y < 80 && yy + y > 16 && !block.isEmpty()) replace = Material.WATER;
-                    else replace = Material.AIR;
+                    if (yy + y < 12) replace = LAVA;
+                    else if (type == 1 && y < -2 && yy + y < 35 && !block.isEmpty()) replace = LAVA;
+                    else if (type == 2 && y < -2 && yy + y < 80 && yy + y > 16 && !block.isEmpty()) replace = WATER;
+                    else replace = AIR;
                     if (distance > size - 1) {
-                        if (random.nextInt(32) != 1 && !block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE)
+                        if (random.nextInt(32) != 1 && !block.isLiquid() && block.getType()!=BEDROCK && block.getType()!=SAND && block.getType()!=SANDSTONE)
                             block.setType(replace);
                     }
-                    else if (!block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE)
+                    else if (!block.isLiquid() && block.getType()!=BEDROCK && block.getType()!=SAND && block.getType()!=SANDSTONE)
                         block.setType(replace);
                 }
             }

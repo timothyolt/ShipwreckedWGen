@@ -9,6 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class RavinePopulator extends BlockPopulator{
     private ShipwreckedWGen plugin;
     public RavinePopulator(ShipwreckedWGen plugin){
@@ -150,9 +152,9 @@ public class RavinePopulator extends BlockPopulator{
                 Block block = plugin.getChunkHandler().getBlockSafely(world, xx + x + offset, yy + y, zz + section);
                 if (block != null){
                     Material replace;
-                    if (yy + y < 12) replace = Material.LAVA;
-                    else replace = Material.AIR;
-                    if (!block.isLiquid() && block.getType()!=Material.BEDROCK) block.setType(replace);
+                    if (yy + y < 12) replace = LAVA;
+                    else replace = AIR;
+                    if (!block.isLiquid() && block.getType()!=BEDROCK) block.setType(replace);
                 }
             }
             //System.out.println("Direction: 1, WidthA:" + Integer.toString(widthA) + ", WidthB:" + Integer.toString(widthB) + ", Height:" + Integer.toString(height));
@@ -162,9 +164,9 @@ public class RavinePopulator extends BlockPopulator{
                 Block block = plugin.getChunkHandler().getBlockSafely(world, xx + section, yy + y, zz + z + offset);
                 if (block != null){
                     Material replace;
-                    if (yy + y < 10) replace = Material.LAVA;
-                    else replace = Material.AIR;
-                    if (!block.isLiquid() && block.getType()!=Material.BEDROCK) block.setType(replace);
+                    if (yy + y < 10) replace = LAVA;
+                    else replace = AIR;
+                    if (!block.isLiquid() && block.getType()!=BEDROCK) block.setType(replace);
                 }
             }
             //System.out.println("Direction: 2, WidthA:" + Integer.toString(widthA) + ", WidthB:" + Integer.toString(widthB) + ", Height:" + Integer.toString(height));

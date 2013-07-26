@@ -9,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 
+import static org.bukkit.Material.*;
+
 public class CavePopulator extends BlockPopulator{
     private ShipwreckedWGen plugin;
     public CavePopulator(ShipwreckedWGen plugin){
@@ -85,15 +87,15 @@ public class CavePopulator extends BlockPopulator{
                 double distance = center.distance(block.getLocation());
                 if (distance < size){
                     Material replace;
-                    if (yy + y < 12) replace = Material.LAVA;
-                    else if (type == 1 && y < -2 && yy + y < 35 && !block.isEmpty()) replace = Material.LAVA;
-                    else if (type == 2 && y < -2 && yy + y < 80 && !block.isEmpty()) replace = Material.WATER;
-                    else replace = Material.AIR;
+                    if (yy + y < 12) replace = LAVA;
+                    else if (type == 1 && y < -2 && yy + y < 35 && !block.isEmpty()) replace = LAVA;
+                    else if (type == 2 && y < -2 && yy + y < 80 && !block.isEmpty()) replace = WATER;
+                    else replace = AIR;
                     if (distance > size - 1) {
-                        if (random.nextInt(32) != 1 && !block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE && block.getType()!=Material.ICE)
+                        if (random.nextInt(32) != 1 && !block.isLiquid() && block.getType()!=BEDROCK && block.getType()!=SAND && block.getType()!=SANDSTONE && block.getType()!=ICE)
                             block.setType(replace);
                     }
-                    else if (!block.isLiquid() && block.getType()!=Material.BEDROCK && block.getType()!=Material.SAND && block.getType()!=Material.SANDSTONE && block.getType()!=Material.ICE)
+                    else if (!block.isLiquid() && block.getType()!=BEDROCK && block.getType()!=SAND && block.getType()!=SANDSTONE && block.getType()!=ICE)
                         block.setType(replace);
                 }
             }
