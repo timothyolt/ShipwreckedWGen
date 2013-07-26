@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+import static org.bukkit.Material.*;
+
 public class DesertOakTree implements BiomeTree{
     private Random rand;
     private Location center;
@@ -29,8 +31,8 @@ public class DesertOakTree implements BiomeTree{
         int length = rand.nextInt(2) + 1;
         for (int y = 0; y <= height; y++) for (int i = (width * -1); i <= width; i++) for (int ii = (length * -1); ii <= length; ii++){
             Material replace;
-            if (y != height && i == 0 && ii > -1 && ii < 1) replace = Material.LOG;
-            else replace = Material.LEAVES; //sets a log if in the center
+            if (y != height && i == 0 && ii > -1 && ii < 1) replace = LOG;
+            else replace = LEAVES; //sets a log if in the center
             if (!(Math.abs(i) == width && Math.abs(ii) == length)){ //if the target isnt in a corner
                 Block target;
                 switch (face){
@@ -46,7 +48,7 @@ public class DesertOakTree implements BiomeTree{
                     default:
                         target = center.getWorld().getBlockAt(center.getBlockX() - ii - (y * 2), center.getBlockY() + ySection + y, center.getBlockZ() + i);
                 }
-                if (target.isEmpty() || target.getType() == Material.LEAVES) target.setType(replace);
+                if (target.isEmpty() || target.getType() == LEAVES) target.setType(replace);
             }
         }
     }
@@ -58,13 +60,13 @@ public class DesertOakTree implements BiomeTree{
             if (!center.getBlock().getRelative(0, ySection, 0).isEmpty()) term = true;
         }
         Material seedType = center.getBlock().getRelative(0, -1, 0).getType();
-        if (seedType != Material.GRASS && seedType != Material.DIRT && seedType != Material.SAND) term = true;
+        if (seedType != GRASS && seedType != DIRT && seedType != SAND) term = true;
         //tree generation
         if (!term){
             int thisBranch = this.branches;
             for (int ySection = 0; ySection <= height && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
-                target.setType(Material.LOG);
+                target.setType(LOG);
                 if (height - ySection < height / 4 && thisBranch > 0 && rand.nextInt(4) == 1) branch(ySection, this.branches - thisBranch + 1);
                 if (ySection == height) branch(ySection, rand.nextInt(2) + 1);
             }

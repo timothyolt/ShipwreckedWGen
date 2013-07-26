@@ -10,6 +10,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class DesertHillsBiome implements BiomeGen{
     private ShipwreckedWGen plugin;
     public DesertHillsBiome(ShipwreckedWGen plugin){
@@ -20,13 +22,7 @@ public class DesertHillsBiome implements BiomeGen{
     int largeBlobCount = 24;
     int landHeight = 6;
     int extraDetail = 8;
-    Material[] topsoil = {
-        Material.SAND,
-        Material.SAND,
-        Material.SANDSTONE,
-        Material.SANDSTONE,
-        Material.SANDSTONE
-    };
+    Material[] topsoil = {SAND, SAND, SANDSTONE, SANDSTONE, SANDSTONE};
 
     public int getSmallBlobCount() {
         return smallBlobCount;
@@ -76,8 +72,8 @@ public class DesertHillsBiome implements BiomeGen{
                 int yy = w.getHighestBlockYAt(xx, zz);
                 for (int y = 0; y < height; y++){
                     Block target = w.getBlockAt(xx, yy + y, zz);
-                    if (target.getType() == Material.AIR){
-                        target.setTypeId(Material.CACTUS.getId(), false);
+                    if (target.getType() == AIR){
+                        target.setTypeId(CACTUS.getId(), false);
                     }
                 }
             }
@@ -91,7 +87,7 @@ public class DesertHillsBiome implements BiomeGen{
                 int zz = r.nextInt(16) + (c.getZ() << 4);
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy, zz);
-                if (target.getRelative(BlockFace.DOWN).getType() == Material.SAND) target.setType(Material.DEAD_BUSH);
+                if (target.getRelative(BlockFace.DOWN).getType() == SAND) target.setType(DEAD_BUSH);
             }
         }
     }

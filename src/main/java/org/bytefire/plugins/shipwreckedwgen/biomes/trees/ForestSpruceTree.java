@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+import static org.bukkit.Material.*;
+
 public class ForestSpruceTree implements BiomeTree{
     private Random rand;
     private Location center;
@@ -32,7 +34,7 @@ public class ForestSpruceTree implements BiomeTree{
 
     public void branch(int ySection) {
         Block target = center.getBlock().getRelative(rand.nextInt(2) - 1, ySection, rand.nextInt(2) - 1);
-        if (target.isEmpty()) target.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
+        if (target.isEmpty()) target.setTypeIdAndData(LEAVES.getId(), (byte)1, false);
     }
 
     private void foiliage(int ySection){
@@ -47,7 +49,7 @@ public class ForestSpruceTree implements BiomeTree{
             double dist = center.distance(target);
             if (dist <= cone && dist >= cone - 3){
                 Block block = target.getBlock().getRelative(0, ySection, 0);
-                if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)1, false);
+                if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte)1, false);
             }
         }
     }
@@ -59,12 +61,12 @@ public class ForestSpruceTree implements BiomeTree{
             if (!center.getBlock().getRelative(0, ySection, 0).isEmpty()) term = true;
         }
         Material seedType = center.getBlock().getRelative(0, -1, 0).getType();
-        if (seedType != Material.GRASS && seedType != Material.DIRT && seedType != Material.SAND) term = true;
+        if (seedType != GRASS && seedType != DIRT && seedType != SAND) term = true;
         //tree generation
         if (!term){ //(cap * 2) - 2 //
             for (int ySection = 0; ySection <= height + 2 && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
-                if (ySection <= height) target.setTypeIdAndData(Material.LOG.getId(), (byte)1, false);
+                if (ySection <= height) target.setTypeIdAndData(LOG.getId(), (byte)1, false);
                 if (ySection >= (cap * 2) - 2 + cap) foiliage(ySection);
                 else if (rand.nextInt(4) == 1 && branches > 0){
                     branch(ySection);

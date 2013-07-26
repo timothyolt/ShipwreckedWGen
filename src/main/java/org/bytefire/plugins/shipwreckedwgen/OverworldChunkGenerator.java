@@ -18,6 +18,8 @@ import org.bytefire.plugins.shipwreckedwgen.populators.OrePopulator;
 import org.bytefire.plugins.shipwreckedwgen.populators.RavinePopulator;
 import org.bytefire.plugins.shipwreckedwgen.populators.RiverPopulator;
 
+import static org.bukkit.Material.*;
+
 public class OverworldChunkGenerator extends ChunkGenerator{
     private ShipwreckedWGen plugin;
 
@@ -26,13 +28,13 @@ public class OverworldChunkGenerator extends ChunkGenerator{
     }
     private ArrayList<BlockPopulator> populators;
     //CONFIG
-    final Material base = Material.STONE;
-    final Material bottom = Material.BEDROCK;
-    final Material oceanTop = Material.SAND;
-    final Material oceanMid = Material.SANDSTONE;
-    final Material oceanLow = Material.GRAVEL;
-    final Material landTop = Material.GRASS;
-    final Material landMid = Material.DIRT;
+    final Material base = STONE;
+    final Material bottom = BEDROCK;
+    final Material oceanTop = SAND;
+    final Material oceanMid = SANDSTONE;
+    final Material oceanLow = GRAVEL;
+    final Material landTop = GRASS;
+    final Material landMid = DIRT;
 
     void setBlock(int x, int y, int z, byte[][] chunk, Material material) {
         if (chunk[y >> 4] == null)
@@ -122,7 +124,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                     setBlock(x, height + seaFloor - 3, z, chunk, oceanMid);
                     setBlock(x, height + seaFloor - 4, z, chunk, oceanLow);
                     if (landBiome.equals(Biome.TAIGA)||landBiome.equals(Biome.TAIGA_HILLS)||landBiome.equals(Biome.ICE_PLAINS)||landBiome.equals(Biome.ICE_MOUNTAINS))
-                        setBlock(x, height + seaFloor + 1, z, chunk, Material.SNOW);
+                        setBlock(x, height + seaFloor + 1, z, chunk, SNOW);
                     biome.setBiome(x, z, Biome.BEACH);
                 }
 
@@ -147,9 +149,9 @@ public class OverworldChunkGenerator extends ChunkGenerator{
 
                 //Ocean
                 for (int y = 80; y > height + seaFloor && y > seaFloor; y--){
-                    setBlock(x, y, z, chunk, Material.WATER);
+                    setBlock(x, y, z, chunk, WATER);
                     if ((biome.getBiome(x, z) == Biome.FROZEN_OCEAN)&&(y==80))
-                        setBlock(x, y, z, chunk, Material.ICE);
+                        setBlock(x, y, z, chunk, ICE);
                 }
 
                 //Sky Islands
@@ -163,9 +165,9 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         if (hUnder <= -16) hUnder = -15;
                         if (hOver > 0 || hUnder < 0) for (int y = -16; y < 16; y++){
                             if (y <= hOver && y >= hUnder) {
-                                if (y > hOver - 2 && y != hOver) setBlock(x, y +  hHeight, z, chunk, Material.DIRT);
-                                else if (y == hOver) setBlock(x, y + hHeight, z, chunk, Material.GRASS);
-                                else setBlock(x, y + hHeight, z, chunk, Material.STONE);
+                                if (y > hOver - 2 && y != hOver) setBlock(x, y +  hHeight, z, chunk, DIRT);
+                                else if (y == hOver) setBlock(x, y + hHeight, z, chunk, GRASS);
+                                else setBlock(x, y + hHeight, z, chunk, STONE);
                             }
                         }
                     }
@@ -179,7 +181,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                     if (fCluster.noise(x + (ChunkX * 16), y, z + (ChunkZ * 16), 0.5, 0.5)*16 > 8 && getBlock(x, y + 40, z, chunk)==1){
                         if (caveLow == -1) caveLow = y;
                         caveTop = y;
-                        setBlock(x, y + 40, z, chunk, Material.AIR);
+                        setBlock(x, y + 40, z, chunk, AIR);
                     }
                 }
                 if(caveTop != -1 && caveLow != -1){
@@ -187,14 +189,14 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                     int top = (int) (caveTop - (fOver.noise(x + (ChunkX * 16), z + (ChunkZ * 16), 0.5, 0.5) * 6));
                     if (top > caveTop) top = caveTop;
                     for(int y = top; y <= caveTop; y++){
-                        setBlock(x, y + 40, z, chunk, Material.STONE);
+                        setBlock(x, y + 40, z, chunk, STONE);
                     }
                     caveTop = top;
                     //Bottom Noise
                     int low = (int) (caveLow + (fOver.noise(z + (ChunkZ * 16), x + (ChunkX * 16), 0.5, 0.5) * 6));
                     if (low > caveLow) low = caveLow;
                     for(int y = caveLow; y <= low; y++){
-                        setBlock(x, y + 40, z, chunk, Material.STONE);
+                        setBlock(x, y + 40, z, chunk, STONE);
                     }
                     caveLow = low;
                     boolean sTSpike = false;
@@ -208,8 +210,8 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         }
                     }
                     for (int y = caveTop; y > caveTop - sTites; y--){
-                        if (sTSpike==true&&seed.nextInt(1024)==1) setBlock(x, y + 40, z, chunk, Material.IRON_ORE);
-                        else setBlock(x, y + 40, z, chunk, Material.STONE);
+                        if (sTSpike==true&&seed.nextInt(1024)==1) setBlock(x, y + 40, z, chunk, IRON_ORE);
+                        else setBlock(x, y + 40, z, chunk, STONE);
                     }
                     //Stalagmites
                     boolean sMSpike = false;
@@ -222,8 +224,8 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                         }
                     }
                     for (int y = caveLow; y < caveLow + sMites; y++){
-                        if (sMSpike==true&&seed.nextInt(1024)==1) setBlock(x, y + 40, z, chunk, Material.IRON_ORE);
-                        else setBlock(x, y + 40, z, chunk, Material.STONE);
+                        if (sMSpike==true&&seed.nextInt(1024)==1) setBlock(x, y + 40, z, chunk, IRON_ORE);
+                        else setBlock(x, y + 40, z, chunk, STONE);
                     }
                 }
 
@@ -240,9 +242,9 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                     if (hOver > 0 || hUnder < 0) for (int y = -16; y < 16; y++){
                         if (y <= hOver && y >= hUnder) {
                             if (y == hOver) height = y + hHeight - seaFloor;
-                            if (y > hOver - 2 && y != hOver) setBlock(x, y +  hHeight, z, chunk, Material.DIRT);
-                            else if (y == hOver) setBlock(x, y + hHeight, z, chunk, Material.GRASS);
-                            else setBlock(x, y + hHeight, z, chunk, Material.STONE);
+                            if (y > hOver - 2 && y != hOver) setBlock(x, y +  hHeight, z, chunk, DIRT);
+                            else if (y == hOver) setBlock(x, y + hHeight, z, chunk, GRASS);
+                            else setBlock(x, y + hHeight, z, chunk, STONE);
                         }
                     }
                 }
@@ -254,12 +256,12 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                     int newHeight = plugin.getBiomeHandler().getBiomeGen(landBiome).addBiomeLand(z + (ChunkZ * 16), x + (ChunkX * 16), height, fOver);
                     for (int y = oldHeight; y <= newHeight; y++){
                         if (y == newHeight){
-                            setBlock(x, y + seaFloor, z, chunk, Material.GRASS);
-                            setBlock(x, y - 1 + seaFloor, z, chunk, Material.DIRT);
-                            setBlock(x, y - 2 + seaFloor, z, chunk, Material.DIRT);
-                            setBlock(x, y - 3 + seaFloor, z, chunk, Material.DIRT);
+                            setBlock(x, y + seaFloor, z, chunk, GRASS);
+                            setBlock(x, y - 1 + seaFloor, z, chunk, DIRT);
+                            setBlock(x, y - 2 + seaFloor, z, chunk, DIRT);
+                            setBlock(x, y - 3 + seaFloor, z, chunk, DIRT);
                         }
-                        else setBlock(x, y + seaFloor, z, chunk, Material.STONE);
+                        else setBlock(x, y + seaFloor, z, chunk, STONE);
                         height = newHeight;
                     }
                 }
@@ -277,13 +279,13 @@ public class OverworldChunkGenerator extends ChunkGenerator{
                     if (hUnder <= -16) hUnder = -15;
                     if (hOver > 0 || hUnder < 0) for (int y = -16; y < 16; y++){
                         if (y <= hOver && y >= hUnder) {
-                            if (y > hOver - 2 && y != hOver) setBlock(x, y +  hHeight, z, chunk, Material.DIRT);
-                            else if (y == hOver) setBlock(x, y + hHeight, z, chunk, Material.GRASS);
-                            else setBlock(x, y + hHeight, z, chunk, Material.STONE);
+                            if (y > hOver - 2 && y != hOver) setBlock(x, y +  hHeight, z, chunk, DIRT);
+                            else if (y == hOver) setBlock(x, y + hHeight, z, chunk, GRASS);
+                            else setBlock(x, y + hHeight, z, chunk, STONE);
                         }
                     }
                 }
-                setBlock(x, 0, z, chunk, Material.BEDROCK);
+                setBlock(x, 0, z, chunk, BEDROCK);
             }
         }
         return chunk;

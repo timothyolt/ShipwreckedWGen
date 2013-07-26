@@ -7,6 +7,8 @@ import org.bukkit.block.Block;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import static org.bukkit.Material.*;
+
 public class JungleTree implements BiomeTree{
     private Random rand;
     private Location center;
@@ -40,22 +42,22 @@ public class JungleTree implements BiomeTree{
         branch = new BlockIterator(center.getWorld(), start, branch1, 0, (int)Math.floor(cone) - 2);
         if (branch != null) while (branch.hasNext()){
             Block target = branch.next();
-            if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)7, false);
+            if (target.isEmpty() || target.getType() == LEAVES) target.setTypeIdAndData(LOG.getId(), (byte)7, false);
         }
         branch = new BlockIterator(center.getWorld(), start, branch2, 0, (int)Math.floor(cone) - 2);
         if (branch != null) while (branch.hasNext()){
             Block target = branch.next();
-            if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)11, false);
+            if (target.isEmpty() || target.getType() == LEAVES) target.setTypeIdAndData(LOG.getId(), (byte)11, false);
         }
         branch = new BlockIterator(center.getWorld(), start, branch3, 0, (int)Math.floor(cone) - 2);
         if (branch != null) while (branch.hasNext()){
             Block target = branch.next();
-            if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)7, false);
+            if (target.isEmpty() || target.getType() == LEAVES) target.setTypeIdAndData(LOG.getId(), (byte)7, false);
         }
         branch = new BlockIterator(center.getWorld(), start, branch4, 0, (int)Math.floor(cone) - 2);
         if (branch != null) while (branch.hasNext()){
             Block target = branch.next();
-            if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), (byte)11, false);
+            if (target.isEmpty() || target.getType() == LEAVES) target.setTypeIdAndData(LOG.getId(), (byte)11, false);
         }
     }
 
@@ -67,7 +69,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte)7, false);
                 }
             }
         }
@@ -78,7 +80,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte)7, false);
                 }
             }
         }
@@ -89,7 +91,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte)7, false);
                 }
             }
         }
@@ -100,7 +102,7 @@ public class JungleTree implements BiomeTree{
                 double dist = center.distance(target);
                 if (dist <= cone && dist >= cone - 3){
                     Block block = target.getBlock().getRelative(0, ySection, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte)7, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte)7, false);
                 }
             }
         }
@@ -114,22 +116,22 @@ public class JungleTree implements BiomeTree{
             Block block2 = center.getBlock().getRelative(1, ySection, 0);
             Block block3 = center.getBlock().getRelative(0, ySection, 1);
             Block block4 = center.getBlock().getRelative(1, ySection, 1);
-            if (!block1.isEmpty() || block1.getType() == Material.LEAVES) term = true;
-            if (!block2.isEmpty() || block2.getType() == Material.LEAVES) term = true;
-            if (!block3.isEmpty() || block3.getType() == Material.LEAVES) term = true;
-            if (!block4.isEmpty() || block4.getType() == Material.LEAVES) term = true;
+            if (!block1.isEmpty() || block1.getType() == LEAVES) term = true;
+            if (!block2.isEmpty() || block2.getType() == LEAVES) term = true;
+            if (!block3.isEmpty() || block3.getType() == LEAVES) term = true;
+            if (!block4.isEmpty() || block4.getType() == LEAVES) term = true;
         }
         Material seedType = center.getBlock().getRelative(0, -1, 0).getType();
-        if (seedType != Material.GRASS && seedType != Material.DIRT && seedType != Material.SAND) term = true;
+        if (seedType != GRASS && seedType != DIRT && seedType != SAND) term = true;
         //tree generation
         if (!term){ //(cap * 2) - 2 //
             for (int ySection = 0; ySection <= height + 3 && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
                 if (ySection <= height){
-                    target.setTypeIdAndData(Material.LOG.getId(), (byte)3, false);
-                    target.getRelative(1, 0, 0).setTypeIdAndData(Material.LOG.getId(), (byte)3, false);
-                    target.getRelative(0, 0, 1).setTypeIdAndData(Material.LOG.getId(), (byte)3, false);
-                    target.getRelative(1, 0, 1).setTypeIdAndData(Material.LOG.getId(), (byte)3, false);
+                    target.setTypeIdAndData(LOG.getId(), (byte)3, false);
+                    target.getRelative(1, 0, 0).setTypeIdAndData(LOG.getId(), (byte)3, false);
+                    target.getRelative(0, 0, 1).setTypeIdAndData(LOG.getId(), (byte)3, false);
+                    target.getRelative(1, 0, 1).setTypeIdAndData(LOG.getId(), (byte)3, false);
                 }
                 if (ySection >= (height * 3) / 4){
                     foiliage(ySection - ((height * 3) / 4), ySection);

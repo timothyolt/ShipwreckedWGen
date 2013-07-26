@@ -11,6 +11,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class JungleHillsBiome implements BiomeGen{
     private ShipwreckedWGen plugin;
     public JungleHillsBiome(ShipwreckedWGen plugin){
@@ -21,7 +23,7 @@ public class JungleHillsBiome implements BiomeGen{
     int largeBlobCount = 28;
     int landHeight = 22;
     int extraDetail = 12;
-    Material[] topsoil = {Material.GRASS, Material.DIRT, Material.DIRT, Material.DIRT, Material.DIRT};
+    Material[] topsoil = {GRASS, DIRT, DIRT, DIRT, DIRT};
 
     public int getSmallBlobCount() {
         return smallBlobCount;
@@ -66,8 +68,8 @@ public class JungleHillsBiome implements BiomeGen{
         int zz = r.nextInt(16) + (c.getZ() << 4);
         int yy = w.getHighestBlockYAt(xx, zz);
         Location root = new Location(w, xx, yy, zz);
-        if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
-            if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+        if (root.getBlock().getRelative(0, -1, 0).getType() == LEAVES) for (int y = 0; y > -25; y--){
+            if (root.getBlock().getRelative(0, y - 1, 0).getType() == GRASS) root = new Location(w, xx, yy + y, zz);
         }
         plugin.getTreeGenerator().gen(r, root);
 
@@ -77,7 +79,7 @@ public class JungleHillsBiome implements BiomeGen{
         yy = w.getHighestBlockYAt(xx, zz);
         root = new Location(w, xx, yy, zz);
         for (int y = 0; y > -128; y--){
-            if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+            if (root.getBlock().getRelative(0, y - 1, 0).getType() == GRASS) root = new Location(w, xx, yy + y, zz);
         }
         plugin.getTreeGenerator().gen(r, root, TreeType.BIRCH);
         xx = r.nextInt(16) + (c.getX() << 4);
@@ -85,7 +87,7 @@ public class JungleHillsBiome implements BiomeGen{
         yy = w.getHighestBlockYAt(xx, zz);
         root = new Location(w, xx, yy, zz);
         for (int y = 0; y > -128; y--){
-            if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+            if (root.getBlock().getRelative(0, y - 1, 0).getType() == GRASS) root = new Location(w, xx, yy + y, zz);
         }
         plugin.getTreeGenerator().gen(r, root, TreeType.BIRCH);
 
@@ -99,16 +101,16 @@ public class JungleHillsBiome implements BiomeGen{
             yy = w.getHighestBlockYAt(xx, zz) - 1;
             Block target = w.getBlockAt(xx, yy , zz);
             for (int i = 0; target.getRelative(1, i, 0).isEmpty(); i--){
-                target.getRelative(1, i, 0).setTypeIdAndData(Material.VINE.getId(), (byte)2, false);
+                target.getRelative(1, i, 0).setTypeIdAndData(VINE.getId(), (byte)2, false);
             }
             for (int i = 0; target.getRelative(0, i, 1).isEmpty(); i--){
-                target.getRelative(0, i, 1).setTypeIdAndData(Material.VINE.getId(), (byte)4, false);
+                target.getRelative(0, i, 1).setTypeIdAndData(VINE.getId(), (byte)4, false);
             }
             for (int i = 0; target.getRelative(-1, i, 0).isEmpty(); i--){
-                target.getRelative(-1, i, 0).setTypeIdAndData(Material.VINE.getId(), (byte)8, false);
+                target.getRelative(-1, i, 0).setTypeIdAndData(VINE.getId(), (byte)8, false);
             }
             for (int i = 0; target.getRelative(0, i, -1).isEmpty(); i--){
-                target.getRelative(0, i, -1).setTypeIdAndData(Material.VINE.getId(), (byte)1, false);
+                target.getRelative(0, i, -1).setTypeIdAndData(VINE.getId(), (byte)1, false);
             }
         }
     }

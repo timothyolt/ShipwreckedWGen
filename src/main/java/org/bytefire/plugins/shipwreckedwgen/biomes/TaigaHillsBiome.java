@@ -11,6 +11,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class TaigaHillsBiome implements BiomeGen{
     private ShipwreckedWGen plugin;
     public TaigaHillsBiome(ShipwreckedWGen plugin){
@@ -21,7 +23,7 @@ public class TaigaHillsBiome implements BiomeGen{
     int largeBlobCount = 24;
     int landHeight = 18;
     int extraDetail = 8;
-    Material[] topsoil = {Material.SNOW, Material.SNOW_BLOCK, Material.DIRT, Material.DIRT};
+    Material[] topsoil = {SNOW, SNOW_BLOCK, DIRT, DIRT};
 
     public int getSmallBlobCount() {
         return smallBlobCount;
@@ -68,15 +70,15 @@ public class TaigaHillsBiome implements BiomeGen{
            int zz = r.nextInt(16) + (c.getZ() << 4);
            int yy = w.getHighestBlockYAt(xx, zz);
            Location root = new Location(w, xx, yy, zz);
-           if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
-               if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+           if (root.getBlock().getRelative(0, -1, 0).getType() == LEAVES) for (int y = 0; y > -25; y--){
+               if (root.getBlock().getRelative(0, y - 1, 0).getType() == GRASS) root = new Location(w, xx, yy + y, zz);
            }
            plugin.getTreeGenerator().gen(r, root, TreeType.REDWOOD);
         }
         //Snow
         for (int x = -8; x < 24; x++) for (int z = -8; z < 24; z++){
             Block target = w.getHighestBlockAt((c.getX() << 4) + x, (c.getZ() << 4) + z);
-            if (target.isEmpty() && target.getBiome() == Biome.TAIGA_HILLS) target.setType(Material.SNOW);
+            if (target.isEmpty() && target.getBiome() == Biome.TAIGA_HILLS) target.setType(SNOW);
         }
     }
 }

@@ -7,13 +7,15 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class TundraHillsBiome implements BiomeGen{
 
     int smallBlobCount = 32;
     int largeBlobCount = 24;
     int landHeight = 10;
     int extraDetail = 12;
-    Material[] topsoil = {Material.SNOW, Material.SNOW_BLOCK, Material.SNOW_BLOCK, Material.DIRT, Material.DIRT};
+    Material[] topsoil = {SNOW, SNOW_BLOCK, SNOW_BLOCK, DIRT, DIRT};
 
     public int getSmallBlobCount() {
         return smallBlobCount;

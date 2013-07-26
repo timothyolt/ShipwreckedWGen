@@ -11,6 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class DesertBiome implements BiomeGen{
     private ShipwreckedWGen plugin;
     public DesertBiome(ShipwreckedWGen plugin){
@@ -21,17 +23,7 @@ public class DesertBiome implements BiomeGen{
     int largeBlobCount = 24;
     int landHeight = 4;
     int extraDetail = 6;
-    Material[] topsoil = {
-        Material.SAND,
-        Material.SAND,
-        Material.SAND,
-        Material.SAND,
-        Material.SAND,
-        Material.SAND,
-        Material.SANDSTONE,
-        Material.SANDSTONE,
-        Material.SANDSTONE
-    };
+    Material[] topsoil = {SAND, SAND, SAND, SAND, SAND, SAND, SANDSTONE, SANDSTONE, SANDSTONE};
 
     public int getSmallBlobCount() {
         return smallBlobCount;
@@ -88,8 +80,8 @@ public class DesertBiome implements BiomeGen{
                 int yy = w.getHighestBlockYAt(xx, zz);
                 for (int y = 0; y < height; y++){
                     Block target = w.getBlockAt(xx, yy + y, zz);
-                    if (target.getType() == Material.AIR){
-                        target.setTypeId(Material.CACTUS.getId(), false);
+                    if (target.getType() == AIR){
+                        target.setTypeId(CACTUS.getId(), false);
                     }
                 }
             }
@@ -103,7 +95,7 @@ public class DesertBiome implements BiomeGen{
                 int zz = r.nextInt(16) + (c.getZ() << 4);
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy, zz);
-                if (target.getRelative(BlockFace.DOWN).getType() == Material.SAND) target.setType(Material.DEAD_BUSH);
+                if (target.getRelative(BlockFace.DOWN).getType() == SAND) target.setType(DEAD_BUSH);
             }
         }
     }
@@ -113,62 +105,62 @@ public class DesertBiome implements BiomeGen{
         for (int x = (size * -1) - 4; x < size + 4; x++) for (int z = (size * -1) - 4; z < size + 4; z++){
             int height = w.getHighestBlockYAt(xx + x, zz + z);
             Block testBlock = w.getHighestBlockAt(xx + x, zz + z);
-            if (testBlock.getType() == Material.LONG_GRASS || testBlock.getType() == Material.RED_ROSE || testBlock.getType() == Material.YELLOW_FLOWER) height -= 1;
+            if (testBlock.getType() == LONG_GRASS || testBlock.getType() == RED_ROSE || testBlock.getType() == YELLOW_FLOWER) height -= 1;
             for (int y = (size * -1) - 4; y < size; y++){
                 Block block = w.getBlockAt(xx + x, yy + y, zz + z);
                 double distance = center.distance(block.getLocation());
                 double hDistance = center.distance(new Location(w, xx + x, yy, zz + z));
                 Material replace = null;
                 if (distance < size){
-                    if (y < 0) replace = Material.WATER;
-                    else replace = Material.AIR;
+                    if (y < 0) replace = WATER;
+                    else replace = AIR;
                     if (!block.isLiquid()) block.setType(replace);
                 }
                 else if (hDistance < size + 2){
-                    if (y == -1) replace = Material.GRASS;
-                    else if (y < 0) replace = Material.DIRT;
+                    if (y == -1) replace = GRASS;
+                    else if (y < 0) replace = DIRT;
                     else if (y > -1 && !block.isEmpty() &&
-                            block.getType() != Material.LONG_GRASS &&
-                            block.getType() != Material.RED_ROSE &&
-                            block.getType() != Material.YELLOW_FLOWER &&
-                            block.getType() != Material.SUGAR_CANE_BLOCK &&
-                            block.getType() != Material.LOG &&
-                            block.getType() != Material.LEAVES &&
+                            block.getType() != LONG_GRASS &&
+                            block.getType() != RED_ROSE &&
+                            block.getType() != YELLOW_FLOWER &&
+                            block.getType() != SUGAR_CANE_BLOCK &&
+                            block.getType() != LOG &&
+                            block.getType() != LEAVES &&
                             !block.isLiquid()){
                         Block ublock = block.getRelative(BlockFace.UP);
                         if (ublock.isEmpty() ||
-                            ublock.getType() == Material.LONG_GRASS ||
-                            ublock.getType() == Material.RED_ROSE ||
-                            ublock.getType() == Material.YELLOW_FLOWER ||
-                            ublock.getType() == Material.SUGAR_CANE_BLOCK ||
-                            ublock.getType() == Material.LOG ||
-                            ublock.getType() == Material.LEAVES) replace = Material.GRASS;
-                        else replace = Material.DIRT;
+                            ublock.getType() == LONG_GRASS ||
+                            ublock.getType() == RED_ROSE ||
+                            ublock.getType() == YELLOW_FLOWER ||
+                            ublock.getType() == SUGAR_CANE_BLOCK ||
+                            ublock.getType() == LOG ||
+                            ublock.getType() == LEAVES) replace = GRASS;
+                        else replace = DIRT;
                     }
                     if (replace != null && !block.isLiquid() && !block.getRelative(BlockFace.DOWN).isEmpty()) {
                         block.setType(replace);
-                        if (replace == Material.GRASS){
+                        if (replace == GRASS){
                             int life = r.nextInt(64);
-                            if (life <= 4) block.getRelative(BlockFace.UP).setTypeIdAndData(Material.LONG_GRASS.getId(), (byte)1, true);
-                            else if (life == 10 || life == 11) block.getRelative(BlockFace.UP).setType(Material.RED_ROSE);
-                            else if (life == 20 || life == 21) block.getRelative(BlockFace.UP).setType(Material.YELLOW_FLOWER);
+                            if (life <= 4) block.getRelative(BlockFace.UP).setTypeIdAndData(LONG_GRASS.getId(), (byte)1, true);
+                            else if (life == 10 || life == 11) block.getRelative(BlockFace.UP).setType(RED_ROSE);
+                            else if (life == 20 || life == 21) block.getRelative(BlockFace.UP).setType(YELLOW_FLOWER);
                             else if (life == 30 && trees) plugin.getTreeGenerator().gen(r, block.getRelative(BlockFace.UP).getLocation());
                             else if (life == 31 && distance < size + 1 && y == 0){
                                 int caneHeight = r.nextInt(2) + 2;
-                                for (int cy = 0; cy <= caneHeight; cy++) block.getRelative(0, cy, 0).setType(Material.SUGAR_CANE_BLOCK);
+                                for (int cy = 0; cy <= caneHeight; cy++) block.getRelative(0, cy, 0).setType(SUGAR_CANE_BLOCK);
                             }
                         }
                     }
                 }
                 else if (hDistance < size + 3){
-                    if (y == -1) replace = Material.GRASS;
-                    else if (y < 0) replace = Material.DIRT;
+                    if (y == -1) replace = GRASS;
+                    else if (y < 0) replace = DIRT;
                     Block nBlock = w.getBlockAt(xx + x, (int)((yy + ((yy + height) / 2.0)) / 2.0) + y, zz + z);
                     if (replace != null && !block.isLiquid()) nBlock.setType(replace);
                 }
                 else if (hDistance < size + 4){
-                    if (y == -1) replace = Material.GRASS;
-                    else if (y < 0) replace = Material.DIRT;
+                    if (y == -1) replace = GRASS;
+                    else if (y < 0) replace = DIRT;
                     Block nBlock = w.getBlockAt(xx + x, (int)((height + ((height + yy) / 2.0)) / 2.0) + y, zz + z);
                     if (replace != null && !block.isLiquid()) nBlock.setType(replace);
                 }

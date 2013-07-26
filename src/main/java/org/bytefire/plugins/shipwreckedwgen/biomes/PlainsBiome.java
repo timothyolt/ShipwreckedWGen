@@ -10,6 +10,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class PlainsBiome implements BiomeGen{
     private ShipwreckedWGen plugin;
     public PlainsBiome(ShipwreckedWGen plugin){
@@ -20,7 +22,7 @@ public class PlainsBiome implements BiomeGen{
     int largeBlobCount = 24;
     int landHeight = 4;
     int extraDetail = 6;
-    Material[] topsoil = {Material.GRASS, Material.DIRT};
+    Material[] topsoil = {GRASS, DIRT};
 
     public int getSmallBlobCount() {
         return smallBlobCount;
@@ -70,7 +72,7 @@ public class PlainsBiome implements BiomeGen{
                 int zz = r.nextInt(16) + (c.getZ() << 4);
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy , zz);
-                if (!target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.YELLOW_FLOWER.getId(), (byte) 0, false);
+                if (!target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(YELLOW_FLOWER.getId(), (byte) 0, false);
             }
         }
         //Red Roses
@@ -81,7 +83,7 @@ public class PlainsBiome implements BiomeGen{
                 int zz = r.nextInt(16) + (c.getZ() << 4);
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy , zz);
-                if (!target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.RED_ROSE.getId(), (byte) 0, false);
+                if (!target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(RED_ROSE.getId(), (byte) 0, false);
             }
         }
         //Long Grass
@@ -92,7 +94,8 @@ public class PlainsBiome implements BiomeGen{
             int zz = z + (c.getZ() << 4);
             int yy = w.getHighestBlockYAt(xx, zz);
             Block target = w.getBlockAt(xx, yy , zz);
-            if (r.nextInt(grassDensity) == 0 && target.getRelative(0, -1, 0).getType() != Material.LEAVES && target.getRelative(0, -1, 0).getType() != Material.SAND && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
+            Material groundType = target.getRelative(0, -1, 0).getType();
+            if (r.nextInt(grassDensity) == 0 && groundType != LEAVES && groundType != SAND && groundType != LEAVES && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(LONG_GRASS.getId(), (byte) 1, false);
         }
     }
 }

@@ -8,6 +8,8 @@ import org.bukkit.block.Block;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import static org.bukkit.Material.*;
+
 public class ForestOakTree implements BiomeTree{
     private Random rand;
     private Location center;
@@ -81,7 +83,7 @@ public class ForestOakTree implements BiomeTree{
         BlockIterator branch = new BlockIterator(center.getWorld(), start, mod, 0, rand.nextInt(2) + 3);
         if (branch != null) while (branch.hasNext()){
             Block target = branch.next();
-            if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), type, false);
+            if (target.isEmpty() || target.getType() == LEAVES) target.setTypeIdAndData(LOG.getId(), type, false);
             else{
                 foiliage(target.getLocation(), 2);
                 break;
@@ -95,16 +97,16 @@ public class ForestOakTree implements BiomeTree{
             Location target = new Location(origin.getWorld(), origin.getBlockX() + x, origin.getBlockY(), origin.getBlockZ() + z);
             double dist = origin.distance(target);
             Block block = target.getBlock().getRelative(0, -2, 0);
-            if (!(Math.abs(x) == size && Math.abs(z) == size) && block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+            if (!(Math.abs(x) == size && Math.abs(z) == size) && block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
             block = block.getRelative(0, 1, 0);
-            if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+            if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
             block = block.getRelative(0, 1, 0);
-            if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+            if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
             block = block.getRelative(0, 1, 0);
-            if (!(Math.abs(x) == size && Math.abs(z) == size) && block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+            if (!(Math.abs(x) == size && Math.abs(z) == size) && block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
             if (dist <= size - 1){
                 block = block.getRelative(0, 1, 0);
-                if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+                if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
             }
         }
     }
@@ -116,12 +118,12 @@ public class ForestOakTree implements BiomeTree{
             if (!center.getBlock().getRelative(0, ySection, 0).isEmpty()) term = true;
         }
         Material seedType = center.getBlock().getRelative(0, -1, 0).getType();
-        if (seedType != Material.GRASS && seedType != Material.DIRT && seedType != Material.SAND) term = true;
+        if (seedType != GRASS && seedType != DIRT && seedType != SAND) term = true;
         //tree generation
         if (!term){
             for (int ySection = 0; ySection <= height + 4 && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
-                target.setType(Material.LOG);
+                target.setType(LOG);
                 if (ySection > height) branch(ySection, 3);
                 if (ySection == height + 4){
                     int crown1 = rand.nextInt(2) + 2;
@@ -131,22 +133,22 @@ public class ForestOakTree implements BiomeTree{
                     for (int i = 0; i <= 4; i++){
                         if (i <= crown1){
                             Block newTar = target.getRelative(i, i, i);
-                            if (newTar.isEmpty() || newTar.getType() == Material.LEAVES) newTar.setType(Material.LOG);
+                            if (newTar.isEmpty() || newTar.getType() == LEAVES) newTar.setType(LOG);
                             if (i + 1 > crown1) foiliage(target.getRelative(i, i, i).getLocation(), 2);
                         }
                         if (i <= crown2){
                             Block newTar = target.getRelative( i, i, -i);
-                            if (newTar.isEmpty() || newTar.getType() == Material.LEAVES) newTar.setType(Material.LOG);
+                            if (newTar.isEmpty() || newTar.getType() == LEAVES) newTar.setType(LOG);
                             if (i + 1 > crown2) foiliage(target.getRelative(i, i, -i).getLocation(), 2);
                         }
                         if (i <= crown3){
                             Block newTar = target.getRelative(-i, i,  i);
-                            if (newTar.isEmpty() || newTar.getType() == Material.LEAVES) newTar.setType(Material.LOG);
+                            if (newTar.isEmpty() || newTar.getType() == LEAVES) newTar.setType(LOG);
                             if (i + 1 > crown3) foiliage(target.getRelative(-i, i, i).getLocation(), 2);
                         }
                         if (i <= crown4){
                             Block newTar = target.getRelative(-i, i, -i);
-                            if (newTar.isEmpty() || newTar.getType() == Material.LEAVES) newTar.setType(Material.LOG);
+                            if (newTar.isEmpty() || newTar.getType() == LEAVES) newTar.setType(LOG);
                             if (i + 1 > crown4) foiliage(target.getRelative(-i, i, -i).getLocation(), 2);
                         }
                     }
@@ -155,18 +157,18 @@ public class ForestOakTree implements BiomeTree{
                     for (int i = 0; i < extHeight + 2; i++){
                         if (ext){
                             if (i < extHeight) {
-                                target.getRelative(1, i, 1).setTypeIdAndData(Material.LOG.getId(), (byte) 0, false);
+                                target.getRelative(1, i, 1).setTypeIdAndData(LOG.getId(), (byte) 0, false);
                                 if (i + 1 >= extHeight) foiliage(target.getRelative(1, i, 1).getLocation(), 2);
                             }
-                            target.getRelative(-1, i, -1).setTypeIdAndData(Material.LOG.getId(), (byte) 0, false);
+                            target.getRelative(-1, i, -1).setTypeIdAndData(LOG.getId(), (byte) 0, false);
                             if (i + 1 >= extHeight + 2) foiliage(target.getRelative(-1, i, -1).getLocation(), 2);
                         }
                         else{
                             if (i < extHeight) {
-                                target.getRelative(1, i, -1).setTypeIdAndData(Material.LOG.getId(), (byte) 0, false);
+                                target.getRelative(1, i, -1).setTypeIdAndData(LOG.getId(), (byte) 0, false);
                                 if (i + 1 >= extHeight) foiliage(target.getRelative(1, i, -1).getLocation(), 2);
                             }
-                            target.getRelative(-1, i, 1).setTypeIdAndData(Material.LOG.getId(), (byte) 0, false);
+                            target.getRelative(-1, i, 1).setTypeIdAndData(LOG.getId(), (byte) 0, false);
                             if (i + 1 >= extHeight + 2) foiliage(target.getRelative(-1, i, 1).getLocation(), 2);
                         }
                     }

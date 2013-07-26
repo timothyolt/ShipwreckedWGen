@@ -11,6 +11,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import static org.bukkit.Material.*;
+
 public class ForestBiome implements BiomeGen{
     private ShipwreckedWGen plugin;
     public ForestBiome(ShipwreckedWGen plugin){
@@ -21,7 +23,7 @@ public class ForestBiome implements BiomeGen{
     int largeBlobCount = 24;
     int landHeight = 16;
     int extraDetail = 6;
-    Material[] topsoil = {Material.GRASS, Material.DIRT, Material.DIRT};
+    Material[] topsoil = {GRASS, DIRT, DIRT};
 
     public int getSmallBlobCount() {
         return smallBlobCount;
@@ -63,8 +65,8 @@ public class ForestBiome implements BiomeGen{
            int zz = r.nextInt(16) + (c.getZ() << 4);
            int yy = w.getHighestBlockYAt(xx, zz);
            Location root = new Location(w, xx, yy, zz);
-           if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
-               if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+           if (root.getBlock().getRelative(0, -1, 0).getType() == LEAVES) for (int y = 0; y > -25; y--){
+               if (root.getBlock().getRelative(0, y - 1, 0).getType() == GRASS) root = new Location(w, xx, yy + y, zz);
            }
            plugin.getTreeGenerator().gen(r, root);
         }
@@ -74,8 +76,8 @@ public class ForestBiome implements BiomeGen{
            int zz = r.nextInt(16) + (c.getZ() << 4);
            int yy = w.getHighestBlockYAt(xx, zz);
            Location root = new Location(w, xx, yy, zz);
-           if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
-               if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+           if (root.getBlock().getRelative(0, -1, 0).getType() == LEAVES) for (int y = 0; y > -25; y--){
+               if (root.getBlock().getRelative(0, y - 1, 0).getType() == GRASS) root = new Location(w, xx, yy + y, zz);
            }
            plugin.getTreeGenerator().gen(r, root, TreeType.BIRCH);
         }
@@ -85,8 +87,8 @@ public class ForestBiome implements BiomeGen{
            int zz = r.nextInt(16) + (c.getZ() << 4);
            int yy = w.getHighestBlockYAt(xx, zz);
            Location root = new Location(w, xx, yy, zz);
-           if (root.getBlock().getRelative(0, -1, 0).getType() == Material.LEAVES) for (int y = 0; y > -25; y--){
-               if (root.getBlock().getRelative(0, y - 1, 0).getType() == Material.GRASS) root = new Location(w, xx, yy + y, zz);
+           if (root.getBlock().getRelative(0, -1, 0).getType() == LEAVES) for (int y = 0; y > -25; y--){
+               if (root.getBlock().getRelative(0, y - 1, 0).getType() == GRASS) root = new Location(w, xx, yy + y, zz);
            }
            plugin.getTreeGenerator().gen(r, root, TreeType.REDWOOD);
         }
@@ -99,7 +101,7 @@ public class ForestBiome implements BiomeGen{
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy , zz);
                 Material baseType = target.getRelative(0, -1, 0).getType();
-                if (baseType != Material.WATER && baseType != Material.ICE && baseType != Material.LEAVES && target.isEmpty()) target.setTypeIdAndData(Material.YELLOW_FLOWER.getId(), (byte) 0, false);
+                if (baseType != WATER && baseType != ICE && baseType != LEAVES && target.isEmpty()) target.setTypeIdAndData(YELLOW_FLOWER.getId(), (byte) 0, false);
             }
         }
         //Red Roses
@@ -111,7 +113,7 @@ public class ForestBiome implements BiomeGen{
                 int yy = w.getHighestBlockYAt(xx, zz);
                 Block target = w.getBlockAt(xx, yy , zz);
                 Material baseType = target.getRelative(0, -1, 0).getType();
-                if (baseType != Material.WATER && baseType != Material.ICE && target.isEmpty()) target.setTypeIdAndData(Material.RED_ROSE.getId(), (byte) 0, false);
+                if (baseType != WATER && baseType != ICE && target.isEmpty()) target.setTypeIdAndData(RED_ROSE.getId(), (byte) 0, false);
             }
         }
         //Long Grass
@@ -123,7 +125,8 @@ public class ForestBiome implements BiomeGen{
             int yy = w.getHighestBlockYAt(xx, zz);
             Block target = w.getBlockAt(xx, yy , zz);
             Material baseType = target.getRelative(0, -1, 0).getType();
-            if (r.nextInt(grassDensity) == 0 && baseType != Material.WATER && baseType != Material.ICE && baseType != Material.LEAVES && baseType != Material.SAND && target.isEmpty()) target.setTypeIdAndData(Material.LONG_GRASS.getId(), (byte) 1, false);
+            Material groundType = target.getRelative(0, -1, 0).getType();
+            if (r.nextInt(grassDensity) == 0 && groundType != LEAVES && groundType != SAND && groundType != LEAVES && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(LONG_GRASS.getId(), (byte) 1, false);
         }
     }
 }

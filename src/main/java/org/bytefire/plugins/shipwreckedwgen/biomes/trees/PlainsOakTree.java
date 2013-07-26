@@ -7,6 +7,8 @@ import org.bukkit.block.Block;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import static org.bukkit.Material.*;
+
 public class PlainsOakTree implements BiomeTree{
     private Random rand;
     private Location center;
@@ -62,7 +64,7 @@ public class PlainsOakTree implements BiomeTree{
         BlockIterator branch = new BlockIterator(center.getWorld(), start, mod, 0, 4);
         if (branch != null) while (branch.hasNext()){
             Block target = branch.next();
-            if (target.isEmpty() || target.getType() == Material.LEAVES) target.setTypeIdAndData(Material.LOG.getId(), type, false);
+            if (target.isEmpty() || target.getType() == LEAVES) target.setTypeIdAndData(LOG.getId(), type, false);
             else{
                 foiliage(target.getLocation(), 4);
                 break;
@@ -77,12 +79,12 @@ public class PlainsOakTree implements BiomeTree{
             double dist = origin.distance(target);
             if (dist <= size){
                 Block block = target.getBlock();
-                if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+                if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
                 block = block.getRelative(0, 1, 0);
-                if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+                if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
                 if (dist <= size - 2){
                     block = block.getRelative(0, 1, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
                 }
             }
         }
@@ -96,12 +98,12 @@ public class PlainsOakTree implements BiomeTree{
             if (!center.getBlock().getRelative(0, ySection, 0).isEmpty()) term = true;
         }
         Material seedType = center.getBlock().getRelative(0, -1, 0).getType();
-        if (seedType != Material.GRASS && seedType != Material.DIRT && seedType != Material.SAND) term = true;
+        if (seedType != GRASS && seedType != DIRT && seedType != SAND) term = true;
         //tree generation
         if (!term){
             for (int ySection = 0; ySection <= height + extra && !term; ySection++){
                 Block target = center.getBlock().getRelative(0, ySection, 0);
-                target.setType(Material.LOG);
+                target.setType(LOG);
                 if (ySection == height) for (int i = 0; i <= branches; i++) branch(ySection, extra);
                 if (ySection == height + extra) foiliage(target.getLocation(), 6);
             }

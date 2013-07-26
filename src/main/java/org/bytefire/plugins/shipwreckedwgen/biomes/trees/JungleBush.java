@@ -2,8 +2,9 @@ package org.bytefire.plugins.shipwreckedwgen.biomes.trees;
 
 import java.util.Random;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
+
+import static org.bukkit.Material.*;
 
 public class JungleBush implements BiomeTree{
     private Random rand;
@@ -31,12 +32,12 @@ public class JungleBush implements BiomeTree{
             double dist = origin.distance(target);
             if (dist <= size){
                 Block block = target.getBlock();
-                if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+                if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
                 block = block.getRelative(0, 1, 0);
-                if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+                if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
                 if (dist <= size - 2){
                     block = block.getRelative(0, 1, 0);
-                    if (block.isEmpty()) block.setTypeIdAndData(Material.LEAVES.getId(), (byte) 0, false);
+                    if (block.isEmpty()) block.setTypeIdAndData(LEAVES.getId(), (byte) 0, false);
                 }
             }
         }
@@ -45,10 +46,10 @@ public class JungleBush implements BiomeTree{
     public boolean generate(){
         //bound check
         boolean term = false;
-        if (!center.getBlock().isEmpty() || center.getBlock().getType() == Material.LEAVES) term = true;
+        if (!center.getBlock().isEmpty() || center.getBlock().getType() == LEAVES) term = true;
         //tree generation
         if (!term){
-            center.getBlock().setTypeIdAndData(Material.LOG.getId(), (byte)3, false);
+            center.getBlock().setTypeIdAndData(LOG.getId(), (byte)3, false);
             foiliage(center, rand.nextInt(4) + 4);
         }
         return term; //If interrupted, it returns true.
