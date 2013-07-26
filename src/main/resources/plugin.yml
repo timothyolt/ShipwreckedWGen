@@ -2,8 +2,8 @@ author: Darkeh
 database: false
 description: Completely new generators for the Overworld, the Nether, and Skylands
 generator: http://dinnerbone.com/minecraft/tools/pluginator/
-main: me.darkeh.plugins.shipwreckedwgen.ShipwreckedWGen
+main: org.bytefire.plugins.shipwreckedwgen.ShipwreckedWGen
 name: ShipGen
 load: STARTUP
 version: '0.74'
-depends: 'org.bukkit.bukkit-1.4.5-R1.0'
+depends: 'org.bukkit.bukkit-1.6.2-R0.1'
