@@ -10,6 +10,8 @@ import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.Vector;
 
+import static java.lang.Math.*;
+
 import static org.bukkit.Material.*;
 
 public class OrePopulator extends BlockPopulator{
@@ -29,7 +31,7 @@ public class OrePopulator extends BlockPopulator{
                 if(section==11) yy = random.nextInt(125) + 89;
                 else yy = random.nextInt(8) + (section * 8) + 1;
                 int zz = z + (chunk.getZ() * 16);
-                if (section == 7||section == 6) oreVein(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 6, random, IRON_ORE, chunk);
+                if ((section == 7||section == 6)&&random.nextInt(3)!=1) oreVein(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 6, random, IRON_ORE, chunk);
                 else if (section == 5 && choice == true) oreVein(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 4, random, GOLD_ORE, chunk);
                 else if (section == 4 && random.nextInt(4) == 1) orePowder(new Vector(xx, yy, zz), new Vector(random.nextInt(8) - 4, random.nextInt(4) - 2, random.nextInt(8) - 4), world, 4, random, REDSTONE_ORE, chunk);
                 else if (section == 3){
@@ -143,31 +145,21 @@ public class OrePopulator extends BlockPopulator{
 
     void oreRaycast(World w, Vector s, Vector d, int length, Material mat){
         Vector start = s;
-        double max = Math.max(Math.max(d.getX(), d.getY()), d.getZ());
+        double max = max(max(abs(d.getX()), abs(d.getY())), abs(d.getZ()));
         double xInc = d.getX()/max;
         double yInc = d.getY()/max;
         double zInc = d.getZ()/max;
         for(int i = 0; i <= length; i++){
             Block target;
             target = plugin.getChunkHandler().getBlockSafely(w,
-                    (int) Math.floor(start.getX() + xInc),
-                    (int) Math.floor(start.getY() + yInc),
-                    (int) Math.floor(start.getZ() + zInc));
+                    (int) floor(start.getX() + xInc),
+                    (int) floor(start.getY() + yInc),
+                    (int) floor(start.getZ() + zInc));
             if (target != null && target.getType() == STONE && start.getY() < 240) target.setType(mat);
             target = plugin.getChunkHandler().getBlockSafely(w,
-                    (int) Math.ceil(start.getX() + xInc),
-                    (int) Math.ceil(start.getY() + yInc),
-                    (int) Math.ceil(start.getZ() + zInc));
-            if (target != null && target.getType() == STONE && start.getY() < 240) target.setType(mat);
-            target = plugin.getChunkHandler().getBlockSafely(w,
-                    (int) Math.ceil(start.getX() + xInc),
-                    (int) Math.floor(start.getY() + yInc),
-                    (int) Math.ceil(start.getZ() + zInc));
-            if (target != null && target.getType() == STONE && start.getY() < 240) target.setType(mat);
-            target = plugin.getChunkHandler().getBlockSafely(w,
-                    (int) Math.floor(start.getX() + xInc),
-                    (int) Math.ceil(start.getY() + yInc),
-                    (int) Math.floor(start.getZ() + zInc));
+                    (int) ceil(start.getX() + xInc),
+                    (int) ceil(start.getY() + yInc),
+                    (int) ceil(start.getZ() + zInc));
             if (target != null && target.getType() == STONE && start.getY() < 240) target.setType(mat);
             s.add(new Vector(xInc, yInc, zInc));
         }
