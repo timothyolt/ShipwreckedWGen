@@ -19,7 +19,7 @@ public class RavinePopulator extends BlockPopulator{
 
     @Override
     public void populate(World world, Random random, Chunk chunk){
-        int chance = random.nextInt(2000);
+        int chance = random.nextInt(1600);
         if (chance == 1){
             int xx = chunk.getX() << 16;
             int zz = chunk.getZ() << 16;
@@ -47,7 +47,7 @@ public class RavinePopulator extends BlockPopulator{
                     widthB = -1;
                 }
 
-                if (length > 400){
+                if (length > 600){
                     widthA = -1;
                     widthB = -1;
                 }
