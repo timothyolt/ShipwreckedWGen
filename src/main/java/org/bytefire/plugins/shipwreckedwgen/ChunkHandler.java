@@ -40,9 +40,10 @@ public class ChunkHandler {
 
     public void add(Chunk c, boolean bypass){
         long addition = intToLong(c.getX(), c.getZ());
-        if (bypass || closePlayer(c)){
-            populateChunk.add(addition);
-        }
+//        if (bypass || closePlayer(c)){
+//            populateChunk.add(addition);
+//        }
+        populateChunk.add(addition);
     }
 
     public boolean get(Chunk c){
