@@ -120,7 +120,7 @@ public class ForestHillsBiome implements BiomeGen {
             Block target = w.getBlockAt(xx, yy , zz);
             Material baseType = target.getRelative(0, -1, 0).getType();
             Material groundType = target.getRelative(0, -1, 0).getType();
-            if (r.nextInt(grassDensity) == 0 && groundType != LEAVES && groundType != SAND && groundType != LEAVES && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(LONG_GRASS.getId(), (byte) 1, false);
+            if (r.nextInt(grassDensity) == 0 && groundType != LEAVES && groundType != SAND && groundType != ICE && !target.getRelative(0, -1, 0).isLiquid() && target.isEmpty()) target.setTypeIdAndData(LONG_GRASS.getId(), (byte) 1, false);
         }
     }
 }
