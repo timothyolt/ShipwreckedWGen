@@ -16,7 +16,7 @@ public class ChunkHandler {
 
     ArrayList<Long> populateChunk = new ArrayList<Long>();
 
-    private long intToLong(int x, int z){
+    public static long intToLong(int x, int z){
         return (((long)x) << 32) + (long)z;
     }
 

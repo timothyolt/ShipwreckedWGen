@@ -26,7 +26,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
     public OverworldChunkGenerator(ShipwreckedWGen plugin){
         this.plugin = plugin;
     }
-    private ArrayList<BlockPopulator> populators;
+    
     //CONFIG
     final Material base = STONE;
     final Material bottom = BEDROCK;
