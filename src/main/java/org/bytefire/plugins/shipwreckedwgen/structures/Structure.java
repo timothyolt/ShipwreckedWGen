@@ -3,7 +3,6 @@ package org.bytefire.plugins.shipwreckedwgen.structures;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -53,20 +52,34 @@ public class Structure {
     public void setType(StructureType type){
         this.type = type;
     }
-
+    
     public StructureChunk getChunk(Long hash){
+        return getChunk(hash, true);
+    }
+
+    public StructureChunk getChunk(Long hash, boolean generate){
         if (chunks.containsKey(hash)) return chunks.get(hash);
-        StructureChunk chunk = new StructureChunk(this, (int)(hash & 0xffffffff), (int)(hash >> 32));
-        chunks.put(hash, chunk);
-        return chunk;
+        if (generate) {
+            StructureChunk chunk = new StructureChunk(this, (int)(hash >> 32), (int)(hash & 0xffffffff));
+            chunks.put(hash, chunk);
+            return chunk;
+        }
+        return null;
     }
-
+    
     public StructureChunk getChunk(int x, int z){
-        return getChunk((((long)x) << 32) + (long)z);
+        return getChunk(x, z, true);
     }
 
+    public StructureChunk getChunk(int x, int z, boolean generate){
+        return getChunk((((long)x) << 32) + (long)z, generate);
+    }
     public StructureChunk getChunk(Location loc){
-        return getChunk((int)loc.getX() >> 4, (int)loc.getY() >> 4);
+        return getChunk(loc, true);
+    }
+
+    public StructureChunk getChunk(Location loc, boolean generate){
+        return getChunk((int)loc.getX() >> 4, (int)loc.getZ() >> 4, generate);
     }
 
     protected HashMap<Long,StructureChunk> getAllChunks(){
@@ -79,27 +92,51 @@ public class Structure {
     }
 
     public int getBlockId(int x, int y, int z){
-        return getChunk(x >> 4, z >> 4).getSection(y >> 4).getBlockId(x, y - ((y >> 4) * 16), z);
+        StructureChunk chunk = getChunk(x >> 4, z >> 4, false);
+        if (chunk == null) return 0;
+        StructureSection sect = chunk.getSection(y >> 4, false);
+        if (sect == null) return 0;
+        return sect.getBlockId(x, y - ((y >> 4) * 16), z);
     }
 
     public void setBlockId(int x, int y, int z, int id){
-        getChunk(x >> 4, z >> 4).getSection(y >> 4).setBlockId(x, y - ((y >> 4) * 16), z, id);
+        StructureChunk chunk = getChunk(x >> 4, z >> 4, false);
+        if (chunk == null) return;
+        StructureSection sect = chunk.getSection(y >> 4, false);
+        if (sect == null) return;
+        sect.setBlockId(x, y - ((y >> 4) * 16), z, id);
     }
 
     public byte getBlockData(int x, int y, int z){
-        return getChunk(x >> 4, z >> 4).getSection(y >> 4).getBlockData(x, y - ((y >> 4) * 16), z);
+        StructureChunk chunk = getChunk(x >> 4, z >> 4, false);
+        if (chunk == null) return 0;
+        StructureSection sect = chunk.getSection(y >> 4, false);
+        if (sect == null) return 0;
+        return sect.getBlockData(x, y - ((y >> 4) * 16), z);
     }
 
     public void setBlockData(int x, int y, int z, byte data){
-        getChunk(x >> 4, z >> 4).getSection(y >> 4).setBlockData(x, y - ((y >> 4) * 16), z, data);
+        StructureChunk chunk = getChunk(x >> 4, z >> 4, false);
+        if (chunk == null) return;
+        StructureSection sect = chunk.getSection(y >> 4, false);
+        if (sect == null) return;
+        sect.setBlockData(x, y - ((y >> 4) * 16), z, data);
     }
 
     public boolean getBlockPassive(int x, int y, int z){
-        return getChunk(x >> 4, z >> 4).getSection(y >> 4).getBlockPassive(x, y - ((y >> 4) * 16), z);
+        StructureChunk chunk = getChunk(x >> 4, z >> 4, false);
+        if (chunk == null) return true;
+        StructureSection sect = chunk.getSection(y >> 4, false);
+        if (sect == null) return true;
+        return sect.getBlockPassive(x, y - ((y >> 4) * 16), z);
     }
 
     public void setBlockPassive(int x, int y, int z, boolean passive){
-        getChunk(x >> 4, z >> 4).getSection(y >> 4).setBlockPassive(x, y - ((y >> 4) * 16), z, passive);
+        StructureChunk chunk = getChunk(x >> 4, z >> 4, false);
+        if (chunk == null) return;
+        StructureSection sect = chunk.getSection(y >> 4, false);
+        if (sect == null) return;
+        sect.setBlockPassive(x, y - ((y >> 4) * 16), z, passive);
     }
 
     public Biome getRequiredBiome(){
@@ -134,30 +171,31 @@ public class Structure {
         this.growFromBounds = growFromBounds;
     }
 
-    public void save(){
+    public void update(){
         StructureHandler handle = ((ShipwreckedWGen) Bukkit.getPluginManager().getPlugin("ShipGen")).getStructureHandler();
-        ArrayList<Long> queuedUpdates = handle.getQueuedUpates(getName());
-        if (queuedUpdates == null) return;
+        ArrayList<Long> rawUpdates = handle.getQueuedUpates(getName());
+        if (rawUpdates == null) return;
+        ArrayList<Long> queuedUpdates = (ArrayList<Long>) rawUpdates.clone();
         World world = Bukkit.getServer().getWorld(getName());
 
         for (Long update : queuedUpdates){
-            int x = (int)(update >> 32);
-            int z = (int)(update & 0xFFFFFFFF);
-
+            int x = (int)(update & 0xFFFFFFFF);
+            int z = (int)(update >> 32);
             ChunkSnapshot chunk = world.getChunkAt(x, z).getChunkSnapshot();
-
-            for (int y = 0; y < world.getMaxHeight() / 3; y++){
+            
+            for (int y = 0; y < world.getMaxHeight() / 16; y++){
                 if (!chunk.isSectionEmpty(y)){
+    System.out.println("Queue: " + Integer.toString(x) + ", " + Integer.toString(z));
                     for (int xx = 0; xx < 16; xx ++) for (int yy = 0; yy < 16; yy ++) for (int zz = 0; zz < 16; zz ++){
-                        getChunk(x, z).getSection(y).setBlockId(xx, yy, zz, chunk.getBlockTypeId(xx, yy + (y * 16), zz));
-                        getChunk(x, z).getSection(y).setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y * 16), zz));
+                        getChunk(update, true).getSection(y).setBlockId(xx, yy, zz, chunk.getBlockTypeId(xx, yy + (y * 16), zz));
+                        getChunk(update, true).getSection(y).setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y * 16), zz));
                     }
                 }
             }
         }
 
         StructureLoader.saveStructure(this);
-        handle.clearQueuedUpdates(getName());
+        //handle.clearQueuedUpdates(getName());
     }
 
 }

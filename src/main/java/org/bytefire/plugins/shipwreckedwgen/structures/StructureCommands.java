@@ -45,9 +45,9 @@ public class StructureCommands implements CommandExecutor{
         else if ("save".equals(args[0])){
             if (args[1] == null) return true;
             sender.sendMessage("Saving editor world " + args[1] + " ...");
-            boolean outcome = StructureLoader.saveStructure(plugin.getStructureHandler().getEditor(args[1] + ".structure"));
-            if (outcome) sender.sendMessage("Done!");
-            else sender.sendMessage("An error occured with saving the file.");
+            Structure struct = plugin.getStructureHandler().getEditor(args[1] + ".structure");
+            struct.update();
+            sender.sendMessage("Done!");
             return true;
         }
         return true;

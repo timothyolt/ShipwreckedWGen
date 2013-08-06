@@ -19,7 +19,7 @@ public class StructureHandler {
     }
 
     public void addEditor(String world, Structure struct){
-        structEditors.put(world, struct);
+        if (!structEditors.containsKey(world)) structEditors.put(world, struct);
     }
 
     public boolean isEditor(String world){
@@ -33,7 +33,9 @@ public class StructureHandler {
     public void queueUpdate(Chunk chunk){
         String name = chunk.getWorld().getName();
         if (!queuedUpdates.containsKey(name)) queuedUpdates.put(name, new ArrayList<Long>());
-        queuedUpdates.get(name).add(ChunkHandler.intToLong(chunk.getX(), chunk.getZ()));
+        ArrayList<Long> queue = queuedUpdates.get(name);
+        long hash = ChunkHandler.intToLong(chunk.getX(), chunk.getZ());
+        if (!queue.contains(hash)) queue.add(hash);
     }
 
     public ArrayList<Long> getQueuedUpates(String world){

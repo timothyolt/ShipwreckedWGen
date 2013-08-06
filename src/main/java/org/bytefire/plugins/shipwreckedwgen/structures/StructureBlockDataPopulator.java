@@ -16,13 +16,15 @@ public class StructureBlockDataPopulator extends BlockPopulator{
 
     @Override
     public void populate(World world, Random random, Chunk source) {
-        StructureChunk chunk = struct.getChunk(source.getX(), source.getZ());
+        StructureChunk chunk = struct.getChunk(source.getX(), source.getZ(), false);
+        if (chunk == null) return;
         HashMap<Integer, StructureSection> sections = chunk.getAllSections();
         for (StructureSection sect : sections.values()){
-            byte[][][] data = sect.getData();
+            byte[] data = sect.getData();
             int yOffset = sect.getYIndex() * 16;
             for (int x = 0; x < 16; x++) for (int y = 0; y < 16; y++) for (int z = 0; z < 16; z++){
-                byte localData = data[x][y][z];
+                int index = (256 * x) + (16 * z) + y;
+                byte localData = data[index];
                 if (localData != 0) source.getBlock(x, y + yOffset, z).setData(localData);
             }
         }

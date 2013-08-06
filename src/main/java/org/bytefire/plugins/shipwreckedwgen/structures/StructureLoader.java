@@ -33,69 +33,116 @@ public class StructureLoader {
 
             Map<String, Tag> structTag = ((TagCompound)structureInput.readNextTag()).getPayload();
 
-            String name = (String)structTag.get("name").getPayload();
-            Location origin = new Location(null,
-                (Integer)structTag.get("xOrigin").getPayload(),
-                (Integer)structTag.get("yOrigin").getPayload(),
-                (Integer)structTag.get("zOrigin").getPayload());
-            StructureType type = StructureType.valueOf(((TagString)structTag.get("type")).getPayload().toUpperCase());
-
-            Structure struct = new Structure(name, origin, type);
-
-            Tag biomeTest = structTag.get("biome");
-            Biome biome = null;
-            if (biomeTest != null) biome = Biome.valueOf(((TagString)biomeTest).getPayload().toUpperCase());
-            struct.setRequiredBiome(biome);
-
-            struct.setMaxHeight((Integer)structTag.get("yMax").getPayload());
-            struct.setMinHeight((Integer)structTag.get("yMin").getPayload());
-            struct.setGrowFromBounds((Byte)structTag.get("growFromBounds").getPayload() != 0);
-
-            Map<String, Tag> chunks = ((TagCompound)structTag.get("chunks")).getPayload();
+            System.out.println("Contents of compound:");
+            for (String tag : structTag.keySet()){
+                System.out.println(tag);
+            }
+            
+            TagString   tag_name    = (TagString)   structTag.get("name");
+            TagInt      tag_xOrigin = (TagInt)      structTag.get("xOrigin");
+            TagInt      tag_yOrigin = (TagInt)      structTag.get("yOrigin");
+            TagInt      tag_zOrigin = (TagInt)      structTag.get("zOrigin");
+            TagString   tag_type    = (TagString)   structTag.get("type");
+            
+            TagString   tag_biome   = (TagString)   structTag.get("biome");
+            TagInt      tag_yMax    = (TagInt)      structTag.get("yMax");
+            TagInt      tag_yMin    = (TagInt)      structTag.get("yMin");
+            TagByte     tag_growFB  = (TagByte)     structTag.get("growFromBounds");
+            
+            TagCompound tag_chunks  = (TagCompound) structTag.get("chunks");
+            
+            if (tag_name == null || tag_xOrigin == null || tag_yOrigin == null || tag_zOrigin == null || tag_type == null){
+                System.err.println("Structure header null");
+                return getEmptyStructure(fileName);
+            }
+            
+            Structure struct = new Structure(
+                tag_name.getPayload(), 
+                new Location(null,
+                    tag_xOrigin.getPayload(),
+                    tag_yOrigin.getPayload(),
+                    tag_zOrigin.getPayload()),
+                StructureType.valueOf(tag_type.getPayload().toUpperCase()));
+            
+            if (tag_biome != null)
+                struct.setRequiredBiome(Biome.valueOf(tag_biome.getPayload().toUpperCase()));
+            if (tag_yMax != null)
+                struct.setMaxHeight(tag_yMax.getPayload());
+            if (tag_yMin != null)
+                struct.setMinHeight(tag_yMin.getPayload());
+            if (tag_growFB != null)
+                struct.setGrowFromBounds(tag_growFB.getPayload() != 0);
+            
+            Map<String, Tag> chunks = new HashMap<String, Tag>();
+            if (tag_chunks != null)
+                chunks = tag_chunks.getPayload();
             for (Tag chunkCompound : chunks.values()) {
                 Map<String, Tag> chunkTag = ((TagCompound)chunkCompound).getPayload();
 
-                int xPos = (Integer)chunkTag.get("xPos").getPayload();
-                int zPos = (Integer)chunkTag.get("zPos").getPayload();
+                TagInt tag_xPos = (TagInt) chunkTag.get("xPos");
+                TagInt tag_zPos = (TagInt) chunkTag.get("zPos");
+                
+                if (tag_xPos == null || tag_zPos == null)
+                    System.out.println("Chunk header null for chunk " + chunkCompound.getName());
+                else {
+                    StructureChunk chunk = new StructureChunk(struct, tag_xPos.getPayload(), tag_zPos.getPayload());
+                    
+                    TagCompound tag_sections = (TagCompound) chunkTag.get("sections");
+                    
+                    Map<String, Tag> sections = new HashMap<String, Tag>();
+                    if (tag_sections != null)
+                        sections = tag_sections.getPayload();
+                    for (Tag sectCompound : sections.values()) {
+                        Map<String, Tag> sectTag = ((TagCompound)sectCompound).getPayload();
 
-                StructureChunk chunk = new StructureChunk(struct, xPos, zPos);
+                        TagInt tag_yIndex = (TagInt) chunkTag.get("yIndex");
+                        
+                        if (tag_yIndex == null)
+                            System.out.println("Section header null for section " + sectCompound.getName());
+                        else {
+                            StructureSection sect = new StructureSection(chunk, tag_yIndex.getPayload());
+                            
+                            TagByteArray tag_blocks  = (TagByteArray) sectTag.get("blocks");
+                            TagByteArray tag_add     = (TagByteArray) sectTag.get("add");
+                            TagByteArray tag_data    = (TagByteArray) sectTag.get("data");
+                            TagByteArray tag_passive = (TagByteArray) sectTag.get("passive");
+                            
+                            if (tag_blocks != null)
+                                sect.addBlockArray(tag_blocks.getPayload());
+                            if (tag_add != null)
+                                sect.addAddArray(tag_add.getPayload());
+                            if (tag_data != null)
+                                sect.addDataArray(tag_data.getPayload());
+                            if (tag_passive != null)
+                                sect.addPassiveArray(tag_passive.getPayload());
 
-                Map<String, Tag> sections = ((TagCompound)chunkTag.get("sections")).getPayload();
-                for (Tag sectCompound : sections.values()) {
-                    Map<String, Tag> sectTag = ((TagCompound)sectCompound).getPayload();
-
-                    int yIndex = (Integer)chunkTag.get("yIndex").getPayload();
-
-                    StructureSection sect = new StructureSection(chunk, yIndex);
-
-                    sect.addBlockArray(format8BitArray(((TagByteArray)sectTag.get("blocks")).getPayload()));
-
-                    Tag addTest = sectTag.get("add");
-                    byte[][][] add = null;
-                    if (addTest != null) add = format4BitArray(((TagByteArray)addTest).getPayload());
-                    sect.addAddArray(add);
-
-                    sect.addDataArray(format8BitArray(((TagByteArray)sectTag.get("data")).getPayload()));
-                    sect.addPassiveArray(format1BitArray(((TagByteArray)sectTag.get("passive")).getPayload()));
-
-                    chunk.addSection(sect);
+                            chunk.addSection(sect);
+                        }
+                    }
+                    struct.addChunk(chunk);
                 }
-                struct.addChunk(chunk);
             }
             return struct;
-        } catch (IOException ex) {return getEmptyStructure(fileName);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return getEmptyStructure(fileName);
         //} catch (ArrayOutOfBoundsException ex) {return null;
         //} catch (ClassCastException ex) {return null;
-        } catch (NBTTagException ex) {return getEmptyStructure(fileName);}
+        } catch (NBTTagException ex) {
+            ex.printStackTrace();
+            return getEmptyStructure(fileName);
+        }
     }
 
     public static boolean saveStructure(Structure structure){
         try{
+    System.out.println("Saving...");
             File dataFolder = new File(Bukkit.getPluginManager().getPlugin("ShipGen").getDataFolder().getAbsolutePath() + File.separator + "structures");
             dataFolder.mkdirs();
             String path = dataFolder.getAbsolutePath();
             NBTOutputStream structOut = new NBTOutputStream(new FileOutputStream(path + File.separator + "test.structure"));
 
+    System.out.println("Saving header");
             HashMap<String, Tag> struct = new HashMap<String, Tag>();
             struct.put("name", new TagString("name", structure.getName()));
             struct.put("xOrigin", new TagInt("xOrigin", structure.getOrigin().getBlockX()));
@@ -110,19 +157,22 @@ public class StructureLoader {
             if (structure.canGrowFromBounds() == false) growFromBounds = 0;
             HashMap<String, Tag> chunkTags = new HashMap<String, Tag>();
             struct.put("growFromBounds", new TagByte("growFromBounds", growFromBounds));
+    System.out.println("Saving chunks");
             Collection<StructureChunk> chunks = structure.getAllChunks().values();
             for (StructureChunk structChunk : chunks){
+    System.out.println("Saving chunk: " + Integer.toString(structChunk.getXPos()) + ", " + Integer.toString(structChunk.getZPos()));
                 HashMap<String, Tag> chunk = new HashMap<String, Tag>();
                 chunk.put("xPos", new TagInt("xPos", structChunk.getXPos()));
                 chunk.put("zPos", new TagInt("zPos", structChunk.getZPos()));
                 HashMap<String, Tag> sectionTags = new HashMap<String, Tag>();
                 Collection<StructureSection> sections = structChunk.getAllSections().values();
                 for (StructureSection chunkSect : sections){
+    System.out.println("Saving section: " + Integer.toString(chunkSect.getYIndex()));
                     HashMap<String, Tag> sect = new HashMap<String, Tag>();
                     sect.put("yIndex", new TagInt("yIndex", chunkSect.getYIndex()));
-                    sect.put("blocks", new TagByteArray("blocks", to8BitArray(chunkSect.getBlocks())));
-                    sect.put("data", new TagByteArray("data", to8BitArray(chunkSect.getData())));
-                    sect.put("passive", new TagByteArray("passive", to1BitArray(chunkSect.getPassive())));
+                    sect.put("blocks", new TagByteArray("blocks", chunkSect.getBlocks()));
+                    sect.put("data", new TagByteArray("data", chunkSect.getData()));
+                    sect.put("passive", new TagByteArray("passive", chunkSect.getPassive()));
 
                     String sectionName = Integer.toString(chunkSect.getYIndex());
                     sectionTags.put(sectionName, new TagCompound(sectionName, sect));
@@ -133,8 +183,10 @@ public class StructureLoader {
                 chunkTags.put(chunkName, new TagCompound(chunkName, chunk));
             }
             struct.put("chunks", new TagCompound("chunks", chunkTags));
-
-            structOut.writeTag(new TagCompound(structure.getName(), struct));
+            
+    System.out.println("File output...");
+            TagCompound root = new TagCompound(structure.getName(), struct);
+            structOut.writeTag(root);
             return true;
         } catch (IOException ex) {ex.printStackTrace();
         //} catch (ArrayOutOfBoundsException ex) {return null;

@@ -41,10 +41,17 @@ public class StructureChunk {
     }
 
     public StructureSection getSection(int yIndex){
+        return getSection(yIndex, true);
+    }
+
+    public StructureSection getSection(int yIndex, boolean generate){
         if (sections.containsKey(yIndex)) return sections.get(yIndex);
-        StructureSection newSection = new StructureSection(this, yIndex);
-        sections.put(yIndex, newSection);
-        return newSection;
+        if (generate) {
+            StructureSection newSection = new StructureSection(this, yIndex);
+            sections.put(yIndex, newSection);
+            return newSection;
+        }
+        return null;
     }
 
     protected void addSection(StructureSection sect){
@@ -52,26 +59,38 @@ public class StructureChunk {
     }
 
     public int getBlockId(int x, int y, int z){
-        return getSection(y >> 4).getBlockId(x, y - ((y >> 4) * 16), z);
+        StructureSection sect = getSection(y >> 4, false);
+        if (sect == null) return 0;
+        return sect.getBlockId(x, y - ((y >> 4) * 16), z);
     }
 
     public void setBlockId(int x, int y, int z, int id){
-        getSection(y >> 4).setBlockId(x, y - ((y >> 4) * 16), z, id);
+        StructureSection sect = getSection(y >> 4, false);
+        if (sect == null) return;
+        sect.setBlockId(x, y - ((y >> 4) * 16), z, id);
     }
 
     public byte getBlockData(int x, int y, int z){
-        return getSection(y >> 4).getBlockData(x, y - ((y >> 4) * 16), z);
+        StructureSection sect = getSection(y >> 4, false);
+        if (sect == null) return 0;
+        return sect.getBlockData(x, y - ((y >> 4) * 16), z);
     }
 
     public void setBlockData(int x, int y, int z, byte data){
-        getSection(y >> 4).setBlockData(x, y - ((y >> 4) * 16), z, data);
+        StructureSection sect = getSection(y >> 4, false);
+        if (sect == null) return;
+        sect.setBlockData(x, y - ((y >> 4) * 16), z, data);
     }
 
     public boolean getBlockPassive(int x, int y, int z){
-        return getSection(y >> 4).getBlockPassive(x, y - ((y >> 4) * 16), z);
+        StructureSection sect = getSection(y >> 4, false);
+        if (sect == null) return true;
+        return sect.getBlockPassive(x, y - ((y >> 4) * 16), z);
     }
 
     public void setBlockPassive(int x, int y, int z, boolean passive){
-        getSection(y >> 4).setBlockPassive(x, y - ((y >> 4) * 16), z, passive);
+        StructureSection sect = getSection(y >> 4);
+        if (sect == null) return;
+        sect.setBlockPassive(x, y - ((y >> 4) * 16), z, passive);
     }
 }

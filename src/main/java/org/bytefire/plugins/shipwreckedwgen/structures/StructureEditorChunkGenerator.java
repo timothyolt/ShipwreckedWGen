@@ -15,7 +15,6 @@ public class StructureEditorChunkGenerator extends ChunkGenerator {
     public StructureEditorChunkGenerator(ShipwreckedWGen plugin, String name){
         this.plugin = plugin;
         this.struct = StructureLoader.loadStructure(name);
-        if (struct == null) System.out.println("PANIC");
         plugin.getStructureHandler().addEditor(name, struct);
     }
 
@@ -23,7 +22,12 @@ public class StructureEditorChunkGenerator extends ChunkGenerator {
     public byte[][] generateBlockSections(World world, Random random, int x, int z, BiomeGrid biomes) {
         byte[][] out = new byte[world.getMaxHeight()/16][];
         for (int i = 0; i < out.length; i++){
-            out[i] = StructureLoader.to8BitArray(struct.getChunk(x, z).getSection(i).getBlocks());
+            StructureChunk chunk = struct.getChunk(x >> 4, z >> 4, false);
+            StructureSection sect = null;
+            if (chunk != null) 
+                sect = chunk.getSection(i, false);
+            if (sect != null)
+                out[i] = sect.getBlocks();
         }
         return out;
     }
