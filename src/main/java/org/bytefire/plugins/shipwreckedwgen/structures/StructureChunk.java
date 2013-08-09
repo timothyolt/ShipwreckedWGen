@@ -1,7 +1,6 @@
 package org.bytefire.plugins.shipwreckedwgen.structures;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
@@ -61,36 +60,36 @@ public class StructureChunk {
     public int getBlockId(int x, int y, int z){
         StructureSection sect = getSection(y >> 4, false);
         if (sect == null) return 0;
-        return sect.getBlockId(x, y - ((y >> 4) * 16), z);
+        return sect.getBlockId(x, y & 0xF, z);
     }
 
     public void setBlockId(int x, int y, int z, int id){
         StructureSection sect = getSection(y >> 4, false);
         if (sect == null) return;
-        sect.setBlockId(x, y - ((y >> 4) * 16), z, id);
+        sect.setBlockId(x, y & 0xF, z, id);
     }
 
     public byte getBlockData(int x, int y, int z){
         StructureSection sect = getSection(y >> 4, false);
         if (sect == null) return 0;
-        return sect.getBlockData(x, y - ((y >> 4) * 16), z);
+        return sect.getBlockData(x, y & 0xF, z);
     }
 
     public void setBlockData(int x, int y, int z, byte data){
         StructureSection sect = getSection(y >> 4, false);
         if (sect == null) return;
-        sect.setBlockData(x, y - ((y >> 4) * 16), z, data);
+        sect.setBlockData(x, y & 0xF, z, data);
     }
 
     public boolean getBlockPassive(int x, int y, int z){
         StructureSection sect = getSection(y >> 4, false);
         if (sect == null) return true;
-        return sect.getBlockPassive(x, y - ((y >> 4) * 16), z);
+        return sect.getBlockPassive(x, y & 0xF, z);
     }
 
     public void setBlockPassive(int x, int y, int z, boolean passive){
         StructureSection sect = getSection(y >> 4);
         if (sect == null) return;
-        sect.setBlockPassive(x, y - ((y >> 4) * 16), z, passive);
+        sect.setBlockPassive(x, y & 0xF, z, passive);
     }
 }

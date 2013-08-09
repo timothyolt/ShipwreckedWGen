@@ -1,6 +1,7 @@
 package org.bytefire.plugins.shipwreckedwgen.structures;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,36 +22,98 @@ public class StructureCommands implements CommandExecutor{
 
     public boolean onCommand(CommandSender sender, Command cmd, String str, String[] args) {
         if (args[0] == null) return true;
-        if ("load".equals(args[0])){
-            if (args[1] == null) return true;
-            sender.sendMessage("Loading editor world " + args[1] + " ...");
+        if      (args[0].equals("load")) return cmdLoad(sender, args);
+        else if (args[0].equals("tp"))   return cmdTp(sender, args);
+        else if (args[0].equals("save")) return cmdSave(sender, args);
+        return true;
+    }
+
+    public boolean cmdLoad(CommandSender sender, String[] args){
+        if (args[1] == null) {
+            error(sender, "No structure specified");
+            return true;
+        }
+        if (Bukkit.getServer().getWorld(args[1] + ".structure") != null){
+            error(sender, "Structure already loaded");
+            return true;
+        }
+        try {
+            message(sender, "Loading editor world " + args[1] + " ...");
             WorldCreator creator = new WorldCreator(args[1] + ".structure");
             creator.environment(World.Environment.NORMAL);
             creator.generator(new StructureEditorChunkGenerator(plugin, args[1] + ".structure"));
             creator.createWorld();
-            sender.sendMessage("Done!");
+
+            message(sender, "Done!");
+            return true;
+        } catch (Exception e){
+            error(sender, "An internal error occurred");
             return true;
         }
-        else if ("tp".equals(args[0])){
-            if (args[1] == null) return true;
-            World destWorld = Bukkit.getServer().getWorld(args[1] + ".structure");
-            if (!plugin.getStructureHandler().isEditor(destWorld.getName())) return true;
-            Location dest = plugin.getStructureHandler().getEditor(args[1] + ".structure").getOrigin();
-            dest.setWorld(destWorld);
-            sender.sendMessage("Teleporting to editor world: " + args[1]);
-            ((Player)sender).teleport(dest);
-            ((Player)sender).setGameMode(GameMode.CREATIVE);
+    }
+
+    public boolean cmdTp(CommandSender sender, String[] args){
+        if (!(sender instanceof Player)){
+            error(sender, "You are not a player");
             return true;
         }
-        else if ("save".equals(args[0])){
-            if (args[1] == null) return true;
-            sender.sendMessage("Saving editor world " + args[1] + " ...");
-            Structure struct = plugin.getStructureHandler().getEditor(args[1] + ".structure");
-            struct.update();
-            sender.sendMessage("Done!");
+        if (args[1] == null) {
+            error(sender, "No structure specified");
             return true;
         }
+        World destWorld = Bukkit.getServer().getWorld(args[1] + ".structure");
+        if (destWorld == null){
+            cmdLoad(sender, args);
+            destWorld = Bukkit.getServer().getWorld(args[1] + ".structure");
+            if (destWorld == null){
+                error(sender, "Structure " + args[1] + " could not be loaded");
+                return true;
+            }
+        }
+        if (!plugin.getStructureHandler().isEditor(destWorld.getName())) {
+            error(sender, args[1] + " does not refer to a structure");
+            return true;
+        }
+        Structure location = plugin.getStructureHandler().getEditor(args[1] + ".structure");
+        Location dest = location.getOrigin();
+        dest.setWorld(destWorld);
+        message(sender, "Teleporting to editor world " + args[1]);
+        ((Player)sender).teleport(dest);
+        ((Player)sender).setGameMode(GameMode.CREATIVE);
+
         return true;
+    }
+
+    public boolean cmdSave(CommandSender sender, String[] args){
+        Structure struct = null;
+        if (args[1] == null){
+            if (sender instanceof Player) {
+                String world = ((Player) sender).getWorld().getName();
+                if (plugin.getStructureHandler().isEditor(world))
+                    struct = plugin.getStructureHandler().getEditor(world);
+                else {
+                    error(sender, "No structure specified");
+                    return true;
+                }
+            }
+            else {
+                error(sender, "No structure specified");
+                return true;
+            }
+        }
+        if (struct == null) struct = plugin.getStructureHandler().getEditor(args[1] + ".structure");
+        sender.sendMessage("Saving editor world " + struct.getName() + " ...");
+        struct.update();
+        sender.sendMessage("Done!");
+        return true;
+    }
+
+    public void message(CommandSender sender, String message){
+        sender.sendMessage(ChatColor.AQUA + "[Struct] " + ChatColor.WHITE + message);
+    }
+
+    public void error(CommandSender sender, String message){
+        sender.sendMessage(ChatColor.AQUA + "[Struct] " + ChatColor.RED + message);
     }
 
 }

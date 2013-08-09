@@ -3,8 +3,9 @@ package org.bytefire.plugins.shipwreckedwgen.structures;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.bukkit.Chunk;
-import org.bytefire.plugins.shipwreckedwgen.ChunkHandler;
 import org.bytefire.plugins.shipwreckedwgen.ShipwreckedWGen;
+
+import static org.bytefire.plugins.shipwreckedwgen.structures.StructureUtil.*;
 
 public class StructureHandler {
 
@@ -34,7 +35,7 @@ public class StructureHandler {
         String name = chunk.getWorld().getName();
         if (!queuedUpdates.containsKey(name)) queuedUpdates.put(name, new ArrayList<Long>());
         ArrayList<Long> queue = queuedUpdates.get(name);
-        long hash = ChunkHandler.intToLong(chunk.getX(), chunk.getZ());
+        long hash = mergeCoords(chunk.getX(), chunk.getZ());
         if (!queue.contains(hash)) queue.add(hash);
     }
 

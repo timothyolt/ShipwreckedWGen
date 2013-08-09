@@ -33,12 +33,12 @@ public class StructureSection {
     }
 
     public int getBlockId(int x, int y, int z){
-        int index = (256 * x) + (16 * z) + y;
+        int index = (y << 8) | (z << 4) | x;
         return blocks[index];
     }
 
     public void setBlockId(int x, int y, int z, int id){
-        int index = (256 * x) + (16 * z) + y;
+        int index = (y << 8) | (z << 4) | x;
         blocks[index] = (byte) id;
     }
 
@@ -47,12 +47,12 @@ public class StructureSection {
     }
 
     public byte getBlockData(int x, int y, int z){
-        int index = (256 * x) + (16 * z) + y;
+        int index = (y << 8) | (z << 4) | x;
         return data[index];
     }
 
     public void setBlockData(int x, int y, int z, byte data){
-        int index = (256 * x) + (16 * z) + y;
+        int index = (y << 8) | (z << 4) | x;
         this.data[index] = data;
     }
 
@@ -61,7 +61,7 @@ public class StructureSection {
     }
 
     public boolean getBlockPassive(int x, int y, int z){
-        int index = (32 * x) + (2 * z) + (int)Math.floor(y / 8);
+        int index = (y << 5) | (z << 1) | (x >> 2);
         switch (y){
             case 0: case 8:  return (passive[index] & 0x01) != 0;
             case 1: case 9:  return (passive[index] & 0x02) != 0;
@@ -76,30 +76,30 @@ public class StructureSection {
     }
 
     public void setBlockPassive(int x, int y, int z, boolean bool){
-        int index = (32 * x) + (2 * z) + (int)Math.floor(y / 8);
+        int index = (y << 5) | (z << 1) | (x >> 2);
         switch (y){
-            case 0: case 8:  
+            case 0: case 8:
                 if (bool) passive[index] = (byte)(passive[index] | 0x01);
                 else passive[index] = (byte)~((~passive[index]) | 0x01);
-            case 1: case 9:  
+            case 1: case 9:
                 if (bool) passive[index] = (byte)(passive[index] | 0x02);
                 else passive[index] = (byte)~((~passive[index]) | 0x02);
-            case 2: case 10:  
+            case 2: case 10:
                 if (bool) passive[index] = (byte)(passive[index] | 0x04);
                 else passive[index] = (byte)~((~passive[index]) | 0x04);
-            case 3: case 11:  
+            case 3: case 11:
                 if (bool) passive[index] = (byte)(passive[index] | 0x08);
                 else passive[index] = (byte)~((~passive[index]) | 0x08);
-            case 4: case 12:  
+            case 4: case 12:
                 if (bool) passive[index] = (byte)(passive[index] | 0x10);
                 else passive[index] = (byte)~((~passive[index]) | 0x10);
-            case 5: case 13:  
+            case 5: case 13:
                 if (bool) passive[index] = (byte)(passive[index] | 0x20);
                 else passive[index] = (byte)~((~passive[index]) | 0x20);
-            case 6: case 14:  
+            case 6: case 14:
                 if (bool) passive[index] = (byte)(passive[index] | 0x40);
                 else passive[index] = (byte)~((~passive[index]) | 0x40);
-            case 7: case 15:  
+            case 7: case 15:
                 if (bool) passive[index] = (byte)(passive[index] | 0x80);
                 else passive[index] = (byte)~((~passive[index]) | 0x80);
         }

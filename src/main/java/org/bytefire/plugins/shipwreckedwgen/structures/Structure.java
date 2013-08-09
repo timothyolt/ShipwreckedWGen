@@ -9,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bytefire.plugins.shipwreckedwgen.ShipwreckedWGen;
 
+import static org.bytefire.plugins.shipwreckedwgen.structures.StructureUtil.*;
+
 public class Structure {
 
     private String name;
@@ -52,7 +54,7 @@ public class Structure {
     public void setType(StructureType type){
         this.type = type;
     }
-    
+
     public StructureChunk getChunk(Long hash){
         return getChunk(hash, true);
     }
@@ -60,19 +62,19 @@ public class Structure {
     public StructureChunk getChunk(Long hash, boolean generate){
         if (chunks.containsKey(hash)) return chunks.get(hash);
         if (generate) {
-            StructureChunk chunk = new StructureChunk(this, (int)(hash >> 32), (int)(hash & 0xffffffff));
+            StructureChunk chunk = new StructureChunk(this, splitCoords(hash, true), splitCoords(hash, false));
             chunks.put(hash, chunk);
             return chunk;
         }
         return null;
     }
-    
+
     public StructureChunk getChunk(int x, int z){
         return getChunk(x, z, true);
     }
 
     public StructureChunk getChunk(int x, int z, boolean generate){
-        return getChunk((((long)x) << 32) + (long)z, generate);
+        return getChunk(mergeCoords(x, z), generate);
     }
     public StructureChunk getChunk(Location loc){
         return getChunk(loc, true);
@@ -96,7 +98,7 @@ public class Structure {
         if (chunk == null) return 0;
         StructureSection sect = chunk.getSection(y >> 4, false);
         if (sect == null) return 0;
-        return sect.getBlockId(x, y - ((y >> 4) * 16), z);
+        return sect.getBlockId(x, y & 0xF, z);
     }
 
     public void setBlockId(int x, int y, int z, int id){
@@ -104,7 +106,7 @@ public class Structure {
         if (chunk == null) return;
         StructureSection sect = chunk.getSection(y >> 4, false);
         if (sect == null) return;
-        sect.setBlockId(x, y - ((y >> 4) * 16), z, id);
+        sect.setBlockId(x, y & 0xF, z, id);
     }
 
     public byte getBlockData(int x, int y, int z){
@@ -112,7 +114,7 @@ public class Structure {
         if (chunk == null) return 0;
         StructureSection sect = chunk.getSection(y >> 4, false);
         if (sect == null) return 0;
-        return sect.getBlockData(x, y - ((y >> 4) * 16), z);
+        return sect.getBlockData(x, y & 0xF, z);
     }
 
     public void setBlockData(int x, int y, int z, byte data){
@@ -120,7 +122,7 @@ public class Structure {
         if (chunk == null) return;
         StructureSection sect = chunk.getSection(y >> 4, false);
         if (sect == null) return;
-        sect.setBlockData(x, y - ((y >> 4) * 16), z, data);
+        sect.setBlockData(x, y & 0xF, z, data);
     }
 
     public boolean getBlockPassive(int x, int y, int z){
@@ -128,7 +130,7 @@ public class Structure {
         if (chunk == null) return true;
         StructureSection sect = chunk.getSection(y >> 4, false);
         if (sect == null) return true;
-        return sect.getBlockPassive(x, y - ((y >> 4) * 16), z);
+        return sect.getBlockPassive(x, y & 0xF, z);
     }
 
     public void setBlockPassive(int x, int y, int z, boolean passive){
@@ -136,7 +138,7 @@ public class Structure {
         if (chunk == null) return;
         StructureSection sect = chunk.getSection(y >> 4, false);
         if (sect == null) return;
-        sect.setBlockPassive(x, y - ((y >> 4) * 16), z, passive);
+        sect.setBlockPassive(x, y & 0xF, z, passive);
     }
 
     public Biome getRequiredBiome(){
@@ -179,16 +181,15 @@ public class Structure {
         World world = Bukkit.getServer().getWorld(getName());
 
         for (Long update : queuedUpdates){
-            int x = (int)(update & 0xFFFFFFFF);
-            int z = (int)(update >> 32);
+            int x = splitCoords(update, true);
+            int z = splitCoords(update, false);
             ChunkSnapshot chunk = world.getChunkAt(x, z).getChunkSnapshot();
-            
-            for (int y = 0; y < world.getMaxHeight() / 16; y++){
+
+            for (int y = 0; y < world.getMaxHeight() >> 4; y++){
                 if (!chunk.isSectionEmpty(y)){
-    System.out.println("Queue: " + Integer.toString(x) + ", " + Integer.toString(z));
                     for (int xx = 0; xx < 16; xx ++) for (int yy = 0; yy < 16; yy ++) for (int zz = 0; zz < 16; zz ++){
-                        getChunk(update, true).getSection(y).setBlockId(xx, yy, zz, chunk.getBlockTypeId(xx, yy + (y * 16), zz));
-                        getChunk(update, true).getSection(y).setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y * 16), zz));
+                        getChunk(update, true).getSection(y).setBlockId(xx, yy, zz, chunk.getBlockTypeId(xx, yy + (y << 4), zz));
+                        getChunk(update, true).getSection(y).setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y << 4), zz));
                     }
                 }
             }
