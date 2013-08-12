@@ -2,6 +2,7 @@ package org.bytefire.plugins.shipwreckedwgen.structures;
 
 import java.io.File;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class StructureUtil {
 
