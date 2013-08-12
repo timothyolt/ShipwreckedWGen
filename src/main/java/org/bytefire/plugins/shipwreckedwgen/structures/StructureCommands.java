@@ -21,7 +21,7 @@ public class StructureCommands implements CommandExecutor{
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String str, String[] args) {
-        if (args[0] == null) return true;
+        if (args.length < 1) error(sender, "No operation specified");
         if      (args[0].equals("load")) return cmdLoad(sender, args);
         else if (args[0].equals("tp"))   return cmdTp(sender, args);
         else if (args[0].equals("save")) return cmdSave(sender, args);
@@ -29,7 +29,7 @@ public class StructureCommands implements CommandExecutor{
     }
 
     public boolean cmdLoad(CommandSender sender, String[] args){
-        if (args[1] == null) {
+        if (args.length < 2) {
             error(sender, "No structure specified");
             return true;
         }
@@ -57,7 +57,7 @@ public class StructureCommands implements CommandExecutor{
             error(sender, "You are not a player");
             return true;
         }
-        if (args[1] == null) {
+        if (args.length < 2) {
             error(sender, "No structure specified");
             return true;
         }
@@ -85,8 +85,8 @@ public class StructureCommands implements CommandExecutor{
     }
 
     public boolean cmdSave(CommandSender sender, String[] args){
-        Structure struct = null;
-        if (args[1] == null){
+        Structure struct;
+        if (args.length < 2){
             if (sender instanceof Player) {
                 String world = ((Player) sender).getWorld().getName();
                 if (plugin.getStructureHandler().isEditor(world))
@@ -101,11 +101,17 @@ public class StructureCommands implements CommandExecutor{
                 return true;
             }
         }
-        if (struct == null) struct = plugin.getStructureHandler().getEditor(args[1] + ".structure");
-        sender.sendMessage("Saving editor world " + struct.getName() + " ...");
-        struct.update();
-        sender.sendMessage("Done!");
-        return true;
+        else struct = plugin.getStructureHandler().getEditor(args[1] + ".structure");
+        if (struct != null){
+            message(sender, "Saving structure " + struct.getName() + " ...");
+            struct.update();
+            message(sender, "Done!");
+            return true;
+        }
+        else {
+            error(sender, "Not a valid structure");
+            return true;
+        }
     }
 
     public void message(CommandSender sender, String message){

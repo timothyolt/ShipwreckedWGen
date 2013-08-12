@@ -31,7 +31,7 @@ public class StructureLoader {
             File dataFolder = new File(Bukkit.getPluginManager().getPlugin("ShipGen").getDataFolder().getAbsolutePath() + File.separator + "structures");
             dataFolder.mkdirs();
             String path = dataFolder.getAbsolutePath();
-            NBTInputStream structureInput = new NBTInputStream(new FileInputStream(path + File.separator + "test.structure"), false);
+            NBTInputStream structureInput = new NBTInputStream(new FileInputStream(path + File.separator + fileName), false);
 
             Map<String, Tag> structTag = ((TagCompound)structureInput.readNextTag()).getPayload();
 
@@ -123,8 +123,12 @@ public class StructureLoader {
         } catch (IOException ex) {
             ex.printStackTrace();
             return getEmptyStructure(fileName);
-        //} catch (ArrayOutOfBoundsException ex) {return null;
-        //} catch (ClassCastException ex) {return null;
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            ex.printStackTrace();
+            return getEmptyStructure(fileName);
+        } catch (ClassCastException ex) {
+            ex.printStackTrace();
+            return getEmptyStructure(fileName);
         } catch (NBTTagException ex) {
             ex.printStackTrace();
             return getEmptyStructure(fileName);
@@ -136,7 +140,9 @@ public class StructureLoader {
             File dataFolder = new File(Bukkit.getPluginManager().getPlugin("ShipGen").getDataFolder().getAbsolutePath() + File.separator + "structures");
             dataFolder.mkdirs();
             String path = dataFolder.getAbsolutePath();
-            NBTOutputStream structOut = new NBTOutputStream(new FileOutputStream(path + File.separator + "test.structure"), false);
+            File target = new File(path + File.separator + structure.getName());
+            target.delete();
+            NBTOutputStream structOut = new NBTOutputStream(new FileOutputStream(path + File.separator + structure.getName()), false);
 
             HashMap<String, Tag> struct = new HashMap<String, Tag>();
             struct.put("name", new TagString("name", structure.getName()));
@@ -181,11 +187,30 @@ public class StructureLoader {
             structOut.close();
             return true;
         } catch (IOException ex) {ex.printStackTrace();
-        //} catch (ArrayOutOfBoundsException ex) {return null;
-        //} catch (ClassCastException ex) {return null;
+        } catch (ArrayIndexOutOfBoundsException ex) {ex.printStackTrace();
+        } catch (ClassCastException ex) {ex.printStackTrace();
         } catch (NBTTagException ex) {ex.printStackTrace();}
         return false;
     }
+
+//    public static Structure translateSafe(Structure struct){
+//        Map<Long, StructureChunk> chunks = struct.getAllChunks();
+//        if (chunks.size() < 1) return struct;
+//        Collection<StructureChunk> values = chunks.values();
+//        StructureChunk firstChunk = (StructureChunk) (values.toArray())[0];
+//        int minX = firstChunk.getXPos();
+//        int minZ = firstChunk.getZPos();
+//        for (StructureChunk test : values){
+//            minX = Math.min(minX, test.getXPos());
+//            minZ = Math.min(minZ, test.getZPos());
+//        }
+//        struct.clearChunks();
+//        for (StructureChunk test : values){
+//            test.setXPos(test.getXPos() - minX);
+//            test.setZPos(test.getZPos() - minZ);
+//            struct.addChunk(test);
+//        }
+//    }
 
     public static Structure getEmptyStructure(String name){
         return new Structure(name, new Location(null, 0, 128, 0), StructureType.SURFACE);

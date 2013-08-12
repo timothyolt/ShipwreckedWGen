@@ -88,8 +88,12 @@ public class Structure {
         return chunks;
     }
 
+    protected void clearChunks(){
+        chunks.clear();
+    }
+
     protected void addChunk(StructureChunk chunk){
-        long hash = (((long)chunk.getXPos()) << 32) + (long)chunk.getZPos();
+        long hash = mergeCoords(chunk.getXPos(), chunk.getZPos());
         if (!chunks.containsKey(hash)) chunks.put(hash, chunk);
     }
 
@@ -194,7 +198,6 @@ public class Structure {
                 }
             }
         }
-
         StructureLoader.saveStructure(this);
         //handle.clearQueuedUpdates(getName());
     }

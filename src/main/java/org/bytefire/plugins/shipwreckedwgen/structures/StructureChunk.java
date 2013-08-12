@@ -35,6 +35,14 @@ public class StructureChunk {
         return zPos;
     }
 
+    protected void setXPos(int xPos){
+        this.xPos = xPos;
+    }
+
+    protected void setZPos(int zPos){
+        this.zPos = zPos;
+    }
+
     public HashMap<Integer, StructureSection> getAllSections(){
         return sections;
     }

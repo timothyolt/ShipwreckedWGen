@@ -17,8 +17,9 @@ public class StructureBlockDataPopulator extends BlockPopulator{
     @Override
     public void populate(World world, Random random, Chunk source) {
         StructureChunk chunk;
-        if (source.getZ() < 0) chunk = struct.getChunk(source.getX() - 1, source.getZ(), false);
-        else chunk = struct.getChunk(source.getX(), source.getZ(), false);
+        //if (source.getZ() < 0) chunk = struct.getChunk(source.getX() - 1, source.getZ(), false);
+        //else chunk = struct.getChunk(source.getX(), source.getZ(), false);
+        chunk = struct.getChunk(source.getX(), source.getZ(), false);
         if (chunk == null) return;
         HashMap<Integer, StructureSection> sections = chunk.getAllSections();
         for (StructureSection sect : sections.values()){

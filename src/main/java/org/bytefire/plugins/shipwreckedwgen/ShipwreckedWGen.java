@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bytefire.plugins.shipwreckedwgen.structures.StructureCommands;
 import org.bytefire.plugins.shipwreckedwgen.structures.StructureHandler;
 import org.bytefire.plugins.shipwreckedwgen.structures.StructureListener;
+import org.bytefire.plugins.shipwreckedwgen.structures.StructureUtil;
 
 public class ShipwreckedWGen extends JavaPlugin{
     private ChunkGenerator chunkGenerator;
@@ -26,6 +27,11 @@ public class ShipwreckedWGen extends JavaPlugin{
         getServer().getPluginManager().registerEvents(new TestListener(this), this);
         getServer().getPluginManager().registerEvents(new ChunkListener(this), this);
         getServer().getPluginManager().registerEvents(new StructureListener(this), this);
+    }
+
+    @Override
+    public void onDisable(){
+        StructureUtil.clearEditorCache();
     }
 
     @Override

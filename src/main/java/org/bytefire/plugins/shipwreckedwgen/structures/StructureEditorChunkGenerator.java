@@ -23,8 +23,10 @@ public class StructureEditorChunkGenerator extends ChunkGenerator {
     public byte[][] generateBlockSections(World world, Random random, int x, int z, BiomeGrid biomes) {
         byte[][] out = new byte[world.getMaxHeight() >> 4][];
         StructureChunk chunk;
-        if (z < 0) chunk = struct.getChunk(x - 1, z, false);
-        else chunk = struct.getChunk(x, z, false);
+        //if (z < 0) chunk = struct.getChunk(x - 1, z, false);
+        //else chunk = struct.getChunk(x, z, false);
+        chunk = struct.getChunk(x, z, false);
+        
         if (chunk == null) return out;
         Biome biome = struct.getRequiredBiome();
         if (biome == null) biome = Biome.OCEAN;
