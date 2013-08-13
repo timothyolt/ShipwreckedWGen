@@ -22,7 +22,7 @@ public class Structure {
     private int yMin;
     private boolean growFromBounds;
 
-    public enum StructureType {SURFACE, AIR, UNDERGROUND};
+    public enum StructureType {SURFACE, AIR, UNDERGROUND, ALL};
 
     public Structure(String name, Location origin, StructureType type){
         this.name = name;
