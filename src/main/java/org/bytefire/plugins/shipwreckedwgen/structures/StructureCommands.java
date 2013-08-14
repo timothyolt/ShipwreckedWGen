@@ -29,7 +29,7 @@ public class StructureCommands implements CommandExecutor{
         if      (args[0].equals("load")) return cmdLoad(sender, args);
         else if (args[0].equals("tp"))   return cmdTp(sender, args);
         else if (args[0].equals("save")) return cmdSave(sender, args);
-        else if (args[0].equals("set")) return cmdSave(sender, args);
+        else if (args[0].equals("set")) return cmdSet(sender, args);
         else error(sender, "Not a valid operation");
         return true;
     }
@@ -102,14 +102,14 @@ public class StructureCommands implements CommandExecutor{
     }
 
     public boolean cmdSet(CommandSender sender, String[] args){
-        String[] newargs = Arrays.copyOfRange(args, 1, args.length - 1);
+        String[] newargs = Arrays.copyOfRange(args, 1, args.length);
         if (args.length < 2) error(sender, "No operation specified");
         if      (args[1].equals("origin")) return cmdSetOrigin(sender, newargs);
-        else if (args[1].equals("biome"))  return cmdSetBiome(sender, args);
-        else if (args[1].equals("type"))   return cmdSetType(sender, args);
-        else if (args[1].equals("max"))   return cmdSetYMax(sender, args);
-        else if (args[1].equals("min"))   return cmdSetYMin(sender, args);
-        else if (args[1].equals("grow"))   return cmdSetGrow(sender, args);
+        else if (args[1].equals("biome"))  return cmdSetBiome(sender, newargs);
+        else if (args[1].equals("type"))   return cmdSetType(sender, newargs);
+        else if (args[1].equals("max"))   return cmdSetYMax(sender, newargs);
+        else if (args[1].equals("min"))   return cmdSetYMin(sender, newargs);
+        else if (args[1].equals("grow"))   return cmdSetGrow(sender, newargs);
         else error(sender, "Not a valid operation");
         return true;
     }
@@ -117,57 +117,64 @@ public class StructureCommands implements CommandExecutor{
     public boolean cmdSetOrigin(CommandSender sender, String[] args){
         Structure struct = getStructureFromSender(sender, args, 1);
         Player player = getPlayerFromSender(sender, args, 2);
-        if (struct != null && player != null)
-            struct.setOrigin(player.getLocation().subtract(0, 1, 0));
+        if (struct == null || player == null) return true;
+        Location origin = player.getLocation().subtract(0, 1, 0);
+        struct.setOrigin(origin);
+        message(sender, "Set origin of " + struct.getName() +
+            " to {x=" + Integer.toString(origin.getBlockX()) +
+            ", y=" + Integer.toString(origin.getBlockY()) +
+            ", z=" + Integer.toString(origin.getBlockZ()) + "}"
+        );
         return true;
     }
-    
+
     public boolean cmdSetBiome(CommandSender sender, String[] args){
         if (args.length < 2){
             error(sender, "No biome specified");
             return true;
         }
-        Biome biome = Biome.valueOf(args[1].toUpperCase());
+        Biome biome;
+        if      (args[1].toUpperCase().equals("SNOW"))
+            biome = Biome.TAIGA;
+        else if (args[1].toUpperCase().equals("END"))
+            biome = Biome.SKY;
+        else if (args[1].toUpperCase().equals("NULL"))
+            biome = null;
+        else if (args[1].toUpperCase().equals("NONE"))
+            biome = null;
+        else biome = Biome.valueOf(args[1].toUpperCase());
         if (biome == null){
-            if      (args[1].toUpperCase().equals("SNOW"))
-                biome = Biome.TAIGA;
-            else if (args[1].toUpperCase().equals("END"))
-                biome = Biome.SKY;
-            else if (args[1].toUpperCase().equals("NULL"))
-                biome = null;
-            else if (args[1].toUpperCase().equals("NONE"))
-                biome = null;
-            else {
-                error(sender, "Not a valid biome");
-                return true;
-            }
+            error(sender, "Not a valid biome");
+            return true;
         }
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
         struct.setRequiredBiome(biome);
+        if (biome == null) message(sender, "Required biome set to none");
+        else message(sender, "Required biome set to " + biome.toString().toLowerCase());
         return true;
     }
-    
+
     public boolean cmdSetType(CommandSender sender, String[] args){
         if (args.length < 2){
             error(sender, "No type specified");
             return true;
         }
-        StructureType type = StructureType.valueOf(args[1].toUpperCase());
+        StructureType type;
+        if      (args[1].toUpperCase().equals("SKY"))
+            type = StructureType.AIR;
+        else type = StructureType.valueOf(args[1].toUpperCase());
         if (type == null){
-            if      (args[1].toUpperCase().equals("SKY"))
-                type = StructureType.AIR;
-            else {
-                error(sender, "Not a valid type");
-                return true;
-            }
+            error(sender, "Not a valid type");
+            return true;
         }
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
         struct.setType(type);
+        message(sender, "Structure type set to " + type.toString().toLowerCase());
         return true;
     }
-    
+
     public boolean cmdSetYMax(CommandSender sender, String[] args){
         if (args.length < 2){
             error(sender, "No maximum height specified");
@@ -177,9 +184,10 @@ public class StructureCommands implements CommandExecutor{
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
         struct.setMaxHeight(yMax);
+        message(sender, "Maximum height set to " + Integer.toString(yMax));
         return true;
     }
-    
+
     public boolean cmdSetYMin(CommandSender sender, String[] args){
         if (args.length < 2){
             error(sender, "No minimum height specified");
@@ -189,9 +197,10 @@ public class StructureCommands implements CommandExecutor{
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
         struct.setMaxHeight(yMin);
+        message(sender, "Maximum height set to " + Integer.toString(yMin));
         return true;
     }
-    
+
     public boolean cmdSetGrow(CommandSender sender, String[] args){
         if (args.length < 2){
             error(sender, "No grow specified");
@@ -201,6 +210,7 @@ public class StructureCommands implements CommandExecutor{
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
         struct.setGrowFromBounds(grow);
+        message(sender, "Bound growth set to " + Boolean.toString(grow));
         return true;
     }
 
