@@ -105,10 +105,12 @@ public class StructureCommands implements CommandExecutor{
         String[] newargs = Arrays.copyOfRange(args, 1, args.length);
         if (args.length < 2) error(sender, "No operation specified");
         if      (args[1].equals("origin")) return cmdSetOrigin(sender, newargs);
+        else if (args[1].equals("distance")) return cmdSetDistance(sender, newargs);
+        else if (args[1].equals("chance")) return cmdSetChance(sender, newargs);
         else if (args[1].equals("biome"))  return cmdSetBiome(sender, newargs);
         else if (args[1].equals("type"))   return cmdSetType(sender, newargs);
-        else if (args[1].equals("max"))   return cmdSetYMax(sender, newargs);
-        else if (args[1].equals("min"))   return cmdSetYMin(sender, newargs);
+        else if (args[1].equals("max"))    return cmdSetYMax(sender, newargs);
+        else if (args[1].equals("min"))    return cmdSetYMin(sender, newargs);
         else if (args[1].equals("grow"))   return cmdSetGrow(sender, newargs);
         else error(sender, "Not a valid operation");
         return true;
@@ -128,6 +130,32 @@ public class StructureCommands implements CommandExecutor{
         return true;
     }
 
+    public boolean cmdSetDistance(CommandSender sender, String[] args){
+        if (args.length < 2){
+            error(sender, "No minimum distance specified");
+            return true;
+        }
+        int dist = Integer.valueOf(args[1]);
+        Structure struct = getStructureFromSender(sender, args, 2);
+        if (struct == null) return true;
+        struct.setMaxHeight(dist);
+        message(sender, "Minimum distance set to " + Integer.toString(dist));
+        return true;
+    }
+
+    public boolean cmdSetChance(CommandSender sender, String[] args){
+        if (args.length < 2){
+            error(sender, "No spawn chance specified");
+            return true;
+        }
+        int chance = Integer.valueOf(args[1]);
+        Structure struct = getStructureFromSender(sender, args, 2);
+        if (struct == null) return true;
+        struct.setMaxHeight(chance);
+        message(sender, "Spawn chance set to " + Integer.toString(chance));
+        return true;
+    }
+
     public boolean cmdSetBiome(CommandSender sender, String[] args){
         if (args.length < 2){
             error(sender, "No biome specified");
@@ -138,15 +166,15 @@ public class StructureCommands implements CommandExecutor{
             biome = Biome.TAIGA;
         else if (args[1].toUpperCase().equals("END"))
             biome = Biome.SKY;
-        else if (args[1].toUpperCase().equals("NULL"))
-            biome = null;
-        else if (args[1].toUpperCase().equals("NONE"))
-            biome = null;
         else biome = Biome.valueOf(args[1].toUpperCase());
         if (biome == null){
             error(sender, "Not a valid biome");
             return true;
         }
+        if (args[1].toUpperCase().equals("NULL"))
+            biome = null;
+        else if (args[1].toUpperCase().equals("NONE"))
+            biome = null;
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
         struct.setRequiredBiome(biome);

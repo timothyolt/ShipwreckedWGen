@@ -2,6 +2,7 @@ package org.bytefire.plugins.shipwreckedwgen.structures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -14,6 +15,9 @@ import static org.bytefire.plugins.shipwreckedwgen.structures.StructureUtil.*;
 public class Structure {
 
     private String name;
+    private int distance;
+    private int chance;
+    private long seed;
     private Location origin;
     private StructureType type;
     private HashMap<Long,StructureChunk> chunks;
@@ -26,6 +30,9 @@ public class Structure {
 
     public Structure(String name, Location origin, StructureType type){
         this.name = name;
+        this.distance = 16;
+        this.chance = 16;
+        this.seed = new Random().nextLong();
         this.origin = origin;
         this.type = type;
         chunks = new HashMap<Long,StructureChunk>();
@@ -37,6 +44,30 @@ public class Structure {
 
     public String getName(){
         return name;
+    }
+
+    public int getDistance(){
+        return distance;
+    }
+
+    public void setDistance(int distance){
+        this.distance = distance;
+    }
+
+    public int getChance(){
+        return chance;
+    }
+
+    public void setChance(int chance){
+        this.chance = chance;
+    }
+
+    public long getSeed(){
+        return seed;
+    }
+
+    public void setSeed(long seed){
+        this.seed = seed;
     }
 
     public Location getOrigin(){

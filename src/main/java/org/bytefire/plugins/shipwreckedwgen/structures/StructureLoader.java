@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
@@ -17,6 +16,7 @@ import org.bytefire.libnbt.TagByte;
 import org.bytefire.libnbt.TagByteArray;
 import org.bytefire.libnbt.TagCompound;
 import org.bytefire.libnbt.TagInt;
+import org.bytefire.libnbt.TagLong;
 import org.bytefire.libnbt.TagString;
 import org.bytefire.libnbt.io.NBTInputStream;
 import org.bytefire.libnbt.io.NBTOutputStream;
@@ -41,6 +41,9 @@ public class StructureLoader {
             TagInt      tag_zOrigin = (TagInt)      structTag.get("zOrigin");
             TagString   tag_type    = (TagString)   structTag.get("type");
 
+            TagInt      tag_dist    = (TagInt)      structTag.get("dist");
+            TagInt      tag_chance  = (TagInt)      structTag.get("chance");
+            TagLong     tag_seed    = (TagLong)     structTag.get("seed");
             TagString   tag_biome   = (TagString)   structTag.get("biome");
             TagInt      tag_yMax    = (TagInt)      structTag.get("yMax");
             TagInt      tag_yMin    = (TagInt)      structTag.get("yMin");
@@ -61,6 +64,12 @@ public class StructureLoader {
                     tag_zOrigin.getPayload()),
                 StructureType.valueOf(tag_type.getPayload().toUpperCase()));
 
+            if (tag_dist != null)
+                struct.setDistance(tag_dist.getPayload());
+            if (tag_chance != null)
+                struct.setChance(tag_chance.getPayload());
+            if (tag_seed != null)
+                struct.setSeed(tag_seed.getPayload());
             if (tag_biome != null)
                 struct.setRequiredBiome(Biome.valueOf(tag_biome.getPayload().toUpperCase()));
             if (tag_yMax != null)
@@ -145,15 +154,19 @@ public class StructureLoader {
             NBTOutputStream structOut = new NBTOutputStream(new FileOutputStream(path + File.separator + structure.getName()), false);
 
             HashMap<String, Tag> struct = new HashMap<String, Tag>();
-            struct.put("name", new TagString("name", structure.getName()));
-            struct.put("xOrigin", new TagInt("xOrigin", structure.getOrigin().getBlockX()));
-            struct.put("yOrigin", new TagInt("yOrigin", structure.getOrigin().getBlockY()));
-            struct.put("zOrigin", new TagInt("zOrigin", structure.getOrigin().getBlockZ()));
-            struct.put("type", new TagString("type", structure.getType().toString()));
+            struct.put("name"   , new TagString("name"      , structure.getName()));
+            struct.put("xOrigin", new TagInt(   "xOrigin"   , structure.getOrigin().getBlockX()));
+            struct.put("yOrigin", new TagInt(   "yOrigin"   , structure.getOrigin().getBlockY()));
+            struct.put("zOrigin", new TagInt(   "zOrigin"   , structure.getOrigin().getBlockZ()));
+            struct.put("type"   , new TagString("type"      , structure.getType().toString()));
+            struct.put("dist"   , new TagInt(   "dist"      , structure.getDistance()));
+            struct.put("chance" , new TagInt(   "chance"    , structure.getChance()));
+            struct.put("seed"   , new TagLong(  "seed"      , structure.getSeed()));
             Biome biome = structure.getRequiredBiome();
-            if (biome != null) struct.put("biome", new TagString("biome", biome.toString()));
-            struct.put("yMax", new TagInt("yMax", structure.getMaxHeight()));
-            struct.put("yMin", new TagInt("yMin", structure.getMinHeight()));
+            if (biome != null)
+            struct.put("biome"  , new TagString("biome"     , biome.toString()));
+            struct.put("yMax"   , new TagInt(   "yMax"      , structure.getMaxHeight()));
+            struct.put("yMin"   , new TagInt(   "yMin"      , structure.getMinHeight()));
             byte growFromBounds = 1;
             if (structure.canGrowFromBounds() == false) growFromBounds = 0;
             HashMap<String, Tag> chunkTags = new HashMap<String, Tag>();
