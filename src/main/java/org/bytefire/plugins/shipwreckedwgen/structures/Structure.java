@@ -8,6 +8,7 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bytefire.libnbt.Tag;
 import org.bytefire.plugins.shipwreckedwgen.ShipwreckedWGen;
 
 import static org.bytefire.plugins.shipwreckedwgen.structures.StructureUtil.*;
@@ -219,17 +220,20 @@ public class Structure {
             int x = splitCoords(update, true);
             int z = splitCoords(update, false);
             ChunkSnapshot chunk = world.getChunkAt(x, z).getChunkSnapshot();
+            StructureChunk structChunk = getChunk(update, true);
 
             for (int y = 0; y < world.getMaxHeight() >> 4; y++){
                 if (!chunk.isSectionEmpty(y)){
                     for (int xx = 0; xx < 16; xx ++) for (int yy = 0; yy < 16; yy ++) for (int zz = 0; zz < 16; zz ++){
-                        getChunk(update, true).getSection(y).setBlockId(xx, yy, zz, chunk.getBlockTypeId(xx, yy + (y << 4), zz));
-                        getChunk(update, true).getSection(y).setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y << 4), zz));
+                        structChunk.getSection(y).setBlockId(xx, yy, zz, chunk.getBlockTypeId(xx, yy + (y << 4), zz));
+                        structChunk.getSection(y).setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y << 4), zz));
                     }
                 }
             }
+            
+            structChunk.setTileEntities(StructureUtil.getTileEntites(chunk));
         }
-        StructureLoader.saveStructure(this);
+        StructureUtil.saveStructure(this);
         //handle.clearQueuedUpdates(getName());
     }
 

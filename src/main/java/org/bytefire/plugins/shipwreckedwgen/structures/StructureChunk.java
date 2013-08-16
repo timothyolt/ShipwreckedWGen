@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
+import org.bytefire.libnbt.Tag;
 
 public class StructureChunk {
 
@@ -12,7 +13,7 @@ public class StructureChunk {
     private int zPos;
     private HashMap<Integer, StructureSection> sections;
     private ArrayList<Entity> entities; //TODO: entity support
-    private ArrayList<BlockState> tileEntities; //TODO: tile entity support
+    private ArrayList<Tag> tileEntities; //TODO: tile entity support
 
     public StructureChunk(Structure struct, int xPos, int zPos){
         this.struct = struct;
@@ -20,7 +21,7 @@ public class StructureChunk {
         this.zPos = zPos;
         sections = new HashMap<Integer, StructureSection>();
         entities = new ArrayList<Entity>();
-        tileEntities = new ArrayList<BlockState>();
+        tileEntities = new ArrayList<Tag>();
     }
 
     public Structure getStructure(){
@@ -99,5 +100,17 @@ public class StructureChunk {
         StructureSection sect = getSection(y >> 4);
         if (sect == null) return;
         sect.setBlockPassive(x, y & 0xF, z, passive);
+    }
+    
+    public ArrayList<Tag> getTileEntities(){
+        return tileEntities;
+    }
+    
+    public void addTileEntity(Tag tile){
+        tileEntities.add(tile);
+    }
+    
+    public void setTileEntities(ArrayList<Tag> tileEntities){
+        this.tileEntities = tileEntities;
     }
 }

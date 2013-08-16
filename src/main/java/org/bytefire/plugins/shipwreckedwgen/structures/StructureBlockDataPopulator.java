@@ -1,10 +1,14 @@
 package org.bytefire.plugins.shipwreckedwgen.structures;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
+import org.bytefire.libnbt.Tag;
+import org.bytefire.libnbt.TagCompound;
+import org.bytefire.libnbt.TagString;
 
 public class StructureBlockDataPopulator extends BlockPopulator{
 
@@ -16,10 +20,7 @@ public class StructureBlockDataPopulator extends BlockPopulator{
 
     @Override
     public void populate(World world, Random random, Chunk source) {
-        StructureChunk chunk;
-        //if (source.getZ() < 0) chunk = struct.getChunk(source.getX() - 1, source.getZ(), false);
-        //else chunk = struct.getChunk(source.getX(), source.getZ(), false);
-        chunk = struct.getChunk(source.getX(), source.getZ(), false);
+        StructureChunk chunk = struct.getChunk(source.getX(), source.getZ(), false);
         if (chunk == null) return;
         HashMap<Integer, StructureSection> sections = chunk.getAllSections();
         for (StructureSection sect : sections.values()){
@@ -30,6 +31,12 @@ public class StructureBlockDataPopulator extends BlockPopulator{
                 byte localData = data[index];
                 if (localData != 0) source.getBlock(x, y + yOffset, z).setData(localData);
             }
+        }
+        ArrayList<Tag> tileEntities = new ArrayList<Tag>();
+        for (Tag tile : tileEntities){
+            TagCompound tag = (TagCompound) tile;
+            String type = ((TagString)tag.getPayload().get("type")).getPayload();
+            if  (type.equals("chest")) StructureUtil.getChestFromTag(tag, source);
         }
     }
 

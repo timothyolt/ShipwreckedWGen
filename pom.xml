@@ -29,6 +29,7 @@
                     <artifactSet>
                         <excludes>
                             <exclude>org.bukkit:bukkit</exclude>
+                            <exclude>org.bukkit:craftbukkit</exclude>
                         </excludes>
                     </artifactSet>
                 </configuration>
@@ -45,12 +46,17 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.6.2-R0.1-SNAPSHOT</version>
+            <version>1.6.2-R0.1</version>
         </dependency>
         <dependency>
             <groupId>org.bytefire</groupId>
             <artifactId>libnbt</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.6.2-R0.1</version>
         </dependency>
     </dependencies>
 </project>
