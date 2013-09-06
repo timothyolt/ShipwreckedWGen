@@ -2,7 +2,6 @@ package org.bytefire.plugins.shipwreckedwgen.structures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bytefire.libnbt.Tag;
 

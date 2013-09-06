@@ -8,7 +8,6 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bytefire.libnbt.Tag;
 import org.bytefire.plugins.shipwreckedwgen.ShipwreckedWGen;
 
 import static org.bytefire.plugins.shipwreckedwgen.structures.StructureUtil.*;

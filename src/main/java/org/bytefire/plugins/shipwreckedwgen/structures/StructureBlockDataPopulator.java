@@ -8,7 +8,6 @@ import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bytefire.libnbt.Tag;
 import org.bytefire.libnbt.TagCompound;
-import org.bytefire.libnbt.TagString;
 
 public class StructureBlockDataPopulator extends BlockPopulator{
 
@@ -32,11 +31,12 @@ public class StructureBlockDataPopulator extends BlockPopulator{
                 if (localData != 0) source.getBlock(x, y + yOffset, z).setData(localData);
             }
         }
-        ArrayList<Tag> tileEntities = new ArrayList<Tag>();
+        
+        ArrayList<Tag> tileEntities = chunk.getTileEntities();
         for (Tag tile : tileEntities){
             TagCompound tag = (TagCompound) tile;
-            String type = ((TagString)tag.getPayload().get("type")).getPayload();
-            if  (type.equals("chest")) StructureUtil.getChestFromTag(tag, source);
+            
+            StructureUtil.getTileFromTag(tag, source);
         }
     }
 
