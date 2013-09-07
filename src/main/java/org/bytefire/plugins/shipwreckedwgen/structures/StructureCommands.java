@@ -1,11 +1,13 @@
 package org.bytefire.plugins.shipwreckedwgen.structures;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
@@ -30,6 +32,7 @@ public class StructureCommands implements CommandExecutor{
         else if (args[0].equals("tp"))   return cmdTp(sender, args);
         else if (args[0].equals("save")) return cmdSave(sender, args);
         else if (args[0].equals("set")) return cmdSet(sender, args);
+        else if (args[0].equals("passive")) return cmdPassive(sender, args);
         else error(sender, "Not a valid operation");
         return true;
     }
@@ -94,7 +97,7 @@ public class StructureCommands implements CommandExecutor{
         Structure struct = getStructureFromSender(sender, args, 1);
         if (struct != null){
             message(sender, "Saving structure " + struct.getName() + " ...");
-            struct.update();
+            struct.save();
             message(sender, "Done!");
             return true;
         }
@@ -239,6 +242,52 @@ public class StructureCommands implements CommandExecutor{
         if (struct == null) return true;
         struct.setGrowFromBounds(grow);
         message(sender, "Bound growth set to " + Boolean.toString(grow));
+        return true;
+    }
+    
+    public boolean cmdPassive(CommandSender sender, String[] args){
+        String[] newargs = Arrays.copyOfRange(args, 1, args.length);
+        if (args.length < 2) error(sender, "No operation specified");
+        if      (args[1].equals("material")) return cmdPassiveMaterial(sender, newargs);
+        else if (args[1].equals("distance")) return cmdSetDistance(sender, newargs);
+        else error(sender, "Not a valid operation");
+        return true;
+    }
+    
+    public boolean cmdPassiveMaterial(final CommandSender sender, String[] args){
+        if (args.length < 2){
+            error(sender, "No material specified");
+            return true;
+        }
+        if (args.length < 3){
+            error(sender, "No passive flag specified");
+            return true;
+        }
+        final Material passive = Material.getMaterial(args[1].toUpperCase());
+        final boolean flag = Boolean.valueOf(args[2]);
+        if (passive == null){
+            error(sender, "Invalid material name");
+            return true;
+        }
+        final Structure struct = getStructureFromSender(sender, args, 3);
+        if (struct == null) return true;
+        struct.update();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+            public void run() {
+                int id = passive.getId();
+                message(sender, "Making all instances of " + passive.toString().toLowerCase() + (flag ? " passive" : " assertive"));
+                Collection<StructureChunk> chunks = struct.getAllChunks().values();
+                for (StructureChunk chunk : chunks){
+                    Collection<StructureSection> sects = chunk.getAllSections().values();
+                    for (StructureSection sect : sects){
+                        byte[] materials = sect.getBlocks();
+                        for (int i = 0; i < materials.length; i++)
+                            if (materials[i] == id) sect.setBlockPassive(i, flag);
+                    }
+                }
+                message(sender, "All instances of " + passive.toString().toLowerCase() + " are now"  + (flag ? " passive" : " assertive"));
+            }
+        });
         return true;
     }
 

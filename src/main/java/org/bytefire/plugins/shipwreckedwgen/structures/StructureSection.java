@@ -76,8 +76,11 @@ public class StructureSection {
     }
 
     public void setBlockPassive(int x, int y, int z, boolean bool){
-        int index = (y << 5) | (z << 1) | (x >> 2);
-        switch (y){
+         setBlockPassive((y << 5) | (z << 1) | (x >> 2), bool);
+    }
+    
+    protected void setBlockPassive(int index, boolean bool){
+        switch (index >> 5){
             case 0: case 8:
                 if (bool) passive[index] = (byte)(passive[index] | 0x01);
                 else passive[index] = (byte)~((~passive[index]) | 0x01);

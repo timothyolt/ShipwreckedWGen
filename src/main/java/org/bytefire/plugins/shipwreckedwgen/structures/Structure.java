@@ -224,16 +224,23 @@ public class Structure {
             for (int y = 0; y < world.getMaxHeight() >> 4; y++){
                 if (!chunk.isSectionEmpty(y)){
                     for (int xx = 0; xx < 16; xx ++) for (int yy = 0; yy < 16; yy ++) for (int zz = 0; zz < 16; zz ++){
-                        structChunk.getSection(y).setBlockId(xx, yy, zz, chunk.getBlockTypeId(xx, yy + (y << 4), zz));
-                        structChunk.getSection(y).setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y << 4), zz));
+                        StructureSection sect = structChunk.getSection(y);
+                        int id = chunk.getBlockTypeId(xx, yy + (y << 4), zz);
+                        sect.setBlockId(xx, yy, zz, id);
+                        if (id != 0) sect.setBlockPassive(xx, yy, zz, false);
+                        sect.setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y << 4), zz));
                     }
                 }
             }
             
             structChunk.setTileEntities(StructureUtil.getTileEntites(chunk));
         }
-        StructureUtil.saveStructure(this);
         //handle.clearQueuedUpdates(getName());
+    }
+    
+    public void save(){
+        update();
+        StructureUtil.saveStructure(this);
     }
 
 }
