@@ -1,8 +1,12 @@
 package org.bytefire.plugins.shipwreckedwgen;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bytefire.plugins.shipwreckedwgen.biomes.BiomeGen;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,14 +23,33 @@ import org.bytefire.plugins.shipwreckedwgen.populators.RavinePopulator;
 import org.bytefire.plugins.shipwreckedwgen.populators.RiverPopulator;
 
 import static org.bukkit.Material.*;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class OverworldChunkGenerator extends ChunkGenerator{
     private ShipwreckedWGen plugin;
 
-    public OverworldChunkGenerator(ShipwreckedWGen plugin){
+    public OverworldChunkGenerator(ShipwreckedWGen plugin, String worldName){
         this.plugin = plugin;
+
+        System.out.println("loading configuration for world " + worldName);
+
+        FileConfiguration config = plugin.getConfig();
+        String local = "worlds." + worldName;
+        File structures = new File(plugin.getDataFolder() + File.separator + "structures");
+        structures.mkdirs();
+        String[] files = structures.list();
+        for (String file : files){
+            String yamlPath = local + ".structures." + file.replaceAll(".structure", "");
+            if (!config.contains(yamlPath)) config.set(yamlPath, true);
+        }
+        try {
+            config.save(plugin.getConfigFile());
+        } catch (IOException e) {
+             System.err.print("[ShipGen] " + e.getMessage());
+             e.printStackTrace(System.err);
+        }
     }
-    
+
     //CONFIG
     final Material base = STONE;
     final Material bottom = BEDROCK;
