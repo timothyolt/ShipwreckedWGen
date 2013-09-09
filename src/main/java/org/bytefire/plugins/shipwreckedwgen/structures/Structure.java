@@ -16,6 +16,7 @@ public class Structure {
 
     private String name;
     private int distance;
+    private int xoffset;
     private int chance;
     private long seed;
     private Location origin;
@@ -40,6 +41,8 @@ public class Structure {
         yMax = 255;
         yMin = 0;
         growFromBounds = true;
+
+        //Note: distance must not be less than or equal to the structure width or height
     }
 
     public String getName(){
@@ -232,12 +235,12 @@ public class Structure {
                     }
                 }
             }
-            
+
             structChunk.setTileEntities(StructureUtil.getTileEntites(chunk));
         }
         //handle.clearQueuedUpdates(getName());
     }
-    
+
     public void save(){
         update();
         StructureUtil.saveStructure(this);

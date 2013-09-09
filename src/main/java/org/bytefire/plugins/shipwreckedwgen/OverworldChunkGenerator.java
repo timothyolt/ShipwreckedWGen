@@ -24,6 +24,7 @@ import org.bytefire.plugins.shipwreckedwgen.populators.RiverPopulator;
 
 import static org.bukkit.Material.*;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bytefire.plugins.shipwreckedwgen.populators.StructurePopulator;
 
 public class OverworldChunkGenerator extends ChunkGenerator{
     private ShipwreckedWGen plugin;
@@ -328,6 +329,9 @@ public class OverworldChunkGenerator extends ChunkGenerator{
         //Surface
         pops.add(new RiverPopulator(plugin));
         pops.add(new BiomePopulator(plugin));
+
+        //Structure
+        pops.add(new StructurePopulator(plugin, world.getName()));
 
         return pops;
     }
