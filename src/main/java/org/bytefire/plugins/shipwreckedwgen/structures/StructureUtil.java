@@ -86,7 +86,7 @@ public class StructureUtil {
         }
         folder.delete();
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="Structure Serialization">
     @SuppressWarnings("CallToThreadDumpStack")
     public static Structure loadStructure(String fileName) {
@@ -95,15 +95,15 @@ public class StructureUtil {
             dataFolder.mkdirs();
             String path = dataFolder.getAbsolutePath();
             NBTInputStream structureInput = new NBTInputStream(new FileInputStream(path + File.separator + fileName), false);
-            
+
             Map<String, Tag> structTag = ((TagCompound)structureInput.readNextTag()).getPayload();
-            
+
             TagString   tag_name    = (TagString)   structTag.get("name");
             TagInt      tag_xOrigin = (TagInt)      structTag.get("xOrigin");
             TagInt      tag_yOrigin = (TagInt)      structTag.get("yOrigin");
             TagInt      tag_zOrigin = (TagInt)      structTag.get("zOrigin");
             TagString   tag_type    = (TagString)   structTag.get("type");
-            
+
             TagInt      tag_dist    = (TagInt)      structTag.get("dist");
             TagInt      tag_chance  = (TagInt)      structTag.get("chance");
             TagLong     tag_seed    = (TagLong)     structTag.get("seed");
@@ -111,14 +111,14 @@ public class StructureUtil {
             TagInt      tag_yMax    = (TagInt)      structTag.get("yMax");
             TagInt      tag_yMin    = (TagInt)      structTag.get("yMin");
             TagByte     tag_growFB  = (TagByte)     structTag.get("growFromBounds");
-            
+
             TagCompound tag_chunks  = (TagCompound) structTag.get("chunks");
-            
+
             if (tag_name == null || tag_xOrigin == null || tag_yOrigin == null || tag_zOrigin == null || tag_type == null){
                 System.err.println("Structure header null");
                 return getBaseStructure(fileName);
             }
-            
+
             Structure struct = new Structure(
                     tag_name.getPayload(),
                     new Location(null,
@@ -126,7 +126,7 @@ public class StructureUtil {
                     tag_yOrigin.getPayload(),
                     tag_zOrigin.getPayload()),
                     Structure.StructureType.valueOf(tag_type.getPayload().toUpperCase()));
-            
+
             if (tag_dist != null)
                 struct.setDistance(tag_dist.getPayload());
             if (tag_chance != null)
@@ -141,42 +141,42 @@ public class StructureUtil {
                 struct.setMinHeight(tag_yMin.getPayload());
             if (tag_growFB != null)
                 struct.setGrowFromBounds(tag_growFB.getPayload() != 0);
-            
+
             Map<String, Tag> chunks = new HashMap<String, Tag>();
             if (tag_chunks != null)
                 chunks = tag_chunks.getPayload();
             for (Tag chunkCompound : chunks.values()) {
                 Map<String, Tag> chunkTag = ((TagCompound)chunkCompound).getPayload();
-                
+
                 TagInt tag_xPos = (TagInt) chunkTag.get("xPos");
                 TagInt tag_zPos = (TagInt) chunkTag.get("zPos");
-                
+
                 if (tag_xPos == null || tag_zPos == null)
                     System.err.println("Chunk header null for chunk " + chunkCompound.getName());
                 else {
                     StructureChunk chunk = new StructureChunk(struct, tag_xPos.getPayload(), tag_zPos.getPayload());
-                    
+
                     TagCompound tag_sections = (TagCompound) chunkTag.get("sections");
                     TagList tag_tileEntities = (TagList) chunkTag.get("tileEntities");
-                    
+
                     Map<String, Tag> sections = new HashMap<String, Tag>();
                     if (tag_sections != null)
                         sections = tag_sections.getPayload();
                     for (Tag sectCompound : sections.values()) {
                         Map<String, Tag> sectTag = ((TagCompound)sectCompound).getPayload();
-                        
+
                         TagInt tag_yIndex = (TagInt) sectTag.get("yIndex");
-                        
+
                         if (tag_yIndex == null)
                             System.err.println("Section header null for section " + sectCompound.getName());
                         else {
                             StructureSection sect = new StructureSection(chunk, tag_yIndex.getPayload());
-                            
+
                             TagByteArray tag_blocks  = (TagByteArray) sectTag.get("blocks");
                             TagByteArray tag_add     = (TagByteArray) sectTag.get("add");
                             TagByteArray tag_data    = (TagByteArray) sectTag.get("data");
                             TagByteArray tag_passive = (TagByteArray) sectTag.get("passive");
-                            
+
                             if (tag_blocks != null)
                                 sect.addBlockArray(tag_blocks.getPayload());
                             if (tag_add != null)
@@ -185,16 +185,16 @@ public class StructureUtil {
                                 sect.addDataArray(tag_data.getPayload());
                             if (tag_passive != null)
                                 sect.addPassiveArray(tag_passive.getPayload());
-                            
+
                             chunk.addSection(sect);
                         }
                     }
-                    
+
                     List<Tag> tileEntities = new ArrayList<Tag>();
                     if (tag_tileEntities != null)
                         tileEntities = tag_tileEntities.getPayload();
                     chunk.setTileEntities((ArrayList) tileEntities);
-                    
+
                     struct.addChunk(chunk);
                 }
             }
@@ -213,7 +213,7 @@ public class StructureUtil {
             return getBaseStructure(fileName);
         }
     }
-    
+
     @SuppressWarnings("CallToThreadDumpStack")
     public static boolean saveStructure(Structure structure){
         try{
@@ -223,7 +223,7 @@ public class StructureUtil {
             File target = new File(path + File.separator + structure.getName());
             target.delete();
             NBTOutputStream structOut = new NBTOutputStream(new FileOutputStream(path + File.separator + structure.getName()), false);
-            
+
             HashMap<String, Tag> struct = new HashMap<String, Tag>();
             struct.put("name"   , new TagString("name"      , structure.getName()));
             struct.put("xOrigin", new TagInt(   "xOrigin"   , structure.getOrigin().getBlockX()));
@@ -244,32 +244,35 @@ public class StructureUtil {
             struct.put("growFromBounds", new TagByte("growFromBounds", growFromBounds));
             Collection<StructureChunk> chunks = structure.getAllChunks().values();
             for (StructureChunk structChunk : chunks){
-                HashMap<String, Tag> chunk = new HashMap<String, Tag>();
-                chunk.put("xPos", new TagInt("xPos", structChunk.getXPos()));
-                chunk.put("zPos", new TagInt("zPos", structChunk.getZPos()));
-                HashMap<String, Tag> sectionTags = new HashMap<String, Tag>();
                 Collection<StructureSection> sections = structChunk.getAllSections().values();
-                for (StructureSection chunkSect : sections){
-                    HashMap<String, Tag> sect = new HashMap<String, Tag>();
-                    sect.put("yIndex", new TagInt("yIndex", chunkSect.getYIndex()));
-                    sect.put("blocks", new TagByteArray("blocks", chunkSect.getBlocks()));
-                    sect.put("data", new TagByteArray("data", chunkSect.getData()));
-                    sect.put("passive", new TagByteArray("passive", chunkSect.getPassive()));
-                    
-                    String sectionName = Integer.toString(chunkSect.getYIndex());
-                    sectionTags.put(sectionName, new TagCompound(sectionName, sect));
+                if (sections.size() > 0) {
+                    HashMap<String, Tag> chunk = new HashMap<String, Tag>();
+                    chunk.put("xPos", new TagInt("xPos", structChunk.getXPos()));
+                    chunk.put("zPos", new TagInt("zPos", structChunk.getZPos()));
+                    HashMap<String, Tag> sectionTags = new HashMap<String, Tag>();
+                    for (StructureSection chunkSect : sections) {
+                        HashMap<String, Tag> sect = new HashMap<String, Tag>();
+                        sect.put("yIndex", new TagInt("yIndex", chunkSect.getYIndex()));
+                        sect.put("blocks", new TagByteArray("blocks", chunkSect.getBlocks()));
+                        sect.put("data", new TagByteArray("data", chunkSect.getData()));
+                        sect.put("passive", new TagByteArray("passive", chunkSect.getPassive()));
+
+                        String sectionName = Integer.toString(chunkSect.getYIndex());
+                        sectionTags.put(sectionName, new TagCompound(sectionName, sect));
+                    }
+                    chunk.put("sections", new TagCompound("sections", sectionTags));
+
+                    List<Tag> tileEntities = structChunk.getTileEntities();
+                    if (tileEntities.size() > 0) {
+                        chunk.put("tileEntities", new TagList("tileEntities", tileEntities));
+                    }
+
+                    String chunkName = Long.toString(mergeCoords(structChunk.getXPos(), structChunk.getZPos()));
+                    chunkTags.put(chunkName, new TagCompound(chunkName, chunk));
                 }
-                chunk.put("sections", new TagCompound("sections", sectionTags));
-                
-                List<Tag> tileEntities = structChunk.getTileEntities();
-                if (tileEntities.size() > 0)
-                    chunk.put("tileEntities", new TagList("tileEntities", tileEntities));
-                
-                String chunkName = Long.toString(mergeCoords(structChunk.getXPos(), structChunk.getZPos()));
-                chunkTags.put(chunkName, new TagCompound(chunkName, chunk));
             }
             struct.put("chunks", new TagCompound("chunks", chunkTags));
-            
+
             TagCompound root = new TagCompound(structure.getName(), struct);
             structOut.writeTag(root);
             structOut.close();
@@ -281,7 +284,7 @@ public class StructureUtil {
         } catch (NBTNameException ex) {ex.printStackTrace();}
         return false;
     }
-    
+
     //    public static Structure translateSafe(Structure struct){
     //        Map<Long, StructureChunk> chunks = struct.getAllChunks();
     //        if (chunks.size() < 1) return struct;
@@ -300,11 +303,11 @@ public class StructureUtil {
     //            struct.addChunk(test);
     //        }
     //    }
-    
+
     public static Structure getBaseStructure(String name){
         return new Structure(name, new Location(null, 0, 128, 0), Structure.StructureType.SURFACE);
     }
-    
+
     public static StructureChunk getBaseChunk(Structure struct){
         StructureChunk chunk = new StructureChunk(struct, 0, 0);
         byte[] array = new byte[4096];
@@ -313,7 +316,7 @@ public class StructureUtil {
         return chunk;
     }
     //</editor-fold>
-    
+
     public static boolean isSupportedTileEntity(int id){
         switch (Material.getMaterial(id)){
             case BEACON:        return false;
@@ -331,7 +334,7 @@ public class StructureUtil {
             default:            return false;
         }
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="Tile to Tag Conversion">
     public static Tag getTileTag(World world, int x, int y, int z, int id){
         try {
@@ -358,7 +361,7 @@ public class StructureUtil {
             return null;
         }
     }
-    
+
     public static Tag getLocationTag(int x, int y, int z){
         HashMap<String, Tag> location = new HashMap<String, Tag>();
         location.put("x", new TagInt("x", x));
@@ -366,16 +369,16 @@ public class StructureUtil {
         location.put("z", new TagInt("z", z));
         return new TagCompound("location", location);
     }
-    
+
     public static Tag getInventoryTag(Inventory inv) throws NBTTagException, NBTNameException{
         ArrayList<Tag> items = new ArrayList<Tag>();
         ItemStack[] contents = inv.getContents();
         for (int i = 0; i < contents.length; i++){
             ItemStack item = contents[i];
-            
-            
+
+
             HashMap<String, Tag> itemData = new HashMap<String, Tag>();
-            
+
             if (item != null){
                 itemData.put("slot", new TagInt("slot", i));
                 itemData.put("id", new TagInt("id", item.getTypeId()));
@@ -388,48 +391,48 @@ public class StructureUtil {
                 itemData.put("ammount", new TagInt("ammount", 0));
                 itemData.put("durabilty", new TagShort("durability", (short) 0));
             }
-            
+
             items.add(new TagCompound(null, itemData));
         }
         return new TagList("inventory", items);
-    }   
-    
+    }
+
     public static Tag getChestTag(BlockState tile) throws NBTTagException, NBTNameException{
         HashMap<String, Tag> chest = new HashMap<String, Tag>();
         chest.put("type", new TagString("type", "chest"));
         chest.put("location", getLocationTag(tile.getX(), tile.getY(), tile.getZ()));
         chest.put("inventory", getInventoryTag(((InventoryHolder) tile).getInventory()));
-        
+
         TagCompound data = new TagCompound(null, chest);
-        
+
         return data;
     }
-    
+
     public static Tag getDispenserTag(BlockState tile) throws NBTTagException, NBTNameException{
         HashMap<String, Tag> dispenser = new HashMap<String, Tag>();
         dispenser.put("type", new TagString("type", "dispenser"));
         dispenser.put("location", getLocationTag(tile.getX(), tile.getY(), tile.getZ()));
         dispenser.put("inventory", getInventoryTag(((InventoryHolder) tile).getInventory()));
-        
+
         TagCompound data = new TagCompound(null, dispenser);
-        
+
         return data;
     }
-    
+
     public static Tag getSpawnerTag(BlockState tile) throws NBTTagException, NBTNameException{
         HashMap<String, Tag> spawner = new HashMap<String, Tag>();
         spawner.put("type", new TagString("type", "mob_spawner"));
         spawner.put("location", getLocationTag(tile.getX(), tile.getY(), tile.getZ()));
         spawner.put("spawner_type", new TagString("spawner_type", ((CreatureSpawner) tile).getCreatureTypeName().toLowerCase()));
         spawner.put("delay", new TagInt("delay", ((CreatureSpawner) tile).getDelay()));
-        
+
         TagCompound data = new TagCompound(null, spawner);
-        
+
         return data;
     }
-    
+
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Tag to Tile Conversion">
     public static BlockState getTileFromTag(TagCompound tag, Chunk source){
         String type = ((TagString)tag.getPayload().get("type")).getPayload().toUpperCase();
@@ -449,93 +452,93 @@ public class StructureUtil {
             default:            return null;
         }
     }
-    
+
     public static ItemStack[] getInventoryFromTag(TagList tag_inventory){
         if (tag_inventory == null) return null;
-        
+
         List<Tag> itemList = tag_inventory.getPayload();
         ItemStack[] items = new ItemStack[itemList.size()];
         for (Tag itemCompound : itemList){
             Map<String, Tag> itemTag = (Map<String, Tag>) itemCompound.getPayload();
-            
+
             TagInt   tag_id         = (TagInt)   itemTag.get("id");
             TagInt   tag_slot       = (TagInt)   itemTag.get("slot");
             TagInt   tag_ammount    = (TagInt)   itemTag.get("ammount");
             TagShort tag_durability = (TagShort) itemTag.get("durability");
-            
+
             if (tag_id == null || tag_slot == null){
                 System.err.println("Item header null");
                 return null;
             }
             ItemStack item = new ItemStack(tag_id.getPayload());
-            
+
             if (tag_ammount != null)
                 item.setAmount(tag_ammount.getPayload()); //TODO: rename all amount variables
             if (tag_durability != null)
                 item.setDurability(tag_durability.getPayload());
-            
+
             items[tag_slot.getPayload()] = item;
         }
-        
+
         return items;
     }
-    
+
     public static Chest getChestFromTag(TagCompound comp, Chunk source){
         Map<String, Tag> chest = comp.getPayload();
-        
+
         TagCompound tag_location  = (TagCompound) chest.get("location");
         TagList     tag_inventory = (TagList)     chest.get("inventory");
-        
+
         Map<String, Tag> loc = new HashMap<String, Tag>();
         if (tag_location != null)
             loc = tag_location.getPayload();
-        
+
         Chest chestBlock = new CraftChest(source.getBlock(
             ((TagInt)loc.get("x")).getPayload(), ((TagInt)loc.get("y")).getPayload(), ((TagInt)loc.get("z")).getPayload())
         );
-        
+
         chestBlock.getBlockInventory().setContents(getInventoryFromTag(tag_inventory));
         return chestBlock;
     }
-    
+
     public static Dispenser getDispenserFromTag(TagCompound comp, Chunk source){
         Map<String, Tag> dispenser = comp.getPayload();
-        
+
         TagCompound tag_location  = (TagCompound) dispenser.get("location");
         TagList     tag_inventory = (TagList)     dispenser.get("inventory");
-        
+
         Map<String, Tag> loc = new HashMap<String, Tag>();
         if (tag_location != null)
             loc = tag_location.getPayload();
-        
+
         Dispenser dispenserBlock = new CraftDispenser(source.getBlock(
             ((TagInt)loc.get("x")).getPayload(), ((TagInt)loc.get("y")).getPayload(), ((TagInt)loc.get("z")).getPayload())
         );
-        
+
         dispenserBlock.getInventory().setContents(getInventoryFromTag(tag_inventory));
         return dispenserBlock;
     }
-    
+
     public static CreatureSpawner getSpawnerFromTag(TagCompound comp, Chunk source){
         Map<String, Tag> spawner = comp.getPayload();
-        
+
         TagCompound tag_location  = (TagCompound) spawner.get("location");
         TagList     tag_inventory = (TagList)     spawner.get("inventory");
-        
+
         Map<String, Tag> loc = new HashMap<String, Tag>();
         if (tag_location != null)
             loc = tag_location.getPayload();
-        
+
         CreatureSpawner spawnerBlock = new CraftCreatureSpawner(source.getBlock(
             ((TagInt)loc.get("x")).getPayload(), ((TagInt)loc.get("y")).getPayload(), ((TagInt)loc.get("z")).getPayload())
         );
-        
+
         spawnerBlock.setSpawnedType(EntityType.valueOf(((TagString) spawner.get("spawner_type")).getPayload().toUpperCase()));
         spawnerBlock.setDelay(((TagInt) spawner.get("delay")).getPayload());
         return spawnerBlock;
     }
     //</editor-fold>
-    
+
     public static ArrayList<Tag> getTileEntites(ChunkSnapshot chunk){
         ArrayList<Tag> tiles = new ArrayList<Tag>();
         World world = Bukkit.getWorld(chunk.getWorldName());
@@ -545,7 +548,7 @@ public class StructureUtil {
                 for (int xx = 0; xx < 16; xx ++) for (int yy = 0; yy < 16; yy ++) for (int zz = 0; zz < 16; zz ++){
                     int id = chunk.getBlockTypeId(xx, yy + (y << 4), zz);
                     if (isSupportedTileEntity(id)){
-                        
+
                         tiles.add(getTileTag(world, xx + (chunk.getX() << 4), yy + (y << 4), zz + (chunk.getZ() << 4), id));
                     }
                 }
