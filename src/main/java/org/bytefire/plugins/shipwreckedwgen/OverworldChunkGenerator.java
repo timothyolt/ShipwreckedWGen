@@ -40,7 +40,7 @@ public class OverworldChunkGenerator extends ChunkGenerator{
         String[] files = structures.list();
         for (String file : files){
             String yamlPath = local + ".structures." + file.replaceAll(".structure", "");
-            if (!config.contains(yamlPath)) config.set(yamlPath, true);
+            if (!config.contains(yamlPath)) config.set(yamlPath, false);
         }
         try {
             config.save(plugin.getConfigFile());
