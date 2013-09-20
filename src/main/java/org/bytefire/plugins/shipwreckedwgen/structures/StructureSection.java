@@ -1,6 +1,6 @@
 package org.bytefire.plugins.shipwreckedwgen.structures;
 
-import java.util.Arrays;
+import java.util.BitSet;
 
 public class StructureSection {
 
@@ -9,15 +9,17 @@ public class StructureSection {
     private byte[] blocks;
     private byte[] add;
     private byte[] data;
-    private byte[] passive;
+    //private byte[] passive;
+    private BitSet passive;
 
     public StructureSection(StructureChunk chunk, int yIndex){
         this.chunk = chunk;
         this.yIndex = yIndex;
         blocks = new byte[4096];
         data = new byte[4096];
-        passive = new byte[512];
-        Arrays.fill(passive, (byte) 0xFF);
+        //passive = new byte[512];
+        //Arrays.fill(passive, (byte) 0xFF);
+        passive = new BitSet(4096);
     }
 
     public StructureChunk getChunk(){
@@ -57,55 +59,26 @@ public class StructureSection {
     }
 
     public byte[] getPassive(){
-        return passive;
+        byte[] array = new byte[512];
+        for (int i = 0; i < 4096; i++)
+            if (passive.get(i)) array[i/8] |= 1 << (7 - i % 8);
+        return array;
     }
 
     public boolean getBlockPassive(int x, int y, int z){
-        int index = (y << 5) | (z << 1) | (x >> 2);
-        switch (y){
-            case 0: case 8:  return (passive[index] & 0x01) != 0;
-            case 1: case 9:  return (passive[index] & 0x02) != 0;
-            case 2: case 10: return (passive[index] & 0x04) != 0;
-            case 3: case 11: return (passive[index] & 0x08) != 0;
-            case 4: case 12: return (passive[index] & 0x10) != 0;
-            case 5: case 13: return (passive[index] & 0x20) != 0;
-            case 6: case 14: return (passive[index] & 0x40) != 0;
-            case 7: case 15: return (passive[index] & 0x80) != 0;
-            default: return false;
-        }
+        return getBlockPassive((y << 8) | (z << 4) | x);
+    }
+
+    public boolean getBlockPassive(int index){
+        return passive.get(index);
     }
 
     public void setBlockPassive(int x, int y, int z, boolean bool){
-         setBlockPassive((y << 5) | (z << 1) | (x >> 2), bool);
+         setBlockPassive((y << 8) | (z << 4) | x, bool);
     }
-    
+
     protected void setBlockPassive(int index, boolean bool){
-        switch (index >> 5){
-            case 0: case 8:
-                if (bool) passive[index] = (byte)(passive[index] | 0x01);
-                else passive[index] = (byte)~((~passive[index]) | 0x01);
-            case 1: case 9:
-                if (bool) passive[index] = (byte)(passive[index] | 0x02);
-                else passive[index] = (byte)~((~passive[index]) | 0x02);
-            case 2: case 10:
-                if (bool) passive[index] = (byte)(passive[index] | 0x04);
-                else passive[index] = (byte)~((~passive[index]) | 0x04);
-            case 3: case 11:
-                if (bool) passive[index] = (byte)(passive[index] | 0x08);
-                else passive[index] = (byte)~((~passive[index]) | 0x08);
-            case 4: case 12:
-                if (bool) passive[index] = (byte)(passive[index] | 0x10);
-                else passive[index] = (byte)~((~passive[index]) | 0x10);
-            case 5: case 13:
-                if (bool) passive[index] = (byte)(passive[index] | 0x20);
-                else passive[index] = (byte)~((~passive[index]) | 0x20);
-            case 6: case 14:
-                if (bool) passive[index] = (byte)(passive[index] | 0x40);
-                else passive[index] = (byte)~((~passive[index]) | 0x40);
-            case 7: case 15:
-                if (bool) passive[index] = (byte)(passive[index] | 0x80);
-                else passive[index] = (byte)~((~passive[index]) | 0x80);
-        }
+        passive.set(index, bool);
     }
 
     protected void addBlockArray(byte[] blocks){
@@ -120,7 +93,9 @@ public class StructureSection {
         this.data = data;
     }
 
-    protected void addPassiveArray(byte[] passive){
-        this.passive = passive;
+    protected void addPassiveArray(byte[] array){
+        for (int i = 0; i < 4096; i++){
+            passive.set(i, (array[i/8] & (1 << (7 - i % 8))) != 0);
+        }
     }
 }

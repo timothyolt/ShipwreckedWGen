@@ -230,7 +230,6 @@ public class Structure {
                         StructureSection sect = structChunk.getSection(y);
                         int id = chunk.getBlockTypeId(xx, yy + (y << 4), zz);
                         sect.setBlockId(xx, yy, zz, id);
-                        if (id != 0) sect.setBlockPassive(xx, yy, zz, false);
                         sect.setBlockData(xx, yy, zz, (byte) chunk.getBlockData(xx, yy + (y << 4), zz));
                     }
                 }

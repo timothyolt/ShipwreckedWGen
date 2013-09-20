@@ -141,7 +141,7 @@ public class StructureCommands implements CommandExecutor{
         int dist = Integer.valueOf(args[1]);
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
-        struct.setMaxHeight(dist);
+        struct.setDistance(dist);
         message(sender, "Minimum distance set to " + Integer.toString(dist));
         return true;
     }
@@ -154,7 +154,7 @@ public class StructureCommands implements CommandExecutor{
         int chance = Integer.valueOf(args[1]);
         Structure struct = getStructureFromSender(sender, args, 2);
         if (struct == null) return true;
-        struct.setMaxHeight(chance);
+        struct.setChance(chance);
         message(sender, "Spawn chance set to " + Integer.toString(chance));
         return true;
     }
@@ -244,7 +244,7 @@ public class StructureCommands implements CommandExecutor{
         message(sender, "Bound growth set to " + Boolean.toString(grow));
         return true;
     }
-    
+
     public boolean cmdPassive(CommandSender sender, String[] args){
         String[] newargs = Arrays.copyOfRange(args, 1, args.length);
         if (args.length < 2) error(sender, "No operation specified");
@@ -253,7 +253,7 @@ public class StructureCommands implements CommandExecutor{
         else error(sender, "Not a valid operation");
         return true;
     }
-    
+
     public boolean cmdPassiveMaterial(final CommandSender sender, String[] args){
         if (args.length < 2){
             error(sender, "No material specified");
@@ -265,17 +265,41 @@ public class StructureCommands implements CommandExecutor{
         }
         final Material passive = Material.getMaterial(args[1].toUpperCase());
         final boolean flag = Boolean.valueOf(args[2]);
+        final boolean solid;
+        final boolean nonSolid;
         if (passive == null){
-            error(sender, "Invalid material name");
-            return true;
+            if (args[1].toUpperCase().equals("SOLID")) {
+                solid = true;
+                nonSolid = false;
+            }
+            else if (args[1].toUpperCase().equals("NONSOLID")) {
+                solid = false;
+                nonSolid = true;
+            }
+            else if (args[1].toUpperCase().equals("ALL")) {
+                solid = true;
+                nonSolid = true;
+            }
+            else {
+                error(sender, "Invalid material name");
+                return true;
+            }
+        }
+        else {
+            solid = false;
+            nonSolid = false;
         }
         final Structure struct = getStructureFromSender(sender, args, 3);
         if (struct == null) return true;
         struct.update();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable(){
             public void run() {
-                int id = passive.getId();
-                message(sender, "Making all instances of " + passive.toString().toLowerCase() + (flag ? " passive" : " assertive"));
+                int id = -1;
+                if (passive != null) {
+                    passive.getId();
+                    message(sender, "Making all instances of " + passive.toString().toLowerCase() + (flag ? " passive" : " assertive"));
+                }
+                else message(sender, "Making all " + ((nonSolid && solid) ? "" : (solid ? "solid " : "non-solid ")) + "instances " + (flag ? " passive" : " assertive"));
                 Collection<StructureChunk> chunks = struct.getAllChunks().values();
                 for (StructureChunk chunk : chunks){
                     Collection<StructureSection> sects = chunk.getAllSections().values();
@@ -285,7 +309,8 @@ public class StructureCommands implements CommandExecutor{
                             if (materials[i] == id) sect.setBlockPassive(i, flag);
                     }
                 }
-                message(sender, "All instances of " + passive.toString().toLowerCase() + " are now"  + (flag ? " passive" : " assertive"));
+                if (passive != null) message(sender, "All instances of " + passive.toString().toLowerCase() + " are now"  + (flag ? " passive" : " assertive"));
+                else message(sender, "All " + ((nonSolid && solid) ? "" : (solid ? "solid " : "non-solid ")) + "instances " + " are now"  + (flag ? " passive" : " assertive"));
             }
         });
         return true;

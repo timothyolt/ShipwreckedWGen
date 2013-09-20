@@ -31,6 +31,7 @@ import static org.bukkit.Material.NOTE_BLOCK;
 import static org.bukkit.Material.SIGN;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.CreatureSpawner;
@@ -436,18 +437,18 @@ public class StructureUtil {
     //<editor-fold defaultstate="collapsed" desc="Tag to Tile Conversion">
 
     public static BlockState getTileFromTag(TagCompound tag, Chunk source){
-        return getTileFromTag(tag, source, null);
+        return getTileFromTag(tag, source, -255);
     }
 
-    public static BlockState getTileFromTag(TagCompound tag, Chunk source, Location newLoc) {
+    public static BlockState getTileFromTag(TagCompound tag, Chunk source, int yOrigin) {
         String type = ((TagString) tag.getPayload().get("type")).getPayload().toUpperCase();
         switch (Material.getMaterial(type)) {
         case BEACON:        return null;
         case BREWING_STAND: return null;
-        case CHEST:         return getChestFromTag(tag, source, null);
+        case CHEST:         return getChestFromTag(tag, source, yOrigin);
         case COMMAND:       return null;
-        case MOB_SPAWNER:   return getSpawnerFromTag(tag, source, null);
-        case DISPENSER:     return getDispenserFromTag(tag, source, null);
+        case MOB_SPAWNER:   return getSpawnerFromTag(tag, source, yOrigin);
+        case DISPENSER:     return getDispenserFromTag(tag, source, yOrigin);
         case DROPPER:       return null;
         case FURNACE:       return null;
         case HOPPER:        return null;
@@ -488,7 +489,7 @@ public class StructureUtil {
         return items;
     }
 
-    public static Chest getChestFromTag(TagCompound comp, Chunk source, Location newLoc){
+    public static Chest getChestFromTag(TagCompound comp, Chunk source, int yOrigin){
         Map<String, Tag> chest = comp.getPayload();
 
         TagCompound tag_location  = (TagCompound) chest.get("location");
@@ -498,17 +499,24 @@ public class StructureUtil {
         if (tag_location != null)
             loc = tag_location.getPayload();
 
-        Chest chestBlock;
-        if (newLoc == null) chestBlock = new CraftChest(source.getBlock(
-            ((TagInt)loc.get("x")).getPayload(), ((TagInt)loc.get("y")).getPayload(), ((TagInt)loc.get("z")).getPayload()
-        ));
-        else chestBlock = new CraftChest(newLoc.getBlock());
+        Block block = source.getBlock(
+            ((TagInt)loc.get("x")).getPayload(),
+            yOrigin == -255 ? ((TagInt)loc.get("y")).getPayload() : yOrigin,
+            ((TagInt)loc.get("z")).getPayload()
+        );
+        if (block == null){
+            System.out.println("broken chest");
+            return null;
+        }
+        if (block.getType() != Material.CHEST) block.setType(Material.CHEST);
+        Chest chestBlock = new CraftChest(block);
 
-        chestBlock.getBlockInventory().setContents(getInventoryFromTag(tag_inventory));
+        ItemStack[] stack = getInventoryFromTag(tag_inventory);
+        chestBlock.getBlockInventory().setContents(stack);
         return chestBlock;
     }
 
-    public static Dispenser getDispenserFromTag(TagCompound comp, Chunk source, Location newLoc){
+    public static Dispenser getDispenserFromTag(TagCompound comp, Chunk source, int yOrigin){
         Map<String, Tag> dispenser = comp.getPayload();
 
         TagCompound tag_location  = (TagCompound) dispenser.get("location");
@@ -518,17 +526,23 @@ public class StructureUtil {
         if (tag_location != null)
             loc = tag_location.getPayload();
 
-        Dispenser dispenserBlock;
-        if (newLoc == null) dispenserBlock = new CraftDispenser(source.getBlock(
-            ((TagInt)loc.get("x")).getPayload(), ((TagInt)loc.get("y")).getPayload(), ((TagInt)loc.get("z")).getPayload()
-        ));
-        else dispenserBlock = new CraftDispenser(newLoc.getBlock());
+        Block block = source.getBlock(
+            ((TagInt)loc.get("x")).getPayload(),
+            yOrigin == -255 ? ((TagInt)loc.get("y")).getPayload() : yOrigin,
+            ((TagInt)loc.get("z")).getPayload()
+        );
+        if (block == null){
+            System.out.println("broken chest");
+            return null;
+        }
+        if (block.getType() != Material.DISPENSER) block.setType(Material.DISPENSER);
+        Dispenser dispenserBlock = new CraftDispenser(block);
 
         dispenserBlock.getInventory().setContents(getInventoryFromTag(tag_inventory));
         return dispenserBlock;
     }
 
-    public static CreatureSpawner getSpawnerFromTag(TagCompound comp, Chunk source, Location newLoc){
+    public static CreatureSpawner getSpawnerFromTag(TagCompound comp, Chunk source, int yOrigin){
         Map<String, Tag> spawner = comp.getPayload();
 
         TagCompound tag_location  = (TagCompound) spawner.get("location");
@@ -538,12 +552,17 @@ public class StructureUtil {
         if (tag_location != null)
             loc = tag_location.getPayload();
 
-
-        CreatureSpawner spawnerBlock;
-        if (newLoc == null) spawnerBlock = new CraftCreatureSpawner(source.getBlock(
-            ((TagInt)loc.get("x")).getPayload(), ((TagInt)loc.get("y")).getPayload(), ((TagInt)loc.get("z")).getPayload()
-        ));
-        else spawnerBlock = new CraftCreatureSpawner(newLoc.getBlock());
+        Block block = source.getBlock(
+            ((TagInt)loc.get("x")).getPayload(),
+            yOrigin == -255 ? ((TagInt)loc.get("y")).getPayload() : yOrigin,
+            ((TagInt)loc.get("z")).getPayload()
+        );
+        if (block == null){
+            System.out.println("broken chest");
+            return null;
+        }
+        if (block.getType() != Material.MOB_SPAWNER) block.setType(Material.MOB_SPAWNER);
+        CreatureSpawner spawnerBlock = new CraftCreatureSpawner(block);
 
         spawnerBlock.setSpawnedType(EntityType.valueOf(((TagString) spawner.get("spawner_type")).getPayload().toUpperCase()));
         spawnerBlock.setDelay(((TagInt) spawner.get("delay")).getPayload());

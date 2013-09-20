@@ -28,14 +28,14 @@ public class StructureBlockDataPopulator extends BlockPopulator{
             for (int x = 0; x < 16; x++) for (int y = 0; y < 16; y++) for (int z = 0; z < 16; z++){
                 int index = (y << 8) | (z << 4) | x;
                 byte localData = data[index];
-                if (localData != 0) source.getBlock(x, y + yOffset, z).setData(localData);
+                if (localData != 0) source.getBlock(x, y + yOffset, z).setData(localData, false);
             }
         }
-        
+
         ArrayList<Tag> tileEntities = chunk.getTileEntities();
         for (Tag tile : tileEntities){
             TagCompound tag = (TagCompound) tile;
-            
+
             StructureUtil.getTileFromTag(tag, source);
         }
     }
